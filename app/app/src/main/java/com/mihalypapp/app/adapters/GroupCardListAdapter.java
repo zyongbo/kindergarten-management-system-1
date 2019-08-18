@@ -8,14 +8,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.models.ItemGroupCard;
+import com.mihalypapp.app.models.GroupCard;
 
 import java.util.List;
 
-public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdapter.ViewHolder> {
+public class GroupCardListAdapter extends ListAdapter<GroupCard, GroupCardListAdapter.ViewHolder> {
+
+    public static final DiffUtil.ItemCallback<GroupCard> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<GroupCard>() {
+                @Override
+                public boolean areItemsTheSame(GroupCard oldItem, GroupCard newItem) {
+                    return oldItem.getId() == newItem.getId();
+                }
+                @Override
+                public boolean areContentsTheSame(GroupCard oldItem, GroupCard newItem) {
+                    return (oldItem.getTeacherName().equals(newItem.getTeacherName()) && oldItem.getType().equals(newItem.getType()) && oldItem.getYear().equals(newItem.getYear()));
+                }
+            };
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
@@ -33,10 +47,9 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdap
         }
     }
 
-    private List<ItemGroupCard> groupCards;
 
-    public GroupCardListAdapter(List<ItemGroupCard> groupCards) {
-        this.groupCards = groupCards;
+    public GroupCardListAdapter() {
+        super(DIFF_CALLBACK);
     }
 
     @NonNull
@@ -52,17 +65,12 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupCardListAdapter.ViewHolder holder, int position) {
-        ItemGroupCard groupCard = groupCards.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        GroupCard groupCard = getItem(position);
 
         holder.imageView.setImageResource(groupCard.getImageResource());
         holder.textViewTeacherName.setText(groupCard.getTeacherName());
         holder.textViewType.setText(groupCard.getType());
         holder.textViewYear.setText(groupCard.getYear());
-    }
-
-    @Override
-    public int getItemCount() {
-        return groupCards.size();
     }
 }

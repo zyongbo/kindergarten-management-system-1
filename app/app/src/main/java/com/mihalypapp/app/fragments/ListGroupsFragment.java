@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -20,7 +21,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.adapters.GroupCardListAdapter;
-import com.mihalypapp.app.models.ItemGroupCard;
+import com.mihalypapp.app.models.GroupCard;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,11 +33,11 @@ public class ListGroupsFragment extends Fragment {
 
     private static final String TAG = "ListGroupsFragment";
 
-    private ArrayList<ItemGroupCard> groupCardList;
+    private ArrayList<GroupCard> groupCardList;
 
     private LinearLayoutManager linearLayoutManager;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private ListAdapter adapter;
 
     @Nullable
     @Override
@@ -47,13 +48,11 @@ public class ListGroupsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view);
         groupCardList = new ArrayList<>();
         fetchGroups();
-        adapter = new GroupCardListAdapter(groupCardList);
+        adapter = new GroupCardListAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        //groupCardList.add(new ItemGroupCard(R.drawable.ic_launcher_foreground, "Teacher One", "Middle", "2015"));
-
 
         return view;
     }
@@ -78,15 +77,15 @@ public class ListGroupsFragment extends Fragment {
 
                                 for (int i = 0; i < groups.length(); i++) {
                                     JSONObject group = groups.getJSONObject(i);
-                                    groupCardList.add(new ItemGroupCard(
+                                    groupCardList.add(new GroupCard(
                                             group.getInt("groupid"),
                                             R.drawable.ic_launcher_foreground,
                                             group.getString("name"),
                                             group.getString("type"),
                                             group.getString("year")
                                     ));
-                                    adapter.notifyItemInserted(0);
                                 }
+                                adapter.submitList(groupCardList);
                             } else {
                                 Log.e(TAG, "getGroupRequest ERROR");
                             }

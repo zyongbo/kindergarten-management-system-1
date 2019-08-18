@@ -1,13 +1,13 @@
 package com.mihalypapp.app.models;
 
-public class ItemGroupCard {
+public class GroupCard {
     private int id;
     private int imageResource;
     private String teacherName;
     private String year;
     private String type;
 
-    public ItemGroupCard(int id, int imageResource, String teacherName, String type, String year) {
+    public GroupCard(int id, int imageResource, String teacherName, String type, String year) {
         this.id = id;
         this.imageResource = imageResource;
         this.teacherName = teacherName;
