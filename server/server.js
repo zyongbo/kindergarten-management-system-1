@@ -144,7 +144,7 @@ app.post('/groups', (req, res) => {
 
     setTimeout(() => {
         if (req.session.role == 'PRINCIPAL') {
-            con.query("SELECT groups.type, groups.year, users.name FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON (groups.teacherid = users.userid) LIMIT ?, ?",
+            con.query("SELECT groups.groupid, groups.type, groups.year, users.name FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON (groups.teacherid = users.userid) LIMIT ?, ?",
                 [req.body.offset, req.body.quantity],
                 function (err, groups) {
                     console.log('Result: ' + JSON.stringify(groups))

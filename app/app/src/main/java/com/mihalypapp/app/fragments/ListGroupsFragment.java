@@ -44,70 +44,64 @@ public class ListGroupsFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_list_groups, container, false);
 
-        linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
         groupCardList = new ArrayList<>();
-        //groupCardList.add(new ItemGroupCard(R.drawable.ic_launcher_foreground, "Teacher One", "Middle", "2015"));
+        fetchGroups();
         adapter = new GroupCardListAdapter(groupCardList);
         recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        //groupCardList.add(new ItemGroupCard(R.drawable.ic_launcher_foreground, "Teacher One", "Middle", "2015"));
 
-        fetchGroups();
 
         return view;
     }
 
     private void fetchGroups() {
-        recyclerView.post(new Runnable() {
-            @Override
-            public void run() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("offset", 0);
+            params.put("quantity", 15);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-                JSONObject params = new JSONObject();
-                try {
-                    params.put("offset", 0);
-                    params.put("quantity", 15);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                final JsonObjectRequest getGroupsRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/groups", params,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    if (response.getString("status").equals("success")) {
-                                        Log.i(TAG, response.toString());
-                                        JSONArray groups = response.getJSONArray("groups");
-
-                                        for (int i = 0; i < groups.length(); i++) {
-                                            JSONObject group = groups.getJSONObject(i);
-                                            groupCardList.add(new ItemGroupCard(
-                                                    R.drawable.ic_launcher_foreground,
-                                                    group.getString("name"),
-                                                    group.getString("type"),
-                                                    group.getString("year")
-                                            ));
-                                        }
-                                        adapter.notifyDataSetChanged();
-                                    } else {
-                                        Log.e(TAG, "getGroupRequest ERROR");
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
+        final JsonObjectRequest getGroupsRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/groups", params,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, error.toString());
-                    }
-                });
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getString("status").equals("success")) {
+                                Log.i(TAG, response.toString());
+                                JSONArray groups = response.getJSONArray("groups");
 
-                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                requestQueue.add(getGroupsRequest);
+                                for (int i = 0; i < groups.length(); i++) {
+                                    JSONObject group = groups.getJSONObject(i);
+                                    groupCardList.add(new ItemGroupCard(
+                                            group.getInt("groupid"),
+                                            R.drawable.ic_launcher_foreground,
+                                            group.getString("name"),
+                                            group.getString("type"),
+                                            group.getString("year")
+                                    ));
+                                    adapter.notifyItemInserted(0);
+                                }
+                            } else {
+                                Log.e(TAG, "getGroupRequest ERROR");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
             }
         });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(getGroupsRequest);
     }
 }
