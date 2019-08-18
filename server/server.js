@@ -104,35 +104,6 @@ app.post('/addUser', (req, res) => {
     })
 })
 
-app.get('/users', (req, res) => {
-    console.log('/users----------------------------------------------------------------------')
-    console.log('Session ID: ' + req.sessionID)
-    console.log('Session: ' + JSON.stringify(req.session))
-
-    if (req.session.role == 'PRINCIPAL') {
-        con.query("SELECT name, email FROM thesis.users", function (err, users) {
-            console.log('Result: ' + JSON.stringify(users))
-            var getUsersResult = {}
-            if (err) {
-                res.send({
-                    'status': 'failed',
-                    'code': 'ERROR'
-                })
-                throw err;
-            }
-            res.send({
-                'status': 'success',
-                'users': users
-            })
-        });
-    } else {
-        res.send({
-            'status': 'failed',
-            'code': 'NO_PERMISSION'
-        })
-    }
-})
-
 app.post('/users', (req, res) => {
     console.log('/users----------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
@@ -148,7 +119,7 @@ app.post('/users', (req, res) => {
                         'status': 'failed',
                         'code': 'ERROR'
                     })
-                    throw err;
+                    throw err
                 } else {
                     res.send({
                         'status': 'success',
@@ -156,6 +127,40 @@ app.post('/users', (req, res) => {
                     })
                 }
             });
+        } else {
+            res.send({
+                'status': 'failed',
+                'code': 'NO_PERMISSION'
+            })
+        }
+    }, 1000);
+})
+
+app.post('/groups', (req, res) => {
+    console.log('/groups----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    setTimeout(() => {
+        if (req.session.role == 'PRINCIPAL') {
+            con.query("SELECT groups.type, groups.year, users.name FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON (groups.teacherid = users.userid) LIMIT ?, ?",
+                [req.body.offset, req.body.quantity],
+                function (err, groups) {
+                    console.log('Result: ' + JSON.stringify(groups))
+                    if (err) {
+                        res.send({
+                            'status': 'failed',
+                            'code': 'ERROR'
+                        })
+                        throw err
+                    } else {
+                        res.send({
+                            'status': 'success',
+                            'groups': groups
+                        })
+                    }
+                });
         } else {
             res.send({
                 'status': 'failed',
