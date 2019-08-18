@@ -20,7 +20,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.adapters.GroupCardListAdapter;
-import com.mihalypapp.app.models.ItemGroupCard;
+import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
+import com.mihalypapp.app.models.GroupCard;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,11 +33,12 @@ public class ListGroupsFragment extends Fragment {
 
     private static final String TAG = "ListGroupsFragment";
 
-    private ArrayList<ItemGroupCard> groupCardList;
-
-    private LinearLayoutManager linearLayoutManager;
-    private RecyclerView recyclerView;
+    private EndlessRecyclerViewScrollListener scrollListener;
+    private ArrayList<GroupCard> groupCardList;
+    RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
+
+    private int offset = 0;
 
     @Nullable
     @Override
@@ -50,10 +52,18 @@ public class ListGroupsFragment extends Fragment {
         adapter = new GroupCardListAdapter(groupCardList);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        //groupCardList.add(new ItemGroupCard(R.drawable.ic_launcher_foreground, "Teacher One", "Middle", "2015"));
 
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                offset += 15;
+                fetchGroups();
+            }
+        };
+
+        recyclerView.addOnScrollListener(scrollListener);
 
         return view;
     }
@@ -61,7 +71,7 @@ public class ListGroupsFragment extends Fragment {
     private void fetchGroups() {
         JSONObject params = new JSONObject();
         try {
-            params.put("offset", 0);
+            params.put("offset", offset);
             params.put("quantity", 15);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -75,17 +85,16 @@ public class ListGroupsFragment extends Fragment {
                             if (response.getString("status").equals("success")) {
                                 Log.i(TAG, response.toString());
                                 JSONArray groups = response.getJSONArray("groups");
-
                                 for (int i = 0; i < groups.length(); i++) {
                                     JSONObject group = groups.getJSONObject(i);
-                                    groupCardList.add(new ItemGroupCard(
+                                    groupCardList.add(new GroupCard(
                                             group.getInt("groupid"),
                                             R.drawable.ic_launcher_foreground,
                                             group.getString("name"),
                                             group.getString("type"),
                                             group.getString("year")
                                     ));
-                                    adapter.notifyItemInserted(0);
+                                    adapter.notifyItemInserted(groupCardList.size() - 1);
                                 }
                             } else {
                                 Log.e(TAG, "getGroupRequest ERROR");

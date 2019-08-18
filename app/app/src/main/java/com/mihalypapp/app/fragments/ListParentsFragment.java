@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class ListPrincipalsScreenSlidePageFragment extends ListUsersScreenSlidePageFragment {
+public class ListParentsFragment extends ListUsersFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -17,6 +17,6 @@ public class ListPrincipalsScreenSlidePageFragment extends ListUsersScreenSlideP
 
     @Override
     public String getRole() {
-        return "PRINCIPAL";
+        return "PARENT";
     }
 }

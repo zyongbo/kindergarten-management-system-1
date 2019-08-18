@@ -30,7 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public abstract class ListUsersScreenSlidePageFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class ListUsersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "LUSSPFragment";
 
@@ -69,6 +69,7 @@ public abstract class ListUsersScreenSlidePageFragment extends Fragment implemen
 
         userCardList = new ArrayList<>();
         adapter = new UserCardListAdapter(userCardList);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
         swipeRefreshLayout.post(new Runnable() {

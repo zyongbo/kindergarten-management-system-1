@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.models.ItemGroupCard;
+import com.mihalypapp.app.models.GroupCard;
 
 import java.util.List;
 
@@ -33,9 +33,9 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdap
         }
     }
 
-    private List<ItemGroupCard> groupCards;
+    private List<GroupCard> groupCards;
 
-    public GroupCardListAdapter(List<ItemGroupCard> groupCards) {
+    public GroupCardListAdapter(List<GroupCard> groupCards) {
         this.groupCards = groupCards;
     }
 
@@ -53,7 +53,7 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdap
 
     @Override
     public void onBindViewHolder(@NonNull GroupCardListAdapter.ViewHolder holder, int position) {
-        ItemGroupCard groupCard = groupCards.get(position);
+        GroupCard groupCard = groupCards.get(position);
 
         holder.imageView.setImageResource(groupCard.getImageResource());
         holder.textViewTeacherName.setText(groupCard.getTeacherName());

@@ -47,11 +47,11 @@ public class ListUsersScreenSlideFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new ListParentsScreenSlidePageFragment();
+                    return new ListParentsFragment();
                 case 1:
-                    return new ListTeachersScreenSlidePageFragment();
+                    return new ListTeachersFragment();
                 case 2:
-                    return new ListPrincipalsScreenSlidePageFragment();
+                    return new ListPrincipalsFragment();
                 default:
                     return null;
             }
