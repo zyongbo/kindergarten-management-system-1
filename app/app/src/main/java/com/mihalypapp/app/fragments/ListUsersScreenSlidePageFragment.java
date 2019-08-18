@@ -102,12 +102,12 @@ public abstract class ListUsersScreenSlidePageFragment extends Fragment implemen
 
     @Override
     public void onRefresh() {
-        everythingLoaded = false;
-        offset = 0;
         userCardList.clear();
         adapter.notifyDataSetChanged();
         onRefresh = true;
-        recyclerView.setNestedScrollingEnabled(false);
+        everythingLoaded = false;
+        offset = 0;
+        //recyclerView.setNestedScrollingEnabled(false);
         fetchUsers();
     }
 
