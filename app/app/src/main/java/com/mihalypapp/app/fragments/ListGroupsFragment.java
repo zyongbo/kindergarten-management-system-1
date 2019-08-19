@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -81,6 +82,14 @@ public class ListGroupsFragment extends Fragment {
                     offset = 0;
                     fetchGroups();
                 }
+            }
+        });
+
+        adapter.setOnItemClickListener(new GroupCardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                String name = groupCardList.get(position).getYear();
+                Toast.makeText(getContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
 

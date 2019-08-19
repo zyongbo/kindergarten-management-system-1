@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,10 +18,13 @@ import com.mihalypapp.app.models.GroupCard;
 import java.util.List;
 
 public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
     private final int VIEW_TYPE_GROUP_CARD = 1;
     private final int VIEW_TPYE_PROGRESS_BAR = 0;
 
     private List<GroupCard> groupCards;
+
+    private OnItemClickListener listener;
 
     public GroupCardAdapter(List<GroupCard> groupCards) {
         this.groupCards = groupCards;
@@ -73,13 +77,25 @@ public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private TextView textViewType;
         private TextView textViewYear;
 
-        private GroupCardViewHolder(View itemView) {
+        private GroupCardViewHolder(final View itemView) {
             super(itemView);
-
             imageView = itemView.findViewById(R.id.image_view);
             textViewTeacherName = itemView.findViewById(R.id.text_view_teacher_name);
             textViewType = itemView.findViewById(R.id.text_view_type);
             textViewYear = itemView.findViewById(R.id.text_view_year);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView, position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -90,5 +106,13 @@ public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             super(itemView);
             progressBar = itemView.findViewById(R.id.progress_bar);
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }
