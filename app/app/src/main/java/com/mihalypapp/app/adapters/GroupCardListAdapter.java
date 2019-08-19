@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,10 @@ import com.mihalypapp.app.models.GroupCard;
 
 import java.util.List;
 
-public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdapter.ViewHolder> {
+public class GroupCardListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final int VIEW_GROUP_CARD = 1;
+    private final int VIEW_PROGRESS_BAR = 0;
+
     private List<GroupCard> groupCards;
 
     public GroupCardListAdapter(List<GroupCard> groupCards) {
@@ -24,23 +28,38 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdap
 
     @NonNull
     @Override
-    public GroupCardListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
+        RecyclerView.ViewHolder viewHolder;
 
-        View groupCardView = inflater.inflate(R.layout.item_group_card, parent, false);
+        if (viewType == VIEW_GROUP_CARD) {
+            View view = inflater.inflate(R.layout.item_group_card, parent, false);
+            viewHolder = new GroupCardViewHolder(view);
+        } else {
+            View view = inflater.inflate(R.layout.item_loading, parent, false);
+            viewHolder = new ProgressBarViewHolder(view);
+        }
 
-        return new ViewHolder(groupCardView);
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GroupCardListAdapter.ViewHolder holder, int position) {
-        GroupCard groupCard = groupCards.get(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof GroupCardViewHolder) {
+            GroupCard groupCard = groupCards.get(position);
+            ((GroupCardViewHolder) holder).imageView.setImageResource(groupCard.getImageResource());
+            ((GroupCardViewHolder) holder).textViewTeacherName.setText(groupCard.getTeacherName());
+            ((GroupCardViewHolder) holder).textViewType.setText(groupCard.getType());
+            ((GroupCardViewHolder) holder).textViewYear.setText(groupCard.getYear());
+        } else {
+            ((ProgressBarViewHolder) holder).progressBar.setIndeterminate(true);
+        }
+    }
 
-        holder.imageView.setImageResource(groupCard.getImageResource());
-        holder.textViewTeacherName.setText(groupCard.getTeacherName());
-        holder.textViewType.setText(groupCard.getType());
-        holder.textViewYear.setText(groupCard.getYear());
+    @Override
+    public int getItemViewType(int position) {
+        return groupCards.get(position) != null ? VIEW_GROUP_CARD : VIEW_PROGRESS_BAR;
     }
 
     @Override
@@ -48,19 +67,29 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdap
         return groupCards.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    private class GroupCardViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
         private TextView textViewTeacherName;
         private TextView textViewType;
         private TextView textViewYear;
 
-        private ViewHolder(View itemView) {
+        private GroupCardViewHolder(View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.image_view);
             textViewTeacherName = itemView.findViewById(R.id.text_view_teacher_name);
             textViewType = itemView.findViewById(R.id.text_view_type);
             textViewYear = itemView.findViewById(R.id.text_view_year);
+        }
+    }
+
+    private class ProgressBarViewHolder extends RecyclerView.ViewHolder {
+        private ProgressBar progressBar;
+
+        private ProgressBarViewHolder(View itemView) {
+            super(itemView);
+
+            progressBar = itemView.findViewById(R.id.progress_bar);
         }
     }
 }

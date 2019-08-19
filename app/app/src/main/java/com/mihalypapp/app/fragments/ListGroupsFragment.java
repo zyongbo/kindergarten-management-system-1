@@ -35,9 +35,10 @@ public class ListGroupsFragment extends Fragment {
     private static final String TAG = "ListGroupsFragment";
 
     private ArrayList<GroupCard> groupCardList = new ArrayList<>();
-    private int offset = 0;
     private boolean refreshing = false;
     private boolean fetching = false;
+    private boolean showingProgressBar = false;
+    private int offset = 0;
 
     private GroupCardListAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
@@ -60,7 +61,10 @@ public class ListGroupsFragment extends Fragment {
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                fetchGroups();
+                if (!fetching) {
+                    addProgressBar();
+                    fetchGroups();
+                }
             }
         };
 
@@ -85,8 +89,8 @@ public class ListGroupsFragment extends Fragment {
 
     private void fetchGroups() {
         fetching = true;
-        JSONObject params = new JSONObject();
 
+        JSONObject params = new JSONObject();
         try {
             params.put("offset", offset);
             params.put("quantity", 15);
@@ -102,6 +106,8 @@ public class ListGroupsFragment extends Fragment {
                             if (response.getString("status").equals("success")) {
                                 Log.i(TAG, response.toString());
                                 JSONArray groups = response.getJSONArray("groups");
+
+                                removeProgressBar();
 
                                 if (refreshing) {
                                     groupCardList.clear();
@@ -135,7 +141,6 @@ public class ListGroupsFragment extends Fragment {
 
                             swipeContainer.setRefreshing(false);
                             fetching = false;
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -149,5 +154,19 @@ public class ListGroupsFragment extends Fragment {
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(getGroupsRequest);
+    }
+
+    private void addProgressBar(){
+        showingProgressBar = true;
+        groupCardList.add(null);
+        adapter.notifyItemInserted(groupCardList.size() - 1);
+    }
+
+    private void removeProgressBar() {
+        if (showingProgressBar) {
+            showingProgressBar = false;
+            groupCardList.remove(groupCardList.size() - 1);
+            adapter.notifyItemRemoved(groupCardList.size());
+        }
     }
 }
