@@ -20,7 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.adapters.GroupCardListAdapter;
+import com.mihalypapp.app.adapters.GroupCardAdapter;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
 import com.mihalypapp.app.models.GroupCard;
 
@@ -35,12 +35,13 @@ public class ListGroupsFragment extends Fragment {
     private static final String TAG = "ListGroupsFragment";
 
     private ArrayList<GroupCard> groupCardList = new ArrayList<>();
+
     private boolean refreshing = false;
     private boolean fetching = false;
     private boolean showingProgressBar = false;
     private int offset = 0;
 
-    private GroupCardListAdapter adapter;
+    private GroupCardAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
 
@@ -52,7 +53,7 @@ public class ListGroupsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_groups, container, false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        adapter = new GroupCardListAdapter(groupCardList);
+        adapter = new GroupCardAdapter(groupCardList);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);

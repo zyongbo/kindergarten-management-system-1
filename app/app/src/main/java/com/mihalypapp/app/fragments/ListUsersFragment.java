@@ -1,7 +1,6 @@
 package com.mihalypapp.app.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +20,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.models.ItemUserCard;
-import com.mihalypapp.app.adapters.UserCardListAdapter;
+import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
+import com.mihalypapp.app.models.UserCard;
+import com.mihalypapp.app.adapters.UserCardAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,155 +30,143 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public abstract class ListUsersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class ListUsersFragment extends Fragment {
 
     private static final String TAG = "LUSSPFragment";
 
-    private ArrayList<ItemUserCard> userCardList;
+    private ArrayList<UserCard> userCardList = new ArrayList<>();
 
-    private LinearLayoutManager linearLayoutManager;
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
-
+    private boolean refreshing = false;
+    private boolean fetching = false;
+    private boolean showingProgressBar = false;
     private int offset = 0;
-    private int quantity = 15;
 
-    private boolean onRefresh = false;
-    private boolean currentlyLoading = false;
-    private boolean everythingLoaded = false;
-
-    private int firstVisibleItemPos;
-    private int visibleItemCount;
-    private int totalItemCount;
+    private UserCardAdapter adapter;
+    private EndlessRecyclerViewScrollListener scrollListener;
+    private SwipeRefreshLayout swipeContainer;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_list_users_screen_slide_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_list_users, container, false);
 
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView = view.findViewById(R.id.recycler_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        adapter = new UserCardAdapter(userCardList);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_container);
-        swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, android.R.color.holo_green_dark, android.R.color.holo_orange_dark, android.R.color.holo_blue_dark);
-
-        userCardList = new ArrayList<>();
-        adapter = new UserCardListAdapter(userCardList);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-
-        swipeRefreshLayout.post(new Runnable() {
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
-            public void run() {
-                fetchUsers();
-                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        //Log.i(TAG, "visibleItemCount: " + Integer.valueOf(recyclerView.getChildCount()) + ", totalItemCount: " + Integer.valueOf(linearLayoutManager.getItemCount()) + ", firstVisibleItemPos: " + Integer.valueOf(linearLayoutManager.findFirstVisibleItemPosition()) + ", totalItemCount: " + totalItemCount);
-                        //Log.i(TAG, String.valueOf(Boolean.valueOf(loading)));
-                        if (dy > 0 && !everythingLoaded && !currentlyLoading) {
-                            firstVisibleItemPos = linearLayoutManager.findFirstVisibleItemPosition();
-                            visibleItemCount = recyclerView.getChildCount();
-                            totalItemCount = linearLayoutManager.getItemCount();
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (!fetching) {
+                    addProgressBar();
+                    fetchUsers();
+                }
+            }
+        };
 
-                            if (!currentlyLoading && (totalItemCount - visibleItemCount) <= firstVisibleItemPos) {
-                                offset += quantity;
-                                onRefresh = false;
-                                fetchUsers();
-                            }
-                        }
-                    }
-                });
+        recyclerView.addOnScrollListener(scrollListener);
+
+        swipeContainer = view.findViewById(R.id.swipe_container);
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!fetching) {
+                    refreshing = true;
+                    offset = 0;
+                    fetchUsers();
+                }
             }
         });
 
+        fetchUsers();
         return view;
     }
 
-    @Override
-    public void onRefresh() {
-        userCardList.clear();
-        adapter.notifyDataSetChanged();
-        onRefresh = true;
-        everythingLoaded = false;
-        offset = 0;
-        //recyclerView.setNestedScrollingEnabled(false);
-        fetchUsers();
-    }
-
     private void fetchUsers() {
-        currentlyLoading = true;
-        recyclerView.post(new Runnable() {
-            @Override
-            public void run() {
+        fetching = true;
 
-                if (!onRefresh) {
-                    userCardList.add(null);
-                    adapter.notifyDataSetChanged();
-                }
+        JSONObject params = new JSONObject();
+        try {
+            params.put("role", getRole());
+            params.put("offset", offset);
+            params.put("quantity", 15);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-                JSONObject params = new JSONObject();
-                try {
-                    params.put("role", getRole());
-                    params.put("offset", offset);
-                    params.put("quantity", quantity);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                final JsonObjectRequest getUsersRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/users", params,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    if (response.getString("status").equals("success")) {
-                                        Log.i(TAG, response.toString());
-                                        JSONArray users = response.getJSONArray("users");
-
-                                        if (users.length() < quantity)
-                                            everythingLoaded = true;
-
-                                        if (!onRefresh)
-                                            userCardList.remove(userCardList.size() - 1);
-
-                                        for (int i = 0; i < users.length(); i++) {
-                                            JSONObject user = users.getJSONObject(i);
-                                            userCardList.add(new ItemUserCard(
-                                                    R.drawable.ic_launcher_foreground,
-                                                    user.getString("name"),
-                                                    user.getString("email")
-                                            ));
-                                        }
-                                        adapter.notifyDataSetChanged();
-                                    } else {
-                                        Log.e(TAG, "getUserRequest ERROR");
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                currentlyLoading = false;
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
-                        }, new Response.ErrorListener() {
+        final JsonObjectRequest getUsersRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/users", params,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, error.toString());
-                        currentlyLoading = false;
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getString("status").equals("success")) {
+                                Log.i(TAG, response.toString());
+                                JSONArray users = response.getJSONArray("users");
 
-                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                requestQueue.add(getUsersRequest);
+                                removeProgressBar();
+
+                                if (refreshing) {
+                                    userCardList.clear();
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                int i;
+                                for (i = 0; i < users.length(); i++) {
+                                    JSONObject user = users.getJSONObject(i);
+                                    userCardList.add(new UserCard(
+                                            R.drawable.ic_launcher_foreground,
+                                            user.getString("name"),
+                                            user.getString("email")
+                                    ));
+                                    offset++;
+                                }
+
+                                if (!refreshing) {
+                                    adapter.notifyItemRangeInserted(userCardList.size() - i, i);
+                                } else {
+                                    adapter.notifyDataSetChanged();
+                                    scrollListener.resetState();
+                                    refreshing = false;
+                                }
+
+                            } else {
+                                Log.e(TAG, "getUserRequest ERROR");
+                            }
+
+                            swipeContainer.setRefreshing(false);
+                            fetching = false;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
             }
         });
 
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(getUsersRequest);
+    }
+
+    private void addProgressBar(){
+        showingProgressBar = true;
+        userCardList.add(null);
+        adapter.notifyItemInserted(userCardList.size() - 1);
+    }
+
+    private void removeProgressBar() {
+        if (showingProgressBar) {
+            showingProgressBar = false;
+            userCardList.remove(userCardList.size() - 1);
+            adapter.notifyItemRemoved(userCardList.size());
+        }
     }
 
     public abstract String getRole();

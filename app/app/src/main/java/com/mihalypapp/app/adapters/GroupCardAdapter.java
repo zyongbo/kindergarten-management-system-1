@@ -16,13 +16,13 @@ import com.mihalypapp.app.models.GroupCard;
 
 import java.util.List;
 
-public class GroupCardListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final int VIEW_GROUP_CARD = 1;
-    private final int VIEW_PROGRESS_BAR = 0;
+public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final int VIEW_TYPE_GROUP_CARD = 1;
+    private final int VIEW_TPYE_PROGRESS_BAR = 0;
 
     private List<GroupCard> groupCards;
 
-    public GroupCardListAdapter(List<GroupCard> groupCards) {
+    public GroupCardAdapter(List<GroupCard> groupCards) {
         this.groupCards = groupCards;
     }
 
@@ -33,7 +33,7 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         LayoutInflater inflater = LayoutInflater.from(context);
         RecyclerView.ViewHolder viewHolder;
 
-        if (viewType == VIEW_GROUP_CARD) {
+        if (viewType == VIEW_TYPE_GROUP_CARD) {
             View view = inflater.inflate(R.layout.item_group_card, parent, false);
             viewHolder = new GroupCardViewHolder(view);
         } else {
@@ -59,7 +59,7 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemViewType(int position) {
-        return groupCards.get(position) != null ? VIEW_GROUP_CARD : VIEW_PROGRESS_BAR;
+        return groupCards.get(position) != null ? VIEW_TYPE_GROUP_CARD : VIEW_TPYE_PROGRESS_BAR;
     }
 
     @Override
@@ -88,7 +88,6 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         private ProgressBarViewHolder(View itemView) {
             super(itemView);
-
             progressBar = itemView.findViewById(R.id.progress_bar);
         }
     }
