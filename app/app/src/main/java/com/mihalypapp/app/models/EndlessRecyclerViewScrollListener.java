@@ -1,19 +1,23 @@
 package com.mihalypapp.app.models;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
 
-    private int visibleThreshold = 5;
+    // The current offset index of data you have loaded
     private int currentPage = 0;
+    // The total number of items in the dataset after the last load
     private int previousTotalItemCount = 0;
+    // True if we are still waiting for the last set of data to load.
     private boolean loading = true;
+    // Sets the starting page index
     private int startingPageIndex = 0;
 
-    RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.LayoutManager layoutManager;
 
-    public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
+    protected EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
     }
 
@@ -21,7 +25,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // We are given a few useful parameters to help us work out if we need to load some more data,
     // but first we check if we are waiting for the previous load to finish.
     @Override
-    public void onScrolled(RecyclerView view, int dx, int dy) {
+    public void onScrolled(@NonNull RecyclerView view, int dx, int dy) {
         int lastVisibleItemPosition = 0;
         int totalItemCount = layoutManager.getItemCount();
 
@@ -48,6 +52,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         // the visibleThreshold and need to reload more data.
         // If we do need to reload some more data, we execute onLoadMore to fetch the data.
         // threshold should reflect how many total columns there are too
+        int visibleThreshold = 2;
         if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
             currentPage++;
             onLoadMore(currentPage, totalItemCount, view);

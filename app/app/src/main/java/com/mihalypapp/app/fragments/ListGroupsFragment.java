@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,12 +34,15 @@ public class ListGroupsFragment extends Fragment {
 
     private static final String TAG = "ListGroupsFragment";
 
-    private EndlessRecyclerViewScrollListener scrollListener;
-    private ArrayList<GroupCard> groupCardList;
-    RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-
+    private ArrayList<GroupCard> groupCardList = new ArrayList<>();
     private int offset = 0;
+    private boolean refreshing = false;
+    private boolean fetching = false;
+
+    private GroupCardListAdapter adapter;
+    private EndlessRecyclerViewScrollListener scrollListener;
+    private SwipeRefreshLayout swipeContainer;
+
 
     @Nullable
     @Override
@@ -46,30 +50,43 @@ public class ListGroupsFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_list_groups, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_view);
-        groupCardList = new ArrayList<>();
-        fetchGroups();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new GroupCardListAdapter(groupCardList);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                offset += 15;
                 fetchGroups();
             }
         };
 
         recyclerView.addOnScrollListener(scrollListener);
 
+        swipeContainer = view.findViewById(R.id.swipe_container);
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!fetching) {
+                    refreshing = true;
+                    offset = 0;
+                    fetchGroups();
+                }
+            }
+        });
+
+        fetchGroups();
         return view;
     }
 
     private void fetchGroups() {
+        fetching = true;
         JSONObject params = new JSONObject();
+
         try {
             params.put("offset", offset);
             params.put("quantity", 15);
@@ -85,7 +102,14 @@ public class ListGroupsFragment extends Fragment {
                             if (response.getString("status").equals("success")) {
                                 Log.i(TAG, response.toString());
                                 JSONArray groups = response.getJSONArray("groups");
-                                for (int i = 0; i < groups.length(); i++) {
+
+                                if (refreshing) {
+                                    groupCardList.clear();
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                int i;
+                                for (i = 0; i < groups.length(); i++) {
                                     JSONObject group = groups.getJSONObject(i);
                                     groupCardList.add(new GroupCard(
                                             group.getInt("groupid"),
@@ -94,11 +118,24 @@ public class ListGroupsFragment extends Fragment {
                                             group.getString("type"),
                                             group.getString("year")
                                     ));
-                                    adapter.notifyItemInserted(groupCardList.size() - 1);
+                                    offset++;
                                 }
+
+                                if (!refreshing) {
+                                    adapter.notifyItemRangeInserted(groupCardList.size() - i, i);
+                                } else {
+                                    adapter.notifyDataSetChanged();
+                                    scrollListener.resetState();
+                                    refreshing = false;
+                                }
+
                             } else {
                                 Log.e(TAG, "getGroupRequest ERROR");
                             }
+
+                            swipeContainer.setRefreshing(false);
+                            fetching = false;
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

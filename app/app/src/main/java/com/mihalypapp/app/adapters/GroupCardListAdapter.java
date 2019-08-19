@@ -16,23 +16,6 @@ import com.mihalypapp.app.models.GroupCard;
 import java.util.List;
 
 public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdapter.ViewHolder> {
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imageView;
-        public TextView textViewTeacherName;
-        public TextView textViewType;
-        public TextView textViewYear;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            imageView = itemView.findViewById(R.id.image_view);
-            textViewTeacherName = itemView.findViewById(R.id.text_view_teacher_name);
-            textViewType = itemView.findViewById(R.id.text_view_type);
-            textViewYear = itemView.findViewById(R.id.text_view_year);
-        }
-    }
-
     private List<GroupCard> groupCards;
 
     public GroupCardListAdapter(List<GroupCard> groupCards) {
@@ -47,8 +30,7 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdap
 
         View groupCardView = inflater.inflate(R.layout.item_group_card, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(groupCardView);
-        return viewHolder;
+        return new ViewHolder(groupCardView);
     }
 
     @Override
@@ -64,5 +46,21 @@ public class GroupCardListAdapter extends RecyclerView.Adapter<GroupCardListAdap
     @Override
     public int getItemCount() {
         return groupCards.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView imageView;
+        private TextView textViewTeacherName;
+        private TextView textViewType;
+        private TextView textViewYear;
+
+        private ViewHolder(View itemView) {
+            super(itemView);
+
+            imageView = itemView.findViewById(R.id.image_view);
+            textViewTeacherName = itemView.findViewById(R.id.text_view_teacher_name);
+            textViewType = itemView.findViewById(R.id.text_view_type);
+            textViewYear = itemView.findViewById(R.id.text_view_year);
+        }
     }
 }
