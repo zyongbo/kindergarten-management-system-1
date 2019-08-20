@@ -128,7 +128,6 @@ public class ListGroupsFragment extends Fragment {
                                 for (i = 0; i < groups.length(); i++) {
                                     JSONObject group = groups.getJSONObject(i);
                                     groupCardList.add(new GroupCard(
-                                            group.getInt("groupid"),
                                             R.drawable.ic_launcher_foreground,
                                             group.getString("name"),
                                             group.getString("type"),
