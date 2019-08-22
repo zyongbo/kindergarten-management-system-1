@@ -170,4 +170,41 @@ app.post('/groups', (req, res) => {
     }, 200);
 })
 
+app.get('/teachers/noGroup', (req, res) => {
+    console.log('/teachers/noGroup------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    setTimeout(() => {
+        if (req.session.role == 'PRINCIPAL') {
+            var date = new Date()
+            var year = date.getFullYear()
+            con.query("SELECT userid, name, email FROM thesis.users WHERE role = ? AND NOT EXISTS (SELECT * FROM thesis.groups WHERE groups.teacherid = users.userid AND year = ?)",
+                ["TEACHER", year],
+                function (err, teachers) {
+                    console.log('Result: ' + JSON.stringify(teachers))
+                    if (err) {
+                        console.log(err)
+                        res.send({
+                            'status': 'failed',
+                            'code': 'ERROR'
+                        })
+                        throw err
+                    } else {
+                        res.send({
+                            'status': 'success',
+                            'teachers': teachers
+                        })
+                    }
+                });
+        } else {
+            res.send({
+                'status': 'failed',
+                'code': 'NO_PERMISSION'
+            })
+        }
+    }, 2000);
+})
+
 app.listen(port, () => console.log(`Server listening on port ${port}!`))

@@ -1,5 +1,6 @@
 package com.mihalypapp.app.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +21,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.activities.AddGroupActivity;
 import com.mihalypapp.app.adapters.GroupCardAdapter;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
 import com.mihalypapp.app.models.GroupCard;
@@ -29,11 +32,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class ListGroupsFragment extends Fragment {
 
     private static final String TAG = "ListGroupsFragment";
+
+    private static final int RC_ADD_GROUP = 9;
 
     private ArrayList<GroupCard> groupCardList = new ArrayList<>();
 
@@ -42,6 +52,7 @@ public class ListGroupsFragment extends Fragment {
     private boolean showingProgressBar = false;
     private int offset = 0;
 
+    RecyclerView recyclerView;
     private GroupCardAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
@@ -55,7 +66,7 @@ public class ListGroupsFragment extends Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new GroupCardAdapter(groupCardList);
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -93,6 +104,15 @@ public class ListGroupsFragment extends Fragment {
             }
         });
 
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.floating_action_button);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), AddGroupActivity.class);
+                startActivityForResult(intent, RC_ADD_GROUP);
+            }
+        });
+
         fetchGroups();
         return view;
     }
@@ -100,7 +120,7 @@ public class ListGroupsFragment extends Fragment {
     private void fetchGroups() {
         fetching = true;
 
-        JSONObject params = new JSONObject();
+        final JSONObject params = new JSONObject();
         try {
             params.put("offset", offset);
             params.put("quantity", 15);
@@ -165,10 +185,15 @@ public class ListGroupsFragment extends Fragment {
         requestQueue.add(getGroupsRequest);
     }
 
-    private void addProgressBar(){
+    private void addProgressBar() {
         showingProgressBar = true;
         groupCardList.add(null);
-        adapter.notifyItemInserted(groupCardList.size() - 1);
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyItemInserted(groupCardList.size() - 1);
+            }
+        });
     }
 
     private void removeProgressBar() {
