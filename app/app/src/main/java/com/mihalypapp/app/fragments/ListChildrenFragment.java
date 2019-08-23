@@ -1,6 +1,5 @@
 package com.mihalypapp.app.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,29 +22,21 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.activities.AddGroupActivity;
-import com.mihalypapp.app.adapters.GroupCardAdapter;
+import com.mihalypapp.app.adapters.ChildCardAdapter;
+import com.mihalypapp.app.models.ChildCard;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
-import com.mihalypapp.app.models.GroupCard;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
-public class ListGroupsFragment extends Fragment {
+public class ListChildrenFragment extends Fragment {
 
-    private static final String TAG = "ListGroupsFragment";
+    private static final String TAG = "ListChildrenFragment";
 
-    private static final int RC_ADD_GROUP = 9;
-
-    private ArrayList<GroupCard> groupCardList = new ArrayList<>();
+    private ArrayList<ChildCard> childCardList = new ArrayList<>();
 
     private boolean refreshing = false;
     private boolean fetching = false;
@@ -53,19 +44,18 @@ public class ListGroupsFragment extends Fragment {
     private int offset = 0;
 
     RecyclerView recyclerView;
-    private GroupCardAdapter adapter;
+    private ChildCardAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_list_groups, container, false);
+        View view = inflater.inflate(R.layout.fragment_list_children, container, false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        adapter = new GroupCardAdapter(groupCardList);
+        adapter = new ChildCardAdapter(childCardList);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
@@ -76,7 +66,7 @@ public class ListGroupsFragment extends Fragment {
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (!fetching) {
                     addProgressBar();
-                    fetchGroups();
+                    fetchChildren();
                 }
             }
         };
@@ -90,15 +80,15 @@ public class ListGroupsFragment extends Fragment {
                 if (!fetching) {
                     refreshing = true;
                     offset = 0;
-                    fetchGroups();
+                    fetchChildren();
                 }
             }
         });
 
-        adapter.setOnItemClickListener(new GroupCardAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new ChildCardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                String name = groupCardList.get(position).getYear();
+                String name = childCardList.get(position).getName();
                 Toast.makeText(getContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -107,16 +97,16 @@ public class ListGroupsFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), AddGroupActivity.class);
-                startActivityForResult(intent, RC_ADD_GROUP);
+                //Intent intent = new Intent(getContext(), AddGroupActivity.class);
+                //startActivityForResult(intent, RC_ADD_GROUP);
             }
         });
 
-        fetchGroups();
+        fetchChildren();
         return view;
     }
 
-    private void fetchGroups() {
+    private void fetchChildren() {
         fetching = true;
 
         final JSONObject params = new JSONObject();
@@ -127,36 +117,37 @@ public class ListGroupsFragment extends Fragment {
             e.printStackTrace();
         }
 
-        final JsonObjectRequest getGroupsRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/groups", params,
+        final JsonObjectRequest getChildrenRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/children", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             if (response.getString("status").equals("success")) {
                                 Log.i(TAG, response.toString());
-                                JSONArray groups = response.getJSONArray("groups");
+                                JSONArray children = response.getJSONArray("children");
 
                                 removeProgressBar();
 
                                 if (refreshing) {
-                                    groupCardList.clear();
+                                    childCardList.clear();
                                     adapter.notifyDataSetChanged();
                                 }
 
                                 int i;
-                                for (i = 0; i < groups.length(); i++) {
-                                    JSONObject group = groups.getJSONObject(i);
-                                    groupCardList.add(new GroupCard(
+                                for (i = 0; i < children.length(); i++) {
+                                    JSONObject child = children.getJSONObject(i);
+                                    childCardList.add(new ChildCard(
                                             R.drawable.ic_launcher_foreground,
-                                            group.getString("name"),
-                                            group.getString("type"),
-                                            group.getString("year")
+                                            child.getString("childName"),
+                                            child.getString("groupType"),
+                                            child.getString("parentName"),
+                                            child.getString("parentEmail")
                                     ));
                                     offset++;
                                 }
 
                                 if (!refreshing) {
-                                    adapter.notifyItemRangeInserted(groupCardList.size() - i, i);
+                                    adapter.notifyItemRangeInserted(childCardList.size() - i, i);
                                 } else {
                                     adapter.notifyDataSetChanged();
                                     scrollListener.resetState();
@@ -164,7 +155,7 @@ public class ListGroupsFragment extends Fragment {
                                 }
 
                             } else {
-                                Log.e(TAG, "getGroupRequest ERROR");
+                                Log.e(TAG, "getChildrenRequest ERROR");
                             }
 
                             swipeContainer.setRefreshing(false);
@@ -181,16 +172,16 @@ public class ListGroupsFragment extends Fragment {
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(getGroupsRequest);
+        requestQueue.add(getChildrenRequest);
     }
 
     private void addProgressBar() {
         showingProgressBar = true;
-        groupCardList.add(null);
+        childCardList.add(null);
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
-                adapter.notifyItemInserted(groupCardList.size() - 1);
+                adapter.notifyItemInserted(childCardList.size() - 1);
             }
         });
     }
@@ -198,8 +189,8 @@ public class ListGroupsFragment extends Fragment {
     private void removeProgressBar() {
         if (showingProgressBar) {
             showingProgressBar = false;
-            groupCardList.remove(groupCardList.size() - 1);
-            adapter.notifyItemRemoved(groupCardList.size());
+            childCardList.remove(childCardList.size() - 1);
+            adapter.notifyItemRemoved(childCardList.size());
         }
     }
 }

@@ -136,6 +136,40 @@ app.post('/users', (req, res) => {
     }, 200);
 })
 
+app.post('/children', (req, res) => {
+    console.log('/children--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    setTimeout(() => {
+        if (req.session.role == 'PRINCIPAL') {
+            con.query("SELECT children.name AS childName, groups.type AS groupType, users.name AS parentName, users.email as parentEmail FROM ((thesis.children AS children INNER JOIN thesis.groups AS groups ON children.groupid = groups.groupid) INNER JOIN thesis.users AS users ON children.parentid = users.userid) LIMIT ?, ?",
+                [req.body.offset, req.body.quantity],
+                function (err, children) {
+                    console.log('Result: ' + JSON.stringify(children))
+                    if (err) {
+                        res.send({
+                            'status': 'failed',
+                            'code': 'ERROR'
+                        })
+                        throw err
+                    } else {
+                        res.send({
+                            'status': 'success',
+                            'children': children
+                        })
+                    }
+                });
+        } else {
+            res.send({
+                'status': 'failed',
+                'code': 'NO_PERMISSION'
+            })
+        }
+    }, 200);
+})
+
 app.post('/groups', (req, res) => {
     console.log('/groups----------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)

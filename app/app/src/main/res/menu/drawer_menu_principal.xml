@@ -22,6 +22,10 @@
                     android:icon="@drawable/ic_users"
                     android:title="Users" />
                 <item
+                    android:id="@+id/nav_children"
+                    android:icon="@drawable/ic_children"
+                    android:title="Children" />
+                <item
                     android:id="@+id/nav_groups"
                     android:icon="@drawable/ic_groups"
                     android:title="Groups" />

@@ -12,21 +12,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.models.GroupCard;
+import com.mihalypapp.app.models.ChildCard;
 
 import java.util.List;
 
-public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ChildCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final int VIEW_TYPE_GROUP_CARD = 1;
+    private final int VIEW_TYPE_CHILDREN_CARD = 1;
     private final int VIEW_TPYE_PROGRESS_BAR = 0;
 
-    private List<GroupCard> groupCards;
+    private List<ChildCard> childCards;
 
     private OnItemClickListener listener;
 
-    public GroupCardAdapter(List<GroupCard> groupCards) {
-        this.groupCards = groupCards;
+    public ChildCardAdapter(List<ChildCard> childCards) {
+        this.childCards = childCards;
     }
 
     @NonNull
@@ -36,9 +36,9 @@ public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         LayoutInflater inflater = LayoutInflater.from(context);
         RecyclerView.ViewHolder viewHolder;
 
-        if (viewType == VIEW_TYPE_GROUP_CARD) {
-            View view = inflater.inflate(R.layout.item_group_card, parent, false);
-            viewHolder = new GroupCardViewHolder(view);
+        if (viewType == VIEW_TYPE_CHILDREN_CARD) {
+            View view = inflater.inflate(R.layout.item_child_card, parent, false);
+            viewHolder = new ChildrenCardViewHolder(view);
         } else {
             View view = inflater.inflate(R.layout.item_loading, parent, false);
             viewHolder = new ProgressBarViewHolder(view);
@@ -49,12 +49,13 @@ public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof GroupCardViewHolder) {
-            GroupCard groupCard = groupCards.get(position);
-            ((GroupCardViewHolder) holder).imageView.setImageResource(groupCard.getImageResource());
-            ((GroupCardViewHolder) holder).textViewTeacherName.setText(groupCard.getTeacherName());
-            ((GroupCardViewHolder) holder).textViewType.setText(groupCard.getType());
-            ((GroupCardViewHolder) holder).textViewYear.setText(groupCard.getYear());
+        if (holder instanceof ChildrenCardViewHolder) {
+            ChildCard childCard = childCards.get(position);
+            ((ChildrenCardViewHolder) holder).imageView.setImageResource(childCard.getImageResource());
+            ((ChildrenCardViewHolder) holder).textViewChildName.setText(childCard.getName());
+            ((ChildrenCardViewHolder) holder).textViewGroupType.setText(childCard.getGroupType());
+            ((ChildrenCardViewHolder) holder).textViewParentName.setText(childCard.getParentName());
+            ((ChildrenCardViewHolder) holder).textViewParentEmail.setText(childCard.getParentEmail());
         } else {
             ((ProgressBarViewHolder) holder).progressBar.setIndeterminate(true);
         }
@@ -62,26 +63,28 @@ public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        return groupCards.get(position) != null ? VIEW_TYPE_GROUP_CARD : VIEW_TPYE_PROGRESS_BAR;
+        return childCards.get(position) != null ? VIEW_TYPE_CHILDREN_CARD : VIEW_TPYE_PROGRESS_BAR;
     }
 
     @Override
     public int getItemCount() {
-        return groupCards.size();
+        return childCards.size();
     }
 
-    private class GroupCardViewHolder extends RecyclerView.ViewHolder {
+    private class ChildrenCardViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
-        private TextView textViewTeacherName;
-        private TextView textViewType;
-        private TextView textViewYear;
+        private TextView textViewChildName;
+        private TextView textViewGroupType;
+        private TextView textViewParentName;
+        private TextView textViewParentEmail;
 
-        private GroupCardViewHolder(final View itemView) {
+        private ChildrenCardViewHolder(final View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
-            textViewTeacherName = itemView.findViewById(R.id.text_view_teacher_name);
-            textViewType = itemView.findViewById(R.id.text_view_type);
-            textViewYear = itemView.findViewById(R.id.text_view_year);
+            textViewChildName = itemView.findViewById(R.id.text_view_child_name);
+            textViewGroupType = itemView.findViewById(R.id.text_view_group_type);
+            textViewParentName = itemView.findViewById(R.id.text_view_parent_name);
+            textViewParentEmail = itemView.findViewById(R.id.text_view_parent_email);
 
             itemView.setOnClickListener(new View.OnClickListener() {
 
