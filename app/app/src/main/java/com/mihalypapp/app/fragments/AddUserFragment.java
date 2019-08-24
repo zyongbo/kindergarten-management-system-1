@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
@@ -51,6 +53,8 @@ public class AddUserFragment extends Fragment {
         textInputEmail = view.findViewById(R.id.text_input_email);
         textInputPassword = view.findViewById(R.id.text_input_password);
         textInputRole = view.findViewById(R.id.text_input_role);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Add user");
 
         String[] ROLES = new String[]{"Parent", "Teacher", "Principal"};
 

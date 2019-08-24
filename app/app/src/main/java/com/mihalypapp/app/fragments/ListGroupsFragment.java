@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,6 +64,8 @@ public class ListGroupsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_list_groups, container, false);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Groups");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new GroupCardAdapter(groupCardList);
@@ -150,7 +153,7 @@ public class ListGroupsFragment extends Fragment {
                                             R.drawable.ic_launcher_foreground,
                                             group.getString("name"),
                                             group.getString("type"),
-                                            group.getString("date")
+                                            group.getString("year")
                                     ));
                                     offset++;
                                 }

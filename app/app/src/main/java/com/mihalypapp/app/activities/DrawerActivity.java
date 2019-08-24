@@ -30,6 +30,7 @@ public abstract class DrawerActivity extends AppCompatActivity implements Naviga
     private static final String EMAIL = "email";
 
     protected DrawerLayout drawer;
+    protected Toolbar toolbar;
     private NavigationView navigationView;
 
     @Override
@@ -37,7 +38,7 @@ public abstract class DrawerActivity extends AppCompatActivity implements Naviga
         super.onCreate(savedInstanceState);
         setContentView(GetLayout());
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(GetTitle());
 

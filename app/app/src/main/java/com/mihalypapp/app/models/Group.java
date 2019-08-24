@@ -4,13 +4,13 @@ public class Group {
     private int id;
     private String type;
     private String teacherName;
-    private String date;
+    private String year;
 
-    public Group(int id, String type, String teacherName, String date) {
+    public Group(int id, String type, String teacherName, String year) {
         this.id = id;
         this.type = type;
         this.teacherName = teacherName;
-        this.date = date;
+        this.year = year;
     }
 
     public int getId() {
@@ -26,6 +26,6 @@ public class Group {
     }
 
     public String getDate() {
-        return date;
+        return year;
     }
 }
