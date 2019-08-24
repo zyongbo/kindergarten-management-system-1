@@ -41,6 +41,7 @@ public abstract class ListUsersFragment extends Fragment {
     private boolean showingProgressBar = false;
     private int offset = 0;
 
+    RecyclerView recyclerView;
     private UserCardAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
@@ -53,7 +54,7 @@ public abstract class ListUsersFragment extends Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new UserCardAdapter(userCardList);
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -155,10 +156,15 @@ public abstract class ListUsersFragment extends Fragment {
         requestQueue.add(getUsersRequest);
     }
 
-    private void addProgressBar(){
+    private void addProgressBar() {
         showingProgressBar = true;
         userCardList.add(null);
-        adapter.notifyItemInserted(userCardList.size() - 1);
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyItemInserted(userCardList.size() - 1);
+            }
+        });
     }
 
     private void removeProgressBar() {

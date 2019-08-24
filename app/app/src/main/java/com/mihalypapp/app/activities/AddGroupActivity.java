@@ -157,7 +157,7 @@ public class AddGroupActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(AddGroupActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -232,6 +232,7 @@ public class AddGroupActivity extends AppCompatActivity {
     private void clearFields() {
         textInputLayoutTeachers.getEditText().setText("");
         textInputLayoutGroupTypes.getEditText().setText("");
+        getCurrentFocus().clearFocus();
     }
 
     @Override

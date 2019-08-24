@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,15 +39,24 @@ public class AddChildActivity extends AppCompatActivity {
 
     private static final String TAG = "AddChildActivity";
 
+    private TextInputLayout textInputLayoutChildName;
+    private String childNameInput;
+
     private ArrayList<User> parentList = new ArrayList<>();
     private AutoCompleteTextView autoCompleteParents;
     private TextInputLayout textInputLayoutParents;
     private AutoCompleteParentAdapter autoCompleteParentAdapter;
+    private User selectedParent;
+    private boolean isParentSelected = false;
 
     private ArrayList<Group> groupList = new ArrayList<>();
     private AutoCompleteTextView autoCompleteGroups;
     private TextInputLayout textInputLayoutGroups;
     private AutoCompleteGroupAdapter autoCompleteGroupAdapter;
+    private Group selectedGroup;
+    private boolean isGroupSelected = false;
+
+    private Button buttonAddChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +68,76 @@ public class AddChildActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Add a new child");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        autoCompleteParents = findViewById(R.id.auto_complete_parents);
+        textInputLayoutChildName = findViewById(R.id.text_input_child_name);
+
+
         textInputLayoutParents = findViewById(R.id.text_input_parents);
         textInputLayoutParents.setEnabled(false);
+        autoCompleteParents = findViewById(R.id.auto_complete_parents);
+        autoCompleteParents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedParent = (User) adapterView.getAdapter().getItem(i);
+                Toast.makeText(AddChildActivity.this, Integer.valueOf(selectedParent.getId()).toString(), Toast.LENGTH_SHORT).show();
+                isParentSelected = true;
+                textInputLayoutParents.setError(null);
+            }
+        });
+        autoCompleteParents.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        autoCompleteGroups = findViewById(R.id.auto_complete_groups);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                isParentSelected = false;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         textInputLayoutGroups = findViewById(R.id.text_input_groups);
         textInputLayoutGroups.setEnabled(false);
+        autoCompleteGroups = findViewById(R.id.auto_complete_groups);
+        autoCompleteGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedGroup = (Group) adapterView.getAdapter().getItem(i);
+                Toast.makeText(AddChildActivity.this, Integer.valueOf(selectedGroup.getId()).toString(), Toast.LENGTH_SHORT).show();
+                isGroupSelected = true;
+                textInputLayoutGroups.setError(null);
+            }
+        });
+        autoCompleteGroups.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        Button buttonAddChild = findViewById(R.id.button_add_child);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                isGroupSelected = false;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        buttonAddChild = findViewById(R.id.button_add_child);
+        buttonAddChild.setEnabled(false);
         buttonAddChild.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //fetchTeachers();
+                if (!validateChildName() | !validateParent() | !validateGroup()) {
+                    return;
+                }
+                addChild();
             }
         });
 
@@ -107,7 +177,7 @@ public class AddChildActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(AddChildActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -138,6 +208,7 @@ public class AddChildActivity extends AppCompatActivity {
                                     autoCompleteGroups.setAdapter(autoCompleteGroupAdapter);
                                 }
                                 textInputLayoutGroups.setEnabled(true);
+                                buttonAddChild.setEnabled(true);
                             } else {
                                 Log.i(TAG, "Smthg wrong!");
                             }
@@ -148,11 +219,89 @@ public class AddChildActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(AddChildActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(fetchGroupsRequest);
+    }
+
+    private void addChild() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("childName", childNameInput);
+            params.put("parentId", selectedParent.getId());
+            params.put("groupId", selectedGroup.getId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest addUserRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/addChild", params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "addGroup response: " + response.toString());
+                        try {
+                            if (response.getString("status").equals("success")) {
+                                clearFields();
+                                Toast.makeText(AddChildActivity.this, "Group successfully added!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(AddChildActivity.this, "ERROR!?", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(AddChildActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(addUserRequest);
+    }
+
+
+    private boolean validateChildName() {
+        childNameInput = textInputLayoutChildName.getEditText().getText().toString().trim();
+
+        if (childNameInput.isEmpty()) {
+            textInputLayoutChildName.setError("Field can't be empty.");
+            return false;
+        } else {
+            textInputLayoutChildName.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateParent() {
+        if (isParentSelected) {
+            textInputLayoutParents.setError(null);
+            return true;
+        } else {
+            textInputLayoutParents.setError("Please select a parent!");
+            return false;
+        }
+    }
+
+    private boolean validateGroup() {
+        if (isGroupSelected) {
+            textInputLayoutGroups.setError(null);
+            return true;
+        } else {
+            textInputLayoutGroups.setError("Please select a group!");
+            return false;
+        }
+    }
+
+    private void clearFields() {
+        textInputLayoutChildName.getEditText().setText("");
+        textInputLayoutParents.getEditText().setText("");
+        textInputLayoutGroups.getEditText().setText("");
+        getCurrentFocus().clearFocus();
     }
 }
