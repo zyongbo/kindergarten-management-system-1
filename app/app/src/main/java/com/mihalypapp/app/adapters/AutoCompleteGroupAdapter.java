@@ -12,58 +12,60 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.textview.MaterialTextView;
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.models.User;
+import com.mihalypapp.app.models.Group;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutoCompleteTeacherAdapter extends ArrayAdapter<User> {
-    private List<User> teacherListFull;
+public class AutoCompleteGroupAdapter extends ArrayAdapter<Group> {
+    private List<Group> groupListFull;
 
-    public AutoCompleteTeacherAdapter(@NonNull Context context, @NonNull List<User> teacherList) {
-        super(context, 0, teacherList);
-        teacherListFull = new ArrayList<>(teacherList);
+    public AutoCompleteGroupAdapter(@NonNull Context context, @NonNull List<Group> groupList) {
+        super(context, 0, groupList);
+        groupListFull = new ArrayList<>(groupList);
     }
 
     @NonNull
     @Override
     public Filter getFilter() {
-        return teacherFilter;
+        return groupFilter;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.dropdown_menu_popup_item_teacher, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.dropdown_menu_popup_item_group, parent, false);
         }
 
-        MaterialTextView textViewTeacherName = convertView.findViewById(R.id.text_view_teacher_name);
-        MaterialTextView textViewTeacherEmail = convertView.findViewById(R.id.text_view_teacher_email);
+        MaterialTextView textViewGroupTeacherName = convertView.findViewById(R.id.text_view_group_teacher_name);
+        MaterialTextView textViewGroupType = convertView.findViewById(R.id.text_view_group_type);
+        MaterialTextView textViewGroupDate = convertView.findViewById(R.id.text_view_group_date);
 
-        User teacher = getItem(position);
+        Group group = getItem(position);
 
-        if (teacher != null) {
-            textViewTeacherName.setText(teacher.getName());
-            textViewTeacherEmail.setText(teacher.getEmail());
+        if (group != null) {
+            textViewGroupTeacherName.setText(group.getTeacherName());
+            textViewGroupType.setText(group.getType());
+            textViewGroupDate.setText(group.getDate());
         }
 
         return convertView;
     }
 
-    private Filter teacherFilter = new Filter() {
+    private Filter groupFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults results = new FilterResults();
-            List<User> suggestions = new ArrayList<>();
+            List<Group> suggestions = new ArrayList<>();
 
             if (charSequence == null || charSequence.length() == 0) {
-                suggestions.addAll(teacherListFull);
+                suggestions.addAll(groupListFull);
             } else {
                 String filterPattern = charSequence.toString().toLowerCase().trim();
 
-                for (User item : teacherListFull) {
-                    if (item.getName().toLowerCase().contains(filterPattern) || item.getEmail().toLowerCase().contains(filterPattern)) {
+                for (Group item : groupListFull) {
+                    if (item.getTeacherName().toLowerCase().contains(filterPattern) || item.getType().toLowerCase().contains(filterPattern)) {
                         suggestions.add(item);
                     }
                 }
@@ -84,7 +86,7 @@ public class AutoCompleteTeacherAdapter extends ArrayAdapter<User> {
 
         @Override
         public CharSequence convertResultToString(Object resultValue) {
-            return ((User) resultValue).getEmail();
+            return ((Group) resultValue).getTeacherName() + " (" +((Group) resultValue).getType() + " group)" ;
         }
     };
 }

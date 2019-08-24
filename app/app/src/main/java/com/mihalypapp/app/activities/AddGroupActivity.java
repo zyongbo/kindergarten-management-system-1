@@ -3,7 +3,6 @@ package com.mihalypapp.app.activities;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,7 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.adapters.AutoCompleteTeacherAdapter;
-import com.mihalypapp.app.models.Teacher;
+import com.mihalypapp.app.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,10 +42,20 @@ public class AddGroupActivity extends AppCompatActivity {
 
     private static final String TAG = "AddGroupActivity";
 
-    private ArrayList<Teacher> teacherList = new ArrayList<>();
+    private String[] GROUP_TYPES = new String[]{"LITTLE", "MEDIUM", "BIG"};
+    private AutoCompleteTextView autoCompleteGroupTypes;
+    private TextInputLayout textInputLayoutGroupTypes;
+    private String selectedGroupType;
+    private boolean isGroupTypeSelected = false;
+
+    private ArrayList<User> teacherList = new ArrayList<>();
     private AutoCompleteTextView autoCompleteTeachers;
     private TextInputLayout textInputLayoutTeachers;
     private AutoCompleteTeacherAdapter autoCompleteTeacherAdapter;
+    private User selectedTeacher;
+    private boolean isTeacherSelected = false;
+
+    private Button buttonAddGroup;
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -58,30 +67,32 @@ public class AddGroupActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Add a new group");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String[] GROUP_TYPES = new String[]{"LITTLE", "MEDIUM", "BIG"};
-        AutoCompleteTextView autoCompleteGroupTypes = findViewById(R.id.exposed_dropdown_type);
+        textInputLayoutGroupTypes = findViewById(R.id.text_input_group_types);
+        autoCompleteGroupTypes = findViewById(R.id.auto_complete_group_types);
         autoCompleteGroupTypes.setAdapter(new ArrayAdapter<>(this, R.layout.dropdown_menu_popup_item, GROUP_TYPES));
-
-        autoCompleteTeachers = findViewById(R.id.exposed_dropdown_teacher);
-        textInputLayoutTeachers = findViewById(R.id.text_input_teacher);
-        textInputLayoutTeachers.setEnabled(false);
-
-        /*exposedDropdown2.setOnClickListener(new View.OnClickListener() {
+        autoCompleteGroupTypes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                //Toast.makeText(AddGroupActivity.this, "lel", Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedGroupType = (String) adapterView.getAdapter().getItem(i);
+                Toast.makeText(AddGroupActivity.this, selectedGroupType, Toast.LENGTH_SHORT).show();
+                isGroupTypeSelected = true;
+                textInputLayoutGroupTypes.setError(null);
             }
         });
 
-        exposedDropdown2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        textInputLayoutTeachers = findViewById(R.id.text_input_teachers);
+        textInputLayoutTeachers.setEnabled(false);
+        autoCompleteTeachers = findViewById(R.id.auto_complete_teachers);
+        autoCompleteTeachers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Teacher selected = (Teacher) adapterView.getAdapter().getItem(i);
-                Toast.makeText(AddGroupActivity.this, Integer.valueOf(selected.getId()).toString(), Toast.LENGTH_SHORT).show();
+                selectedTeacher = (User) adapterView.getAdapter().getItem(i);
+                Toast.makeText(AddGroupActivity.this, "id: " + Integer.valueOf(selectedTeacher.getId()).toString(), Toast.LENGTH_SHORT).show();
+                isTeacherSelected = true;
+                textInputLayoutTeachers.setError(null);
             }
-        });*/
-
-        /*exposedDropdown2.addTextChangedListener(new TextWatcher() {
+        });
+        autoCompleteTeachers.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -89,20 +100,24 @@ public class AddGroupActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                fetchTeachers();
+                isTeacherSelected = false;
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
 
             }
-        });*/
+        });
 
-        Button buttonAddGroup = findViewById(R.id.button_add_group);
+        buttonAddGroup = findViewById(R.id.button_add_group);
+        buttonAddGroup.setEnabled(false);
         buttonAddGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //fetchTeachers();
+                if (!validateGroupType() | !validateTeacher()) {
+                    return;
+                }
+                addGroup();
             }
         });
 
@@ -122,7 +137,7 @@ public class AddGroupActivity extends AppCompatActivity {
 
                                 for (int i = 0; i < teachers.length(); i++) {
                                     JSONObject teacher = teachers.getJSONObject(i);
-                                    teacherList.add(new Teacher(
+                                    teacherList.add(new User(
                                             teacher.getInt("userid"),
                                             teacher.getString("name"),
                                             teacher.getString("email")
@@ -131,6 +146,7 @@ public class AddGroupActivity extends AppCompatActivity {
                                     autoCompleteTeachers.setAdapter(autoCompleteTeacherAdapter);
                                 }
                                 textInputLayoutTeachers.setEnabled(true);
+                                buttonAddGroup.setEnabled(true);
                             } else {
                                 Log.i(TAG, "Smthg wrong!");
                             }
@@ -147,6 +163,75 @@ public class AddGroupActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(fetchTeachersRequest);
+    }
+
+    private void addGroup() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("groupType", selectedGroupType);
+            params.put("teacherId", selectedTeacher.getId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest addUserRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/addGroup", params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "addGroup response: " + response.toString());
+                        try {
+                            if (response.getString("status").equals("success")) {
+                                clearFields();
+                                Toast.makeText(AddGroupActivity.this, "Group successfully added!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                switch (response.getString("code")) {
+                                    case "ER_DUP_ENTRY":
+                                        textInputLayoutTeachers.setError("This teacher already has a group this year! Please refresh.");
+                                        break;
+                                    default:
+                                        Toast.makeText(AddGroupActivity.this, "ERROR!?", Toast.LENGTH_SHORT).show();
+                                        break;
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(AddGroupActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(addUserRequest);
+    }
+
+    private boolean validateGroupType() {
+        if (isGroupTypeSelected) {
+            textInputLayoutGroupTypes.setError(null);
+            return true;
+        } else {
+            textInputLayoutGroupTypes.setError("Select a group type");
+            return false;
+        }
+    }
+
+    private boolean validateTeacher() {
+        if (isTeacherSelected) {
+            textInputLayoutTeachers.setError(null);
+            return true;
+        } else {
+            textInputLayoutTeachers.setError("Please select a teacher!");
+            return false;
+        }
+    }
+
+    private void clearFields() {
+        textInputLayoutTeachers.getEditText().setText("");
+        textInputLayoutGroupTypes.getEditText().setText("");
     }
 
     @Override

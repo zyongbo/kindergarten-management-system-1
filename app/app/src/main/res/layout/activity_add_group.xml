@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,7 +26,7 @@
                 android:textSize="30sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_input_type"
+            android:id="@+id/text_input_group_types"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +34,7 @@
             app:errorEnabled="true">
 
             <AutoCompleteTextView
-                android:id="@+id/exposed_dropdown_type"
+                android:id="@+id/auto_complete_group_types"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:editable="false" />
@@ -43,7 +42,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_teacher"
+                android:id="@+id/text_input_teachers"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -51,7 +50,7 @@
                 app:errorEnabled="true">
 
                 <AutoCompleteTextView
-                    android:id="@+id/exposed_dropdown_teacher"
+                    android:id="@+id/auto_complete_teachers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

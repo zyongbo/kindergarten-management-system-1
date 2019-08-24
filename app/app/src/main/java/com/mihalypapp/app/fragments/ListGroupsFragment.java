@@ -150,7 +150,7 @@ public class ListGroupsFragment extends Fragment {
                                             R.drawable.ic_launcher_foreground,
                                             group.getString("name"),
                                             group.getString("type"),
-                                            group.getString("year")
+                                            group.getString("date")
                                     ));
                                     offset++;
                                 }

@@ -10,7 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.AddChildActivity"></activity>
+        <activity android:name=".activities.AddChildActivity"
+            android:parentActivityName=".activities.PrincipalActivity"></activity>
         <activity
             android:name=".activities.AddGroupActivity"
             android:parentActivityName=".activities.PrincipalActivity" />

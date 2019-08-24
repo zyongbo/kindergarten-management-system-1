@@ -178,7 +178,7 @@ app.post('/groups', (req, res) => {
 
     setTimeout(() => {
         if (req.session.role == 'PRINCIPAL') {
-            con.query("SELECT groups.type, groups.year, users.name FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON (groups.teacherid = users.userid) ORDER BY year DESC LIMIT ?, ?",
+            con.query("SELECT groups.type, DATE_FORMAT(groups.date, \"%Y %M %d\") as date, users.name FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON (groups.teacherid = users.userid) ORDER BY EXTRACT(YEAR FROM date) DESC LIMIT ?, ?",
                 [req.body.offset, req.body.quantity],
                 function (err, groups) {
                     console.log('Result: ' + JSON.stringify(groups))
@@ -214,7 +214,7 @@ app.get('/teachers/noGroup', (req, res) => {
         if (req.session.role == 'PRINCIPAL') {
             var date = new Date()
             var year = date.getFullYear()
-            con.query("SELECT userid, name, email FROM thesis.users WHERE role = ? AND NOT EXISTS (SELECT * FROM thesis.groups WHERE groups.teacherid = users.userid AND year = ?)",
+            con.query("SELECT userid, name, email FROM thesis.users WHERE role = ? AND NOT EXISTS (SELECT * FROM thesis.groups WHERE groups.teacherid = users.userid AND EXTRACT(YEAR FROM date) = ?)",
                 ["TEACHER", year],
                 function (err, teachers) {
                     console.log('Result: ' + JSON.stringify(teachers))
@@ -239,6 +239,101 @@ app.get('/teachers/noGroup', (req, res) => {
             })
         }
     }, 2000);
+})
+
+app.get('/parents', (req, res) => {
+    console.log('/parents---------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    setTimeout(() => {
+        if (req.session.role == 'PRINCIPAL') {
+            var date = new Date()
+            var year = date.getFullYear()
+            con.query("SELECT userid, name, email FROM thesis.users WHERE role = ?",
+                ["PARENT"],
+                function (err, parents) {
+                    console.log('Result: ' + JSON.stringify(parents))
+                    if (err) {
+                        console.log(err)
+                        res.send({
+                            'status': 'failed',
+                            'code': 'ERROR'
+                        })
+                        throw err
+                    } else {
+                        res.send({
+                            'status': 'success',
+                            'parents': parents
+                        })
+                    }
+                });
+        } else {
+            res.send({
+                'status': 'failed',
+                'code': 'NO_PERMISSION'
+            })
+        }
+    }, 2000);
+})
+
+app.get('/groups', (req, res) => {
+    console.log('/groups----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    setTimeout(() => {
+        if (req.session.role == 'PRINCIPAL') {
+            var date = new Date()
+            var year = date.getFullYear()
+            con.query("SELECT groups.groupid, groups.type, DATE_FORMAT(groups.date, \"%Y %M %d\") as date, users.name AS teacherName FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON groups.teacherid = users.userid ORDER BY DATE DESC",
+                function (err, groups) {
+                    console.log('Result: ' + JSON.stringify(groups))
+                    if (err) {
+                        console.log(err)
+                        res.send({
+                            'status': 'failed',
+                            'code': 'ERROR'
+                        })
+                        throw err
+                    } else {
+                        res.send({
+                            'status': 'success',
+                            'groups': groups
+                        })
+                    }
+                });
+        } else {
+            res.send({
+                'status': 'failed',
+                'code': 'NO_PERMISSION'
+            })
+        }
+    }, 2000);
+})
+
+app.post('/addGroup', (req, res) => {
+    console.log('/addGroup---------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    con.query('INSERT INTO thesis.groups (type, teacherid) VALUES (?, ?)', [req.body.groupType, req.body.teacherId], (err, result) => {
+        console.log('Result: ' + JSON.stringify(result))
+        if (err) {
+            res.send({
+                'status': 'failed',
+                'code': err.code
+            })
+            console.log(err.code)
+        } else {
+            res.send({
+                'status': 'success'
+            })
+        }
+    })
 })
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`))

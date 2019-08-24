@@ -17,52 +17,52 @@ import com.mihalypapp.app.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutoCompleteTeacherAdapter extends ArrayAdapter<User> {
-    private List<User> teacherListFull;
+public class AutoCompleteParentAdapter extends ArrayAdapter<User> {
+    private List<User> parentListFull;
 
-    public AutoCompleteTeacherAdapter(@NonNull Context context, @NonNull List<User> teacherList) {
-        super(context, 0, teacherList);
-        teacherListFull = new ArrayList<>(teacherList);
+    public AutoCompleteParentAdapter(@NonNull Context context, @NonNull List<User> parentList) {
+        super(context, 0, parentList);
+        parentListFull = new ArrayList<>(parentList);
     }
 
     @NonNull
     @Override
     public Filter getFilter() {
-        return teacherFilter;
+        return parentFilter;
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup viewGroup) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.dropdown_menu_popup_item_teacher, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.dropdown_menu_popup_item_parent, viewGroup, false);
         }
 
-        MaterialTextView textViewTeacherName = convertView.findViewById(R.id.text_view_teacher_name);
-        MaterialTextView textViewTeacherEmail = convertView.findViewById(R.id.text_view_teacher_email);
+        MaterialTextView textViewParentName = convertView.findViewById(R.id.text_view_parent_name);
+        MaterialTextView textViewParentEmail = convertView.findViewById(R.id.text_view_parent_email);
 
-        User teacher = getItem(position);
+        User parent = getItem(position);
 
-        if (teacher != null) {
-            textViewTeacherName.setText(teacher.getName());
-            textViewTeacherEmail.setText(teacher.getEmail());
+        if (parent != null) {
+            textViewParentName.setText(parent.getName());
+            textViewParentEmail.setText(parent.getEmail());
         }
 
         return convertView;
     }
 
-    private Filter teacherFilter = new Filter() {
+    private Filter parentFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             FilterResults results = new FilterResults();
             List<User> suggestions = new ArrayList<>();
 
             if (charSequence == null || charSequence.length() == 0) {
-                suggestions.addAll(teacherListFull);
+                suggestions.addAll(parentListFull);
             } else {
                 String filterPattern = charSequence.toString().toLowerCase().trim();
 
-                for (User item : teacherListFull) {
+                for (User item : parentListFull) {
                     if (item.getName().toLowerCase().contains(filterPattern) || item.getEmail().toLowerCase().contains(filterPattern)) {
                         suggestions.add(item);
                     }

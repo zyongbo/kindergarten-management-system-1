@@ -1,5 +1,6 @@
 package com.mihalypapp.app.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.activities.AddChildActivity;
 import com.mihalypapp.app.adapters.ChildCardAdapter;
 import com.mihalypapp.app.models.ChildCard;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
@@ -35,6 +37,8 @@ import java.util.ArrayList;
 public class ListChildrenFragment extends Fragment {
 
     private static final String TAG = "ListChildrenFragment";
+
+    private static final int RC_ADD_CHILD = 10;
 
     private ArrayList<ChildCard> childCardList = new ArrayList<>();
 
@@ -97,8 +101,8 @@ public class ListChildrenFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(getContext(), AddGroupActivity.class);
-                //startActivityForResult(intent, RC_ADD_GROUP);
+                Intent intent = new Intent(getContext(), AddChildActivity.class);
+                startActivityForResult(intent, RC_ADD_CHILD);
             }
         });
 
