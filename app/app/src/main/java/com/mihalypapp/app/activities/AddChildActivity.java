@@ -1,5 +1,6 @@
 package com.mihalypapp.app.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -69,7 +71,6 @@ public class AddChildActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textInputLayoutChildName = findViewById(R.id.text_input_child_name);
-
 
         textInputLayoutParents = findViewById(R.id.text_input_parents);
         textInputLayoutParents.setEnabled(false);
@@ -202,7 +203,7 @@ public class AddChildActivity extends AppCompatActivity {
                                             group.getInt("groupid"),
                                             group.getString("type"),
                                             group.getString("teacherName"),
-                                            group.getString("date")
+                                            group.getString("year")
                                     ));
                                     autoCompleteGroupAdapter = new AutoCompleteGroupAdapter(AddChildActivity.this, groupList);
                                     autoCompleteGroups.setAdapter(autoCompleteGroupAdapter);
@@ -295,6 +296,18 @@ public class AddChildActivity extends AppCompatActivity {
         } else {
             textInputLayoutGroups.setError("Please select a group!");
             return false;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
     }
 

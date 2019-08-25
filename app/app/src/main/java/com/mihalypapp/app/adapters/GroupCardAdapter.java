@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.models.GroupCard;
+import com.mihalypapp.app.models.Group;
 
 import java.util.List;
 
@@ -21,11 +21,11 @@ public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final int VIEW_TYPE_GROUP_CARD = 1;
     private final int VIEW_TPYE_PROGRESS_BAR = 0;
 
-    private List<GroupCard> groupCards;
+    private List<Group> groupCards;
 
     private OnItemClickListener listener;
 
-    public GroupCardAdapter(List<GroupCard> groupCards) {
+    public GroupCardAdapter(List<Group> groupCards) {
         this.groupCards = groupCards;
     }
 
@@ -50,7 +50,7 @@ public class GroupCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof GroupCardViewHolder) {
-            GroupCard groupCard = groupCards.get(position);
+            Group groupCard = groupCards.get(position);
             ((GroupCardViewHolder) holder).imageView.setImageResource(groupCard.getImageResource());
             ((GroupCardViewHolder) holder).textViewTeacherName.setText(groupCard.getTeacherName());
             ((GroupCardViewHolder) holder).textViewType.setText(groupCard.getType());

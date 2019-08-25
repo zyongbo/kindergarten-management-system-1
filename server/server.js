@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const util = require('util');
 const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
@@ -13,6 +14,8 @@ con.connect(function (err) {
     if (err) throw err;
     console.log("Successfully connected to the database!");
 });
+
+const query = util.promisify(con.query).bind(con)
 
 const app = express()
 const port = 3000
@@ -178,7 +181,7 @@ app.post('/groups', (req, res) => {
 
     setTimeout(() => {
         if (req.session.role == 'PRINCIPAL') {
-            con.query("SELECT groups.type, groups.year, users.name FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON (groups.teacherid = users.userid) ORDER BY year DESC LIMIT ?, ?",
+            con.query("SELECT groups.groupid, groups.type, groups.year, users.name as teacherName FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON (groups.teacherid = users.userid) ORDER BY year DESC LIMIT ?, ?",
                 [req.body.offset, req.body.quantity],
                 function (err, groups) {
                     console.log('Result: ' + JSON.stringify(groups))
@@ -286,7 +289,7 @@ app.get('/groups', (req, res) => {
         if (req.session.role == 'PRINCIPAL') {
             var date = new Date()
             var year = date.getFullYear()
-            con.query("SELECT groups.groupid, groups.type, DATE_FORMAT(groups.startedDate, \"%Y %M %d\") as date, users.name AS teacherName FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON groups.teacherid = users.userid ORDER BY DATE DESC",
+            con.query("SELECT groups.groupid, groups.type, groups.year, users.name AS teacherName FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON groups.teacherid = users.userid ORDER BY year DESC",
                 function (err, groups) {
                     console.log('Result: ' + JSON.stringify(groups))
                     if (err) {
@@ -354,6 +357,62 @@ app.post('/addChild', (req, res) => {
             })
         }
     })
+})
+
+/*app.post('/group', (req, res) => {
+    console.log('/group------------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+    con.query('SELECT groups.groupid, groups.type, groups.year, users.name AS teacherName FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON groups.teacherid = users.userid WHERE groups.groupid = ?', [req.body.groupId], (err, group) => {
+        console.log('Result: ' + JSON.stringify(group))
+        if (err) {
+            res.send({
+                'status': 'failed',
+                'code': err.code
+            })
+            console.log(err.code)
+        } else {
+            res.send({
+                'status': 'success',
+                'group': group
+            })
+        }
+    })
+})*/
+
+app.post('/group', async (req, res) => {
+    console.log('/group------------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    try {
+        const group = await query('SELECT groups.groupid, groups.type, groups.year, users.name AS teacherName FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON groups.teacherid = users.userid WHERE groups.groupid = ?', [req.body.groupId])
+        const children = await query('SELECT children.name AS childName, users.name AS parentName, users.email as parentEmail FROM thesis.children AS children INNER JOIN thesis.users AS users ON children.parentid = users.userid WHERE children.groupid = ? ORDER BY childName', [req.body.groupId])
+        console.log(group)
+        console.log(children)
+        res.send({
+            'status': 'success',
+            'group': group,
+            'children': children
+        })
+    } catch (err) {
+        res.send({
+            'status': 'failed',
+            'code': err.code
+        })
+        console.log(err.code)
+    }
+
+
+    /*(async() => {
+        try {
+            const group = await query('SELECT groups.groupid, groups.type, groups.year, users.name AS teacherName FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON groups.teacherid = users.userid WHERE groups.groupid = ?', [req.body.groupId])
+        } finally {
+            con.end()
+        }
+    })()*/
 })
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`))

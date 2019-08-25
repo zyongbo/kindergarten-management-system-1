@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.fragments.GroupFragment;
 
 public class TeacherActivity extends DrawerActivity {
 
@@ -38,6 +39,9 @@ public class TeacherActivity extends DrawerActivity {
         switch (item.getItemId()) {
             case R.id.nav_my_user:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyUserFragment()).commit();
+                break;
+            case R.id.nav_my_groups:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GroupFragment()).commit();
                 break;
             case R.id.nav_logout:
                 setResult(RESULT_LOGGED_OUT);

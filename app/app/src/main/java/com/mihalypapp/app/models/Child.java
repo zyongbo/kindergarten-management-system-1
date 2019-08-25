@@ -1,13 +1,13 @@
 package com.mihalypapp.app.models;
 
-public class ChildCard {
+public class Child {
     private int imageResource;
     private String name;
     private String groupType;
     private String parentName;
     private String parentEmail;
 
-    public ChildCard(int imageResource, String name, String groupType, String parentName, String parentEmail) {
+    public Child(int imageResource, String name, String groupType, String parentName, String parentEmail) {
         this.imageResource = imageResource;
         this.name = name;
         this.groupType = groupType;

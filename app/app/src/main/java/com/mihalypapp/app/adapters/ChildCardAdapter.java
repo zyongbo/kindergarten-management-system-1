@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.models.ChildCard;
+import com.mihalypapp.app.models.Child;
 
 import java.util.List;
 
@@ -21,12 +21,12 @@ public class ChildCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final int VIEW_TYPE_CHILDREN_CARD = 1;
     private final int VIEW_TPYE_PROGRESS_BAR = 0;
 
-    private List<ChildCard> childCards;
+    private List<Child> children;
 
     private OnItemClickListener listener;
 
-    public ChildCardAdapter(List<ChildCard> childCards) {
-        this.childCards = childCards;
+    public ChildCardAdapter(List<Child> children) {
+        this.children = children;
     }
 
     @NonNull
@@ -50,12 +50,12 @@ public class ChildCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ChildrenCardViewHolder) {
-            ChildCard childCard = childCards.get(position);
-            ((ChildrenCardViewHolder) holder).imageView.setImageResource(childCard.getImageResource());
-            ((ChildrenCardViewHolder) holder).textViewChildName.setText(childCard.getName());
-            ((ChildrenCardViewHolder) holder).textViewGroupType.setText(childCard.getGroupType());
-            ((ChildrenCardViewHolder) holder).textViewParentName.setText(childCard.getParentName());
-            ((ChildrenCardViewHolder) holder).textViewParentEmail.setText(childCard.getParentEmail());
+            Child child = children.get(position);
+            ((ChildrenCardViewHolder) holder).imageView.setImageResource(child.getImageResource());
+            ((ChildrenCardViewHolder) holder).textViewChildName.setText(child.getName());
+            ((ChildrenCardViewHolder) holder).textViewGroupType.setText(child.getGroupType());
+            ((ChildrenCardViewHolder) holder).textViewParentName.setText(child.getParentName());
+            ((ChildrenCardViewHolder) holder).textViewParentEmail.setText(child.getParentEmail());
         } else {
             ((ProgressBarViewHolder) holder).progressBar.setIndeterminate(true);
         }
@@ -63,12 +63,12 @@ public class ChildCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        return childCards.get(position) != null ? VIEW_TYPE_CHILDREN_CARD : VIEW_TPYE_PROGRESS_BAR;
+        return children.get(position) != null ? VIEW_TYPE_CHILDREN_CARD : VIEW_TPYE_PROGRESS_BAR;
     }
 
     @Override
     public int getItemCount() {
-        return childCards.size();
+        return children.size();
     }
 
     private class ChildrenCardViewHolder extends RecyclerView.ViewHolder {

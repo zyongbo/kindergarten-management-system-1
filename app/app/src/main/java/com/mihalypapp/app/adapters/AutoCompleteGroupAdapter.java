@@ -47,7 +47,7 @@ public class AutoCompleteGroupAdapter extends ArrayAdapter<Group> {
         if (group != null) {
             textViewGroupTeacherName.setText(group.getTeacherName());
             textViewGroupType.setText(group.getType());
-            textViewGroupDate.setText(group.getDate());
+            textViewGroupDate.setText(group.getYear());
         }
 
         return convertView;

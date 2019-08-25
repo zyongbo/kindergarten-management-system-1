@@ -5,6 +5,15 @@ public class Group {
     private String type;
     private String teacherName;
     private String year;
+    private int imageResource;
+
+    public Group(int id, String type, String teacherName, String year, int imageResource) {
+        this.id = id;
+        this.type = type;
+        this.teacherName = teacherName;
+        this.year = year;
+        this.imageResource = imageResource;
+    }
 
     public Group(int id, String type, String teacherName, String year) {
         this.id = id;
@@ -25,7 +34,11 @@ public class Group {
         return teacherName;
     }
 
-    public String getDate() {
+    public String getYear() {
         return year;
+    }
+
+    public int getImageResource() {
+        return imageResource;
     }
 }

@@ -25,28 +25,25 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.activities.AddGroupActivity;
+import com.mihalypapp.app.activities.GroupOverviewActivity;
 import com.mihalypapp.app.adapters.GroupCardAdapter;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
-import com.mihalypapp.app.models.GroupCard;
+import com.mihalypapp.app.models.Group;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 public class ListGroupsFragment extends Fragment {
 
     private static final String TAG = "ListGroupsFragment";
 
     private static final int RC_ADD_GROUP = 9;
+    private static final int RC_OVERVIEW_GROUP = 10;
 
-    private ArrayList<GroupCard> groupCardList = new ArrayList<>();
+    private ArrayList<Group> groupCardList = new ArrayList<>();
 
     private boolean refreshing = false;
     private boolean fetching = false;
@@ -101,8 +98,11 @@ public class ListGroupsFragment extends Fragment {
         adapter.setOnItemClickListener(new GroupCardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                String name = groupCardList.get(position).getYear();
-                Toast.makeText(getContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
+                int groupId = groupCardList.get(position).getId();
+                Toast.makeText(getContext(), Integer.valueOf(groupId).toString() + " was clicked!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), GroupOverviewActivity.class);
+                intent.putExtra("GROUP_ID", groupId);
+                startActivityForResult(intent, RC_OVERVIEW_GROUP);
             }
         });
 
@@ -149,11 +149,12 @@ public class ListGroupsFragment extends Fragment {
                                 int i;
                                 for (i = 0; i < groups.length(); i++) {
                                     JSONObject group = groups.getJSONObject(i);
-                                    groupCardList.add(new GroupCard(
-                                            R.drawable.ic_launcher_foreground,
-                                            group.getString("name"),
+                                    groupCardList.add(new Group(
+                                            group.getInt("groupid"),
                                             group.getString("type"),
-                                            group.getString("year")
+                                            group.getString("teacherName"),
+                                            group.getString("year"),
+                                            R.drawable.ic_launcher_foreground
                                     ));
                                     offset++;
                                 }

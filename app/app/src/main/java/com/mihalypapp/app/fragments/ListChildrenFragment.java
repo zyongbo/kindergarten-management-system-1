@@ -26,7 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.activities.AddChildActivity;
 import com.mihalypapp.app.adapters.ChildCardAdapter;
-import com.mihalypapp.app.models.ChildCard;
+import com.mihalypapp.app.models.Child;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
 
 import org.json.JSONArray;
@@ -41,14 +41,14 @@ public class ListChildrenFragment extends Fragment {
 
     private static final int RC_ADD_CHILD = 10;
 
-    private ArrayList<ChildCard> childCardList = new ArrayList<>();
+    private ArrayList<Child> childList = new ArrayList<>();
 
     private boolean refreshing = false;
     private boolean fetching = false;
     private boolean showingProgressBar = false;
     private int offset = 0;
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private ChildCardAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
@@ -62,7 +62,7 @@ public class ListChildrenFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Children");
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        adapter = new ChildCardAdapter(childCardList);
+        adapter = new ChildCardAdapter(childList);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
@@ -95,7 +95,7 @@ public class ListChildrenFragment extends Fragment {
         adapter.setOnItemClickListener(new ChildCardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                String name = childCardList.get(position).getName();
+                String name = childList.get(position).getName();
                 Toast.makeText(getContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -136,14 +136,14 @@ public class ListChildrenFragment extends Fragment {
                                 removeProgressBar();
 
                                 if (refreshing) {
-                                    childCardList.clear();
+                                    childList.clear();
                                     adapter.notifyDataSetChanged();
                                 }
 
                                 int i;
                                 for (i = 0; i < children.length(); i++) {
                                     JSONObject child = children.getJSONObject(i);
-                                    childCardList.add(new ChildCard(
+                                    childList.add(new Child(
                                             R.drawable.ic_launcher_foreground,
                                             child.getString("childName"),
                                             child.getString("groupType"),
@@ -154,7 +154,7 @@ public class ListChildrenFragment extends Fragment {
                                 }
 
                                 if (!refreshing) {
-                                    adapter.notifyItemRangeInserted(childCardList.size() - i, i);
+                                    adapter.notifyItemRangeInserted(childList.size() - i, i);
                                 } else {
                                     adapter.notifyDataSetChanged();
                                     scrollListener.resetState();
@@ -184,11 +184,11 @@ public class ListChildrenFragment extends Fragment {
 
     private void addProgressBar() {
         showingProgressBar = true;
-        childCardList.add(null);
+        childList.add(null);
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
-                adapter.notifyItemInserted(childCardList.size() - 1);
+                adapter.notifyItemInserted(childList.size() - 1);
             }
         });
     }
@@ -196,8 +196,8 @@ public class ListChildrenFragment extends Fragment {
     private void removeProgressBar() {
         if (showingProgressBar) {
             showingProgressBar = false;
-            childCardList.remove(childCardList.size() - 1);
-            adapter.notifyItemRemoved(childCardList.size());
+            childList.remove(childList.size() - 1);
+            adapter.notifyItemRemoved(childList.size());
         }
     }
 }
