@@ -12,6 +12,7 @@ import com.mihalypapp.app.fragments.ListChildrenFragment;
 import com.mihalypapp.app.fragments.ListGroupsFragment;
 import com.mihalypapp.app.fragments.ListUsersScreenSlideFragment;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.fragments.MyUserFragment;
 
 public class PrincipalActivity extends DrawerActivity {
 

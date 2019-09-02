@@ -1,4 +1,4 @@
-package com.mihalypapp.app.activities;
+package com.mihalypapp.app.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

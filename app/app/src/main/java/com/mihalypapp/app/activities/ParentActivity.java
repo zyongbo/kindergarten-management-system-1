@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.fragments.MyUserFragment;
 
 public class ParentActivity extends DrawerActivity {
 
@@ -25,7 +26,7 @@ public class ParentActivity extends DrawerActivity {
 
     @Override
     public int GetLayout() {
-        return R.layout.activity_teacher;
+        return R.layout.activity_parent;
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.fragments.GroupFragment;
+import com.mihalypapp.app.fragments.MyUserFragment;
 
 public class TeacherActivity extends DrawerActivity {
 

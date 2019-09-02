@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_my_user"
+            android:icon="@drawable/ic_my_user"
+            android:title="My user"/>
+        <item android:id="@+id/nav_my_children"
+            android:icon="@drawable/ic_children"
+            android:title="My children"/>
+        <item
+            android:id="@+id/absentees"
+            android:icon="@drawable/ic_absentees"
+            android:title="Absentees" />
+        <item
+            android:id="@+id/nav_liabilities"
+            android:icon="@drawable/ic_liabilities"
+            android:title="Liabilities" />
+        <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/ic_message"
+            android:title="Message" />
+        <item
+            android:id="@+id/nav_news"
+            android:icon="@drawable/ic_news"
+            android:title="News"/>
+        <item
+            android:id="@+id/nav_documents"
+            android:icon="@drawable/ic_documents"
+            android:title="Documents"/>
+    </group>
+
+    <group android:id="@+id/group_actions">
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout"/>
+    </group>
+
+</menu>

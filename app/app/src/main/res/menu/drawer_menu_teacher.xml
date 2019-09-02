@@ -6,6 +6,18 @@
             android:id="@+id/nav_my_user"
             android:icon="@drawable/ic_my_user"
             android:title="My user" />
+        <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/ic_message"
+            android:title="Message" />
+        <item
+            android:id="@+id/nav_news"
+            android:icon="@drawable/ic_news"
+            android:title="News"/>
+        <item
+            android:id="@+id/nav_documents"
+            android:icon="@drawable/ic_documents"
+            android:title="Documents"/>
     </group>
 
     <item android:title="Manage">
@@ -16,7 +28,11 @@
                 <item
                     android:id="@+id/nav_my_groups"
                     android:icon="@drawable/ic_groups"
-                    android:title="My Groups" />
+                    android:title="My groups" />
+                <item
+                    android:id="@+id/absentees"
+                    android:icon="@drawable/ic_absentees"
+                    android:title="Absentees" />
             </group>
         </menu>
     </item>
