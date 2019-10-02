@@ -25,7 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.activities.AddGroupActivity;
-import com.mihalypapp.app.activities.GroupOverviewActivity;
+import com.mihalypapp.app.activities.GroupActivity;
 import com.mihalypapp.app.adapters.GroupCardAdapter;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
 import com.mihalypapp.app.models.Group;
@@ -100,8 +100,8 @@ public class ListGroupsFragment extends Fragment {
             public void onItemClick(View itemView, int position) {
                 int groupId = groupCardList.get(position).getId();
                 Toast.makeText(getContext(), Integer.valueOf(groupId).toString() + " was clicked!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getContext(), GroupOverviewActivity.class);
-                intent.putExtra("GROUP_ID", groupId);
+                Intent intent = new Intent(getContext(), GroupActivity.class);
+                intent.putExtra(GroupActivity.GROUP_ID, groupId);
                 startActivityForResult(intent, RC_OVERVIEW_GROUP);
             }
         });

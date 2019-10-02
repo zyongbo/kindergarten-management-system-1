@@ -7,7 +7,8 @@ const bodyParser = require('body-parser')
 var con = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: ""
+    password: "",
+    database: "thesis"
 });
 
 con.connect(function (err) {
@@ -46,12 +47,13 @@ app.post('/login', (req, res) => {
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
 
-    con.query('SELECT email, role, name FROM thesis.users WHERE email = ? AND password = ?', [req.body.email, req.body.password], (err, result) => {
+    con.query('SELECT userId, email, role, name FROM thesis.users WHERE email = ? AND password = ?', [req.body.email, req.body.password], (err, result) => {
 
         if (err) throw err
         console.log('Result: ' + JSON.stringify(result))
         if (result.length > 0) {
             req.session.role = result[0].role
+            req.session.userId = result[0].userId
             res.send({
                 'status': 'success',
                 'role': result[0].role,
@@ -389,7 +391,7 @@ app.post('/group', async (req, res) => {
 
     try {
         const group = await query('SELECT groups.groupid, groups.type, groups.year, users.name AS teacherName FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON groups.teacherid = users.userid WHERE groups.groupid = ?', [req.body.groupId])
-        const children = await query('SELECT children.name AS childName, users.name AS parentName, users.email as parentEmail FROM thesis.children AS children INNER JOIN thesis.users AS users ON children.parentid = users.userid WHERE children.groupid = ? ORDER BY childName', [req.body.groupId])
+        const children = await query('SELECT children.childid AS childId, children.name AS childName, users.name AS parentName, users.email as parentEmail FROM thesis.children AS children INNER JOIN thesis.users AS users ON children.parentid = users.userid WHERE children.groupid = ? ORDER BY childName', [req.body.groupId])
         console.log(group)
         console.log(children)
         res.send({
@@ -414,5 +416,125 @@ app.post('/group', async (req, res) => {
         }
     })()*/
 })
+
+app.get('/myUserData', (req, res) => {
+    console.log('/myUserData--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    con.query('SELECT email, role, name FROM thesis.users WHERE userId = ?', [req.session.userId], (err, result) => {
+
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (result.length > 0) {
+            res.send({
+                'status': 'success',
+                'role': result[0].role,
+                'name': result[0].name,
+                'email': result[0].email
+            })
+        } else {
+            res.send({
+                'status': 'failed'
+            })
+        }
+    })
+})
+
+app.get('/myChildren', (req, res) => {
+    console.log('/myChildren--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    con.query('SELECT children.childid AS childId, children.name AS childName, groups.type AS groupType FROM (thesis.children AS children INNER JOIN thesis.groups AS groups ON children.groupid = groups.groupid) WHERE children.parentid = ?', [req.session.userId], (err, result) => {
+
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (result.length > 0) {
+            res.send({
+                'status': 'success',
+                'children': result
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed'
+            })
+        }
+    })
+})
+
+app.post('/child', (req, res) => {
+    console.log('/child--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    con.query('\
+    SELECT\
+	    children.`name` AS childName,\
+        DATE_FORMAT(children.birth, \'%Y/%m/%d\') AS childBirth,\
+	    parent.`Name` AS parentName,\
+	    teacher.`Name` AS teacherName,\
+	    groups.Type AS groupType\
+    FROM\
+	    children\
+    INNER JOIN groups ON children.GroupID = groups.GroupID\
+    INNER JOIN users AS parent ON children.ParentID = parent.UserID\
+    INNER JOIN users AS teacher ON groups.TeacherID = teacher.UserID\
+    WHERE\
+        children.ChildID = ?\
+    ', [req.body.childId], (err, result) => {
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (result.length > 0) {
+            res.send({
+                'status': 'success',
+                'child': result
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed'
+            })
+        }
+    })
+})
+
+app.get('/myGroups', (req, res) => {
+    console.log('/myGroups--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    con.query('\
+    SELECT\
+        users.`Name` AS teacherName,\
+        groups.Type AS groupType,\
+        groups.`Year` AS groupYear,\
+        groups.GroupID AS groupId\
+    FROM\
+        groups\
+    INNER JOIN users ON groups.TeacherID = users.UserID\
+    WHERE\
+        users.UserID = ?', [req.session.userId], (err, result) => {
+
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (result.length > 0) {
+            res.send({
+                'status': 'success',
+                'groups': result
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed'
+            })
+        }
+    })
+})
+
+
+
+
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`))

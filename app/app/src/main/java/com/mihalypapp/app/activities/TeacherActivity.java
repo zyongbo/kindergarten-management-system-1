@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.fragments.GroupFragment;
+import com.mihalypapp.app.fragments.MyGroupsFragment;
 import com.mihalypapp.app.fragments.MyUserFragment;
 
 public class TeacherActivity extends DrawerActivity {
@@ -42,7 +43,7 @@ public class TeacherActivity extends DrawerActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyUserFragment()).commit();
                 break;
             case R.id.nav_my_groups:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GroupFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyGroupsFragment()).commit();
                 break;
             case R.id.nav_logout:
                 setResult(RESULT_LOGGED_OUT);
