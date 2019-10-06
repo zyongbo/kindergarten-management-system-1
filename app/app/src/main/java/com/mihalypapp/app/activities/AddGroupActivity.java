@@ -188,7 +188,7 @@ public class AddGroupActivity extends AppCompatActivity {
                             } else {
                                 switch (response.getString("code")) {
                                     case "ER_DUP_ENTRY":
-                                        textInputLayoutTeachers.setError("This teacher already has a group this year! Please refresh.");
+                                        textInputLayoutTeachers.setError("This teacher already has a group this year!");
                                         break;
                                     default:
                                         Toast.makeText(AddGroupActivity.this, "ERROR!?", Toast.LENGTH_SHORT).show();

@@ -3,7 +3,9 @@ package com.mihalypapp.app.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +15,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -26,6 +30,7 @@ import com.mihalypapp.app.R;
 import com.mihalypapp.app.adapters.AutoCompleteGroupAdapter;
 import com.mihalypapp.app.adapters.AutoCompleteParentAdapter;
 import com.mihalypapp.app.adapters.AutoCompleteTeacherAdapter;
+import com.mihalypapp.app.fragments.DatePickerFragment;
 import com.mihalypapp.app.models.Group;
 import com.mihalypapp.app.models.Teacher;
 import com.mihalypapp.app.models.User;
@@ -33,16 +38,26 @@ import com.mihalypapp.app.models.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
-public class AddChildActivity extends AppCompatActivity {
+public class AddChildActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private static final String TAG = "AddChildActivity";
 
     private TextInputLayout textInputLayoutChildName;
     private String childNameInput;
+
+    private TextView textViewDate;
+    private String date;
+
+    private Button buttonDate;
 
     private ArrayList<User> parentList = new ArrayList<>();
     private AutoCompleteTextView autoCompleteParents;
@@ -71,6 +86,17 @@ public class AddChildActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textInputLayoutChildName = findViewById(R.id.text_input_child_name);
+
+        textViewDate = findViewById(R.id.text_view_date);
+
+        buttonDate = findViewById(R.id.button_date);
+        buttonDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment datePicker = new DatePickerFragment();
+                datePicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
 
         textInputLayoutParents = findViewById(R.id.text_input_parents);
         textInputLayoutParents.setEnabled(false);
@@ -135,7 +161,7 @@ public class AddChildActivity extends AppCompatActivity {
         buttonAddChild.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!validateChildName() | !validateParent() | !validateGroup()) {
+                if (!validateChildName() | !validateDate() | !validateParent() | !validateGroup()) {
                     return;
                 }
                 addChild();
@@ -234,6 +260,7 @@ public class AddChildActivity extends AppCompatActivity {
             params.put("childName", childNameInput);
             params.put("parentId", selectedParent.getId());
             params.put("groupId", selectedGroup.getId());
+            params.put("birth", date);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -299,6 +326,16 @@ public class AddChildActivity extends AppCompatActivity {
         }
     }
 
+    private boolean validateDate() {
+        if (date != null) {
+            textViewDate.setError(null);
+            return true;
+        } else {
+            textViewDate.setError("Please select a date!");
+            return false;
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -313,8 +350,21 @@ public class AddChildActivity extends AppCompatActivity {
 
     private void clearFields() {
         textInputLayoutChildName.getEditText().setText("");
+        textViewDate.setText("");
+        date = null;
         textInputLayoutParents.getEditText().setText("");
         textInputLayoutGroups.getEditText().setText("");
         getCurrentFocus().clearFocus();
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, i);
+        c.set(Calendar.MONTH, i1);
+        c.set(Calendar.DAY_OF_MONTH, i2);
+        date = DateFormat.getDateInstance(DateFormat.SHORT).format(c.getTime());
+        textViewDate.setText(date);
+        textViewDate.setError(null);
     }
 }

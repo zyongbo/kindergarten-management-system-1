@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.fragments.GroupFragment;
-import com.mihalypapp.app.fragments.MyGroupsFragment;
+import com.mihalypapp.app.fragments.AbsenteeFragment;
+import com.mihalypapp.app.fragments.MyGroupFragment;
 import com.mihalypapp.app.fragments.MyUserFragment;
 
 public class TeacherActivity extends DrawerActivity {
@@ -42,8 +42,11 @@ public class TeacherActivity extends DrawerActivity {
             case R.id.nav_my_user:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyUserFragment()).commit();
                 break;
-            case R.id.nav_my_groups:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyGroupsFragment()).commit();
+            case R.id.nav_my_group:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyGroupFragment()).commit();
+                break;
+            case R.id.nav_absentees:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AbsenteeFragment()).commit();
                 break;
             case R.id.nav_logout:
                 setResult(RESULT_LOGGED_OUT);

@@ -22,6 +22,14 @@ public class Group {
         this.year = year;
     }
 
+    public Group(int id, String type, String year, int imageResource) {
+        this.id = id;
+        this.type = type;
+        this.teacherName = teacherName;
+        this.year = year;
+        this.imageResource = imageResource;
+    }
+
     public int getId() {
         return id;
     }

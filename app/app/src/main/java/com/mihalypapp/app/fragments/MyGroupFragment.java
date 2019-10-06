@@ -32,9 +32,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MyGroupsFragment extends Fragment {
+public class MyGroupFragment extends Fragment {
 
-    private static final String TAG = "MyGroupsFragment";
+    private static final String TAG = "MyGroupFragment";
 
     private ArrayList<Group> groupList = new ArrayList<>();
     GroupCardArrayAdapter adapter;
@@ -45,7 +45,7 @@ public class MyGroupsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My groups");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My group");
 
         View view = inflater.inflate(R.layout.fragment_my_groups, container, false);
         listView = view.findViewById(R.id.list_view_groups);
@@ -59,12 +59,12 @@ public class MyGroupsFragment extends Fragment {
             }
         });
 
-        fetchMyGroups();
+        fetchMyGroup();
         return view;
     }
 
-    private void fetchMyGroups() {
-        JsonObjectRequest groupsRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/myGroups", null,
+    private void fetchMyGroup() {
+        JsonObjectRequest groupsRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/myGroup", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -83,7 +83,7 @@ public class MyGroupsFragment extends Fragment {
                                             R.drawable.ic_launcher_foreground
 
                                     ));
-                                    adapter = new GroupCardArrayAdapter(getContext(), groupList);
+                                    adapter = new GroupCardArrayAdapter(getContext(), groupList, 0);
                                     listView.setAdapter(adapter);
                                 }
                             } else {

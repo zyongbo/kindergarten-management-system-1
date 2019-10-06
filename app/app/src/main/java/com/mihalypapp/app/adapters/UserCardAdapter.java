@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.models.User;
 import com.mihalypapp.app.models.UserCard;
 
 import java.util.ArrayList;
@@ -20,9 +21,11 @@ public class UserCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final int VIEW_TYPE_USER_CARD = 1;
     private final int VIEW_TPYE_PROGRESS_BAR = 0;
 
-    private ArrayList<UserCard> userCards;
+    private ArrayList<User> userCards;
 
-    public UserCardAdapter(ArrayList<UserCard> userCards) {
+    private OnItemClickListener listener;
+
+    public UserCardAdapter(ArrayList<User> userCards) {
         this.userCards = userCards;
     }
 
@@ -48,7 +51,7 @@ public class UserCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof UserCardViewHolder) {
-            UserCard userCard = userCards.get(position);
+            User userCard = userCards.get(position);
             ((UserCardViewHolder) holder).imageView.setImageResource(userCard.getImageResource());
             ((UserCardViewHolder) holder).textViewName.setText(userCard.getName());
             ((UserCardViewHolder) holder).textViewEmail.setText(userCard.getEmail());
@@ -67,25 +70,46 @@ public class UserCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return userCards.size();
     }
 
-    private static class UserCardViewHolder extends RecyclerView.ViewHolder {
+    private class UserCardViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
         private TextView textViewName;
         private TextView textViewEmail;
 
-        private UserCardViewHolder(@NonNull View itemView) {
+        private UserCardViewHolder(final View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
             textViewName = itemView.findViewById(R.id.text_view_name);
             textViewEmail = itemView.findViewById(R.id.text_view_email);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView, position);
+                        }
+                    }
+                }
+            });
         }
     }
 
-    private static class ProgressBarViewHolder extends RecyclerView.ViewHolder {
+    private class ProgressBarViewHolder extends RecyclerView.ViewHolder {
         private ProgressBar progressBar;
 
         private ProgressBarViewHolder(@NonNull View itemView) {
             super(itemView);
             progressBar = itemView.findViewById(R.id.progress_bar);
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    public void setOnItemClickListener(UserCardAdapter.OnItemClickListener listener) {
+        this.listener = listener;
     }
 }

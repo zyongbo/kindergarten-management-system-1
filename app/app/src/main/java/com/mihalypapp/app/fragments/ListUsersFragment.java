@@ -1,10 +1,12 @@
 package com.mihalypapp.app.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +23,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.activities.UserActivity;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
+import com.mihalypapp.app.models.User;
 import com.mihalypapp.app.models.UserCard;
 import com.mihalypapp.app.adapters.UserCardAdapter;
 
@@ -35,7 +39,9 @@ public abstract class ListUsersFragment extends Fragment {
 
     private static final String TAG = "LUSSPFragment";
 
-    private ArrayList<UserCard> userCardList = new ArrayList<>();
+    private static final int RC_OVERVIEW_USER = 11;
+
+    private ArrayList<User> userCardList = new ArrayList<>();
 
     private boolean refreshing = false;
     private boolean fetching = false;
@@ -87,6 +93,17 @@ public abstract class ListUsersFragment extends Fragment {
             }
         });
 
+        adapter.setOnItemClickListener(new UserCardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                int userId = userCardList.get(position).getId();
+                Toast.makeText(getContext(), Integer.valueOf(userId).toString() + " was clicked!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), UserActivity.class);
+                intent.putExtra(UserActivity.USER_ID, userId);
+                startActivity(intent);
+            }
+        });
+
         fetchUsers();
         return view;
     }
@@ -122,7 +139,8 @@ public abstract class ListUsersFragment extends Fragment {
                                 int i;
                                 for (i = 0; i < users.length(); i++) {
                                     JSONObject user = users.getJSONObject(i);
-                                    userCardList.add(new UserCard(
+                                    userCardList.add(new User(
+                                            user.getInt("userId"),
                                             R.drawable.ic_launcher_foreground,
                                             user.getString("name"),
                                             user.getString("email")

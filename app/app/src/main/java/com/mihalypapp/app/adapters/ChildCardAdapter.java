@@ -83,7 +83,7 @@ public class ChildCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             imageView = itemView.findViewById(R.id.image_view);
             textViewChildName = itemView.findViewById(R.id.text_view_child_name);
             textViewGroupType = itemView.findViewById(R.id.text_view_group_type);
-            textViewParentName = itemView.findViewById(R.id.text_view_parent_name);
+            textViewParentName = itemView.findViewById(R.id.text_view_absentees);
             textViewParentEmail = itemView.findViewById(R.id.text_view_parent_email);
 
             itemView.setOnClickListener(new View.OnClickListener() {

@@ -7,6 +7,7 @@ public class Child {
     private String groupType;
     private String parentName;
     private String parentEmail;
+    private int absentees;
 
     public Child(int id, int imageResource, String name, String groupType, String parentName, String parentEmail) {
         this.id = id;
@@ -30,6 +31,18 @@ public class Child {
         this.imageResource = imageResource;
         this.name = name;
         this.groupType = groupType;
+    }
+
+    public Child(int id, int imageResource, String name, String groupType, int absentees) {
+        this.id = id;
+        this.imageResource = imageResource;
+        this.name = name;
+        this.groupType = groupType;
+        this.absentees = absentees;
+    }
+
+    public int getAbsentees() {
+        return absentees;
     }
 
     public int getImageResource() {

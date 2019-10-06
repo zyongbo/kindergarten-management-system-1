@@ -1,15 +1,18 @@
-package com.mihalypapp.app.activities;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+package com.mihalypapp.app.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,51 +21,36 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.activities.ChildActivity;
+import com.mihalypapp.app.adapters.ChildCardArrayAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
+public class AbsenteeFragment extends Fragment {
 
-public class ChildActivity extends AppCompatActivity {
+    private static final String TAG = "AbsenteeFragment";
 
-    private static final String TAG = "ChildActivity";
+    ChildCardArrayAdapter childAdapter;
+    ListView listView;
 
-    public static final String CHILD_ID = "com.mihalypapp.CHILD_ID";
-
-    private TextView textViewChildName;
-    private TextView textViewParentName;
-    private TextView textViewDateOfBirth;
-    private TextView textViewTeacherName;
-    private TextView textViewGroupType;
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_child);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_absentee, container, false);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Child");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Absentees");
 
-        textViewChildName = findViewById(R.id.text_view_child_name);
-        textViewParentName = findViewById(R.id.text_view_absentees);
-        textViewDateOfBirth = findViewById(R.id.text_view_date_of_birth);
-        textViewTeacherName = findViewById(R.id.text_view_teacher_name);
-        textViewGroupType = findViewById(R.id.text_view_group_type);
+        listView = view.findViewById(R.id.list_view_absentees);
 
-        fetchChild();
+        //fetchAbsentees();
+
+        return view;
     }
 
-    private void fetchChild() {
+    /*private void fetchAbsentees() {
         JSONObject params = new JSONObject();
-        Intent intent = getIntent();
-        int childId = intent.getIntExtra(CHILD_ID, -1);
-        if (childId == -1) {
-            Log.e(TAG, "-1 childId");
-            return;
-        }
         try {
             params.put("childId", childId);
         } catch (JSONException e) {
@@ -99,17 +87,5 @@ public class ChildActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(childRequest);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
+    }*/
 }

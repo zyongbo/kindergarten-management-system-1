@@ -117,7 +117,7 @@ app.post('/users', (req, res) => {
 
     setTimeout(() => {
         if (req.session.role == 'PRINCIPAL') {
-            con.query("SELECT name, email FROM thesis.users WHERE role = ? ORDER BY name ASC LIMIT ?, ?", [req.body.role, req.body.offset, req.body.quantity], function (err, users) {
+            con.query("SELECT userid AS userId, name, email FROM thesis.users WHERE role = ? ORDER BY name ASC LIMIT ?, ?", [req.body.role, req.body.offset, req.body.quantity], function (err, users) {
                 console.log('Result: ' + JSON.stringify(users))
                 if (err) {
                     res.send({
@@ -149,7 +149,7 @@ app.post('/children', (req, res) => {
 
     setTimeout(() => {
         if (req.session.role == 'PRINCIPAL') {
-            con.query("SELECT children.name AS childName, groups.type AS groupType, users.name AS parentName, users.email as parentEmail FROM ((thesis.children AS children INNER JOIN thesis.groups AS groups ON children.groupid = groups.groupid) INNER JOIN thesis.users AS users ON children.parentid = users.userid) ORDER BY childName ASC LIMIT ?, ? ",
+            con.query("SELECT children.childid AS childId, children.name AS childName, groups.type AS groupType, users.name AS parentName, users.email as parentEmail FROM ((thesis.children AS children INNER JOIN thesis.groups AS groups ON children.groupid = groups.groupid) INNER JOIN thesis.users AS users ON children.parentid = users.userid) ORDER BY childName ASC LIMIT ?, ? ",
                 [req.body.offset, req.body.quantity],
                 function (err, children) {
                     console.log('Result: ' + JSON.stringify(children))
@@ -219,8 +219,8 @@ app.get('/teachers/noGroup', (req, res) => {
         if (req.session.role == 'PRINCIPAL') {
             var date = new Date()
             var year = date.getFullYear()
-            con.query("SELECT userid, name, email FROM thesis.users WHERE role = ? AND NOT EXISTS (SELECT * FROM thesis.groups WHERE groups.teacherid = users.userid AND year = ?)",
-                ["TEACHER", year],
+            con.query("SELECT userid, name, email FROM thesis.users WHERE role = ? AND NOT EXISTS (SELECT * FROM thesis.groups WHERE groups.teacherid = users.userid AND type != 'FINISHED')",
+                ["TEACHER"],
                 function (err, teachers) {
                     console.log('Result: ' + JSON.stringify(teachers))
                     if (err) {
@@ -345,7 +345,10 @@ app.post('/addChild', (req, res) => {
     console.log('Session: ' + JSON.stringify(req.session))
     console.log('Request: ' + JSON.stringify(req.body))
 
-    con.query('INSERT INTO thesis.children (parentid, groupid, name) VALUES (?, ?, ?)', [req.body.parentId, req.body.groupId, req.body.childName], (err, result) => {
+    date = req.body.birth.replace(/\//g,"-");
+    console.log(date)
+
+    con.query(`INSERT INTO thesis.children (parentid, groupid, name, birth) VALUES (?, ?, ?, STR_TO_DATE(?, '%m-%d-%y'))`, [req.body.parentId, req.body.groupId, req.body.childName, date], (err, result) => {
         console.log('Result: ' + JSON.stringify(result))
         if (err) {
             res.send({
@@ -396,6 +399,7 @@ app.post('/group', async (req, res) => {
         console.log(children)
         res.send({
             'status': 'success',
+            'userRole': req.session.role,
             'group': group,
             'children': children
         })
@@ -500,8 +504,8 @@ app.post('/child', (req, res) => {
     })
 })
 
-app.get('/myGroups', (req, res) => {
-    console.log('/myGroups--------------------------------------------------------------------')
+app.get('/myGroup', (req, res) => {
+    console.log('/myGroup--------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
 
@@ -515,7 +519,9 @@ app.get('/myGroups', (req, res) => {
         groups\
     INNER JOIN users ON groups.TeacherID = users.UserID\
     WHERE\
-        users.UserID = ?', [req.session.userId], (err, result) => {
+        users.UserID = ?\
+    ',
+    [req.session.userId], (err, result) => {
 
         if (err) throw err
         console.log('Result: ' + JSON.stringify(result))
@@ -533,7 +539,158 @@ app.get('/myGroups', (req, res) => {
     })
 })
 
+app.post('/user', async (req, res) => {
+    console.log('/user--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+        try {
+            const user = await query('\
+            SELECT\
+                users.`Name`,\
+                users.Email,\
+                users.Role\
+            FROM\
+                users\
+            WHERE\
+                users.UserID = ?',
+            [req.body.userId])
+            console.log(user)
 
+            if (user[0].Role == 'PARENT') {
+                const children = await query('\
+                SELECT\
+                    children.`childid` AS childId,\
+                    children.`name` AS childName,\
+                    groups.`Year` AS groupYear,\
+                    Teacher.`Name` AS teacherName,\
+                    Teacher.Email AS teacherEmail\
+                FROM\
+                    users AS `User`\
+                INNER JOIN children ON children.ParentID = `User`.UserID\
+                INNER JOIN groups ON children.GroupID = groups.GroupID\
+                INNER JOIN users AS Teacher ON groups.TeacherID = Teacher.UserID\
+                WHERE\
+                    `User`.UserID = ?',
+                [req.body.userId])
+
+                console.log(children)
+
+                res.send({
+                    'status': 'success',
+                    'role': user.role,
+                    'user': user,
+                    'data': children
+                })
+            } else if (user[0].Role == 'TEACHER') {
+                const groups = await query('\
+                SELECT\
+                    groups.`GroupID` AS groupId,\
+                    groups.Type AS groupType,\
+                    groups.`Year` AS groupYear\
+                FROM\
+                    groups\
+                WHERE\
+                    groups.TeacherID = ?\
+                AND\
+                    groups.status = "ACTIVE"',
+                [req.body.userId])
+
+                console.log(groups)
+
+                res.send({
+                    'status': 'success',
+                    'role': user.role,
+                    'user': user,
+                    'data': groups
+                })
+            } else if (user[0].Role == 'PRINCIPAL') {
+                res.send({
+                    'status': 'success',
+                    'role': user.role,
+                    'user': user
+                
+                })
+            }
+
+        } catch (err) {
+            res.send({
+                'status': 'failed',
+                'code': err.code
+            })
+            console.log(err.code)
+        }
+})
+
+app.post('/finishGroup', (req, res) => {
+    console.log('/finishGroup--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    /*if (req.session.role != 'PRINCIPAL') {
+        res.send({
+            'status': 'failed',
+            'code': 'NO_PERMISSION'
+        })
+    }*/
+
+    con.query("\
+    UPDATE groups\
+    SET\
+        type = 'FINISHED'\
+    WHERE\
+        groupid = ?",
+    [req.body.groupId], (err, result) => {
+
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (err == null) {
+            res.send({
+                'status': 'success'
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed'
+            })
+        }
+    })
+})
+
+app.post('/upgradeGroup', (req, res) => {
+    console.log('/finishGroup--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    /*if (req.session.role != 'PRINCIPAL') {
+        res.send({
+            'status': 'failed',
+            'code': 'NO_PERMISSION'
+        })
+    }*/
+
+    con.query("\
+    UPDATE groups\
+    SET\
+        type = type + 1 \
+    WHERE\
+        groupid = ?\
+    AND type != 'FINISHED'",
+    [req.body.groupId], (err, result) => {
+
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (err == null) {
+            res.send({
+                'status': 'success'
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed'
+            })
+        }
+    })
+})
 
 
 

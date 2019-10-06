@@ -25,6 +25,8 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.activities.AddChildActivity;
+import com.mihalypapp.app.activities.ChildActivity;
+import com.mihalypapp.app.activities.GroupActivity;
 import com.mihalypapp.app.adapters.ChildCardAdapter;
 import com.mihalypapp.app.models.Child;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
@@ -95,8 +97,10 @@ public class ListChildrenFragment extends Fragment {
         adapter.setOnItemClickListener(new ChildCardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                String name = childList.get(position).getName();
-                Toast.makeText(getContext(), name + " was clicked!", Toast.LENGTH_SHORT).show();
+                int childId = childList.get(position).getId();
+                Intent intent = new Intent(getContext(), ChildActivity.class);
+                intent.putExtra(ChildActivity.CHILD_ID, childId);
+                startActivity(intent);
             }
         });
 
@@ -144,6 +148,7 @@ public class ListChildrenFragment extends Fragment {
                                 for (i = 0; i < children.length(); i++) {
                                     JSONObject child = children.getJSONObject(i);
                                     childList.add(new Child(
+                                            child.getInt("childId"),
                                             R.drawable.ic_launcher_foreground,
                                             child.getString("childName"),
                                             child.getString("groupType"),

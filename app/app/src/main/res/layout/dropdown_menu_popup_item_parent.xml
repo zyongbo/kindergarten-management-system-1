@@ -6,7 +6,7 @@
     android:paddingRight="16dp">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/text_view_parent_name"
+        android:id="@+id/text_view_absentees"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -19,7 +19,7 @@
         android:id="@+id/text_view_parent_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text_view_parent_name"
+        android:layout_below="@+id/text_view_absentees"
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="1"

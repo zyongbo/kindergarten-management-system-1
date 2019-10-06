@@ -38,7 +38,7 @@ public class AutoCompleteParentAdapter extends ArrayAdapter<User> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.dropdown_menu_popup_item_parent, viewGroup, false);
         }
 
-        MaterialTextView textViewParentName = convertView.findViewById(R.id.text_view_parent_name);
+        MaterialTextView textViewParentName = convertView.findViewById(R.id.text_view_absentees);
         MaterialTextView textViewParentEmail = convertView.findViewById(R.id.text_view_parent_email);
 
         User parent = getItem(position);

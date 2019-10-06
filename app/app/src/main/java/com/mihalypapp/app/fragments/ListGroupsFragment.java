@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,11 +51,10 @@ public class ListGroupsFragment extends Fragment {
     private boolean showingProgressBar = false;
     private int offset = 0;
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private GroupCardAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
-
 
     @Nullable
     @Override

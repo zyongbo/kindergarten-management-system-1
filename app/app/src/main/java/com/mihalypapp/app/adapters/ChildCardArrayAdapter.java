@@ -36,7 +36,7 @@ public class ChildCardArrayAdapter extends ArrayAdapter<Child> {
         ImageView imageView = convertView.findViewById(R.id.image_view);
         TextView textViewChildName = convertView.findViewById(R.id.text_view_child_name);
         TextView textViewGroupType = convertView.findViewById(R.id.text_view_group_type);
-        TextView textViewParentName = convertView.findViewById(R.id.text_view_parent_name);
+        TextView textViewParentName = convertView.findViewById(R.id.text_view_absentees);
         TextView textViewParentEmail = convertView.findViewById(R.id.text_view_parent_email);
 
         imageView.setImageResource(child.getImageResource());

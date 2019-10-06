@@ -17,8 +17,12 @@ import com.mihalypapp.app.models.Group;
 import java.util.ArrayList;
 
 public class GroupCardArrayAdapter extends ArrayAdapter<Group> {
-    public GroupCardArrayAdapter(Context context, ArrayList<Group> group) {
+
+    private int viewType;
+
+    public GroupCardArrayAdapter(Context context, ArrayList<Group> group, int viewType) {
         super(context, 0, group);
+        this.viewType = viewType;
     }
 
     @NonNull
@@ -35,10 +39,17 @@ public class GroupCardArrayAdapter extends ArrayAdapter<Group> {
         TextView textViewType = convertView.findViewById(R.id.text_view_type);
         TextView textViewYear = convertView.findViewById(R.id.text_view_year);
 
-        imageView.setImageResource(group.getImageResource());
-        textViewTeacherName.setText(group.getTeacherName());
-        textViewType.setText(group.getType());
-        textViewYear.setText(group.getYear());
+        if (viewType == 1) {
+            imageView.setImageResource(group.getImageResource());
+            textViewTeacherName.setText(group.getType());
+            textViewType.setText(group.getYear());
+            textViewYear.setVisibility(View.INVISIBLE);
+        } else {
+            imageView.setImageResource(group.getImageResource());
+            textViewTeacherName.setText(group.getTeacherName());
+            textViewType.setText(group.getType());
+            textViewYear.setText(group.getYear());
+        }
 
         return convertView;
     }

@@ -6,11 +6,19 @@ public class User {
     private String email;
     private String password;
     private String role;
+    private int imageResource;
 
     public User(String email, String password, String role) {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public User(int id, int imageResource, String name, String email) {
+        this.id = id;
+        this.imageResource = imageResource;
+        this.name = name;
+        this.email = email;
     }
 
     public User(int id, String name, String email) {
@@ -19,6 +27,9 @@ public class User {
         this.email = email;
     }
 
+    public int getImageResource() {
+        return imageResource;
+    }
 
     public int getId() {
         return id;
