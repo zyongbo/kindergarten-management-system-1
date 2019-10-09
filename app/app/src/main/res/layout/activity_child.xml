@@ -57,7 +57,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/text_view_absentees"
+                android:id="@+id/text_view_parent_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Parent One"
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
-                android:text="Absentees in this year:"
+                android:text="Absences in this year:"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -157,7 +157,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/text_view_absences"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -176,13 +176,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Absentees"
+                android:text="Absences"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
         </RelativeLayout>
 
         <ListView
+            android:id="@+id/list_view_absences"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

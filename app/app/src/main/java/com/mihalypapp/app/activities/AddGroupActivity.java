@@ -76,7 +76,7 @@ public class AddGroupActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedGroupType = (String) adapterView.getAdapter().getItem(i);
-                Toast.makeText(AddGroupActivity.this, selectedGroupType, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(AddGroupActivity.this, selectedGroupType, Toast.LENGTH_SHORT).show();
                 isGroupTypeSelected = true;
                 textInputLayoutGroupTypes.setError(null);
             }
@@ -89,7 +89,7 @@ public class AddGroupActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedTeacher = (User) adapterView.getAdapter().getItem(i);
-                Toast.makeText(AddGroupActivity.this, "id: " + Integer.valueOf(selectedTeacher.getId()).toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(AddGroupActivity.this, "id: " + Integer.valueOf(selectedTeacher.getId()).toString(), Toast.LENGTH_SHORT).show();
                 isTeacherSelected = true;
                 textInputLayoutTeachers.setError(null);
             }

@@ -44,6 +44,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
     private TextView textViewTeacherName;
     private TextView textViewGroupType;
     private TextView textViewGroupYear;
+    private TextView textViewGroupSize;
     private Button buttonFinishGroup;
 
     private Group group;
@@ -70,6 +71,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
         textViewGroupType = findViewById(R.id.text_view_group_type);
         textViewGroupYear = findViewById(R.id.text_view_group_year);
         buttonFinishGroup = findViewById(R.id.button_finish_group);
+        textViewGroupSize = findViewById(R.id.text_view_group_size);
 
 
         listView = findViewById(R.id.list_view_children);
@@ -132,6 +134,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                         resGroup.getInt("groupid"),
                                         resGroup.getString("type"),
                                         resGroup.getString("teacherName"),
+                                        response.getJSONArray("groupSize").getJSONObject(0).getInt("groupSize"),
                                         resGroup.getString("year")
                                 );
                                 textViewTeacherName.setText(group.getTeacherName());
@@ -152,6 +155,8 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                     adapter = new ChildCardArrayAdapter(GroupActivity.this, childList, 1);
                                     listView.setAdapter(adapter);
                                 }
+
+                                textViewGroupSize.setText(Integer.valueOf(group.getSize()).toString());
                             } else {
                                 Toast.makeText(GroupActivity.this,"Error", Toast.LENGTH_SHORT).show();
                             }

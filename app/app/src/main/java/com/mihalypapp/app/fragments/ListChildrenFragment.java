@@ -26,7 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.activities.AddChildActivity;
 import com.mihalypapp.app.activities.ChildActivity;
-import com.mihalypapp.app.activities.GroupActivity;
 import com.mihalypapp.app.adapters.ChildCardAdapter;
 import com.mihalypapp.app.models.Child;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;

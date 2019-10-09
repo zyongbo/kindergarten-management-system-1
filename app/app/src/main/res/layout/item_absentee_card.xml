@@ -10,14 +10,25 @@
 
 
         <TextView
-            android:layout_marginBottom="10dp"
-            android:text="Absentees: 0"
+            android:id="@+id/text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_view_absentees"
+            android:text="Absences:"
             android:layout_alignBottom="@+id/check_box"
             android:layout_alignLeft="@+id/text_view_child_name"
-            android:layout_alignStart="@+id/text_view_child_name" />
+            android:layout_alignStart="@+id/text_view_child_name"
+            android:layout_marginBottom="10dp"
+            />
+
+        <TextView
+            android:id="@+id/text_view_absentees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/check_box"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="9dp"
+            android:layout_toEndOf="@+id/text_view"
+            android:text="0" />
 
         <ImageView
 

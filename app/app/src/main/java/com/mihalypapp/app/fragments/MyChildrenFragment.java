@@ -88,7 +88,7 @@ public class MyChildrenFragment extends Fragment {
                                     listView.setAdapter(adapter);
                                 }
                             } else {
-                                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "You have no children yet.", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

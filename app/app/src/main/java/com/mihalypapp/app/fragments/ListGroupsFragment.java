@@ -99,7 +99,7 @@ public class ListGroupsFragment extends Fragment {
             @Override
             public void onItemClick(View itemView, int position) {
                 int groupId = groupCardList.get(position).getId();
-                Toast.makeText(getContext(), Integer.valueOf(groupId).toString() + " was clicked!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), Integer.valueOf(groupId).toString() + " was clicked!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), GroupActivity.class);
                 intent.putExtra(GroupActivity.GROUP_ID, groupId);
                 startActivityForResult(intent, RC_OVERVIEW_GROUP);

@@ -146,6 +146,8 @@ public class UserActivity extends AppCompatActivity {
                                         groupAdapter = new GroupCardArrayAdapter(UserActivity.this, groupList, 1);
                                         listView.setAdapter(groupAdapter);
                                     }
+                                } else if (role.equals("PRINCIPAL")) {
+                                    textView.setText("");
                                 }
 
 

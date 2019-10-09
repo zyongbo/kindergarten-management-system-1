@@ -41,7 +41,7 @@
                         android:id="@+id/text_view_teacher_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Teacher One"
+                        android:text=""
                         android:textSize="18sp" />
 
 
@@ -93,7 +93,7 @@
                         android:id="@+id/text_view_group_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="MEDIUM"
+                        android:text=""
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -121,7 +121,7 @@
                         android:id="@+id/text_view_group_year"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2019"
+                        android:text=""
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -146,7 +146,7 @@
                         android:id="@+id/text_view_group_size"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="32"
+                        android:text=""
                         android:textSize="18sp" />
 
 

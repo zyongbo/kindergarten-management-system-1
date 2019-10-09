@@ -6,6 +6,7 @@ public class Group {
     private String teacherName;
     private String year;
     private int imageResource;
+    private int size;
 
     public Group(int id, String type, String teacherName, String year, int imageResource) {
         this.id = id;
@@ -13,6 +14,18 @@ public class Group {
         this.teacherName = teacherName;
         this.year = year;
         this.imageResource = imageResource;
+    }
+
+    public Group(int id, String type, String teacherName, int size, String year) {
+        this.id = id;
+        this.type = type;
+        this.teacherName = teacherName;
+        this.year = year;
+        this.size = size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public Group(int id, String type, String teacherName, String year) {
@@ -25,9 +38,12 @@ public class Group {
     public Group(int id, String type, String year, int imageResource) {
         this.id = id;
         this.type = type;
-        this.teacherName = teacherName;
         this.year = year;
         this.imageResource = imageResource;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public int getId() {

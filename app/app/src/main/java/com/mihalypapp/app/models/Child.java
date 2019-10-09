@@ -1,5 +1,7 @@
 package com.mihalypapp.app.models;
 
+import androidx.annotation.NonNull;
+
 public class Child {
     private int id;
     private int imageResource;
@@ -7,7 +9,8 @@ public class Child {
     private String groupType;
     private String parentName;
     private String parentEmail;
-    private int absentees;
+    private int absences;
+    private String isCheckedToday;
 
     public Child(int id, int imageResource, String name, String groupType, String parentName, String parentEmail) {
         this.id = id;
@@ -33,16 +36,39 @@ public class Child {
         this.groupType = groupType;
     }
 
-    public Child(int id, int imageResource, String name, String groupType, int absentees) {
+    public Child(int id, int imageResource, String name, int absences) {
+        this.id = id;
+        this.imageResource = imageResource;
+        this.name = name;
+        this.absences = absences;
+    }
+
+    public Child(int id, int imageResource, String name, int absences, String isCheckedToday) {
+        this.id = id;
+        this.imageResource = imageResource;
+        this.name = name;
+        this.absences = absences;
+        this.isCheckedToday = isCheckedToday;
+    }
+
+    public Child(int id, int imageResource, String name, String groupType, int absences) {
         this.id = id;
         this.imageResource = imageResource;
         this.name = name;
         this.groupType = groupType;
-        this.absentees = absentees;
+        this.absences = absences;
     }
 
-    public int getAbsentees() {
-        return absentees;
+    public void setIsCheckedToday(String isCheckedToday) {
+        this.isCheckedToday = isCheckedToday;
+    }
+
+    public String getIsCheckedToday() {
+        return isCheckedToday;
+    }
+
+    public int getAbsences() {
+        return absences;
     }
 
     public int getImageResource() {
@@ -67,5 +93,11 @@ public class Child {
 
     public String getParentEmail() {
         return parentEmail;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getName() + " (" + Integer.valueOf(getAbsences()).toString() + ")";
     }
 }

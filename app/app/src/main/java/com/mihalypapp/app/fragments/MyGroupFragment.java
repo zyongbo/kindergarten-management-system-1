@@ -64,7 +64,7 @@ public class MyGroupFragment extends Fragment {
     }
 
     private void fetchMyGroup() {
-        JsonObjectRequest groupsRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/myGroup", null,
+        JsonObjectRequest groupsRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/myGroups", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

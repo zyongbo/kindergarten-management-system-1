@@ -40,14 +40,14 @@ public class AutoCompleteGroupAdapter extends ArrayAdapter<Group> {
 
         MaterialTextView textViewGroupTeacherName = convertView.findViewById(R.id.text_view_group_teacher_name);
         MaterialTextView textViewGroupType = convertView.findViewById(R.id.text_view_group_type);
-        MaterialTextView textViewGroupDate = convertView.findViewById(R.id.text_view_group_date);
+        MaterialTextView textViewGroupYear = convertView.findViewById(R.id.text_view_group_year);
 
         Group group = getItem(position);
 
         if (group != null) {
             textViewGroupTeacherName.setText(group.getTeacherName());
             textViewGroupType.setText(group.getType());
-            textViewGroupDate.setText(group.getYear());
+            textViewGroupYear.setText(group.getYear());
         }
 
         return convertView;

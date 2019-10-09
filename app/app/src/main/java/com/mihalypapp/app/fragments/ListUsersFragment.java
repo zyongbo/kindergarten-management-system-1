@@ -97,7 +97,7 @@ public abstract class ListUsersFragment extends Fragment {
             @Override
             public void onItemClick(View itemView, int position) {
                 int userId = userCardList.get(position).getId();
-                Toast.makeText(getContext(), Integer.valueOf(userId).toString() + " was clicked!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), Integer.valueOf(userId).toString() + " was clicked!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), UserActivity.class);
                 intent.putExtra(UserActivity.USER_ID, userId);
                 startActivity(intent);

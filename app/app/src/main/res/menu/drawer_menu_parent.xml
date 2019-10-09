@@ -10,10 +10,6 @@
             android:icon="@drawable/ic_children"
             android:title="My children"/>
         <item
-            android:id="@+id/absentees"
-            android:icon="@drawable/ic_absentees"
-            android:title="Absentees" />
-        <item
             android:id="@+id/nav_liabilities"
             android:icon="@drawable/ic_liabilities"
             android:title="Liabilities" />
