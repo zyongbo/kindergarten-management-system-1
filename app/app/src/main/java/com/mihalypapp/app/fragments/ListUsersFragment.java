@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +52,7 @@ public abstract class ListUsersFragment extends Fragment {
     private boolean fetching = false;
     private boolean showingProgressBar = false;
     private int offset = 0;
+    private String filter = "";
 
     RecyclerView recyclerView;
     private UserCardAdapter adapter;
@@ -58,6 +64,8 @@ public abstract class ListUsersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_list_users, container, false);
+
+        setHasOptionsMenu(true);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Users");
 
@@ -116,6 +124,7 @@ public abstract class ListUsersFragment extends Fragment {
             params.put("role", getRole());
             params.put("offset", offset);
             params.put("quantity", 15);
+            params.put("filter", filter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -194,6 +203,42 @@ public abstract class ListUsersFragment extends Fragment {
             userCardList.remove(userCardList.size() - 1);
             adapter.notifyItemRemoved(userCardList.size());
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.search_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!fetching) {
+                    refreshing = true;
+                    offset = 0;
+                    filter = query;
+                    fetchUsers();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!fetching) {
+                    refreshing = true;
+                    offset = 0;
+                    filter = newText;
+                    fetchUsers();
+                }
+                return false;
+            }
+        });
     }
 
     public abstract String getRole();

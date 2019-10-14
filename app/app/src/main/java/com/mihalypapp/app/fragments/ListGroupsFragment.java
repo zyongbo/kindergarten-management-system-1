@@ -5,12 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,6 +55,7 @@ public class ListGroupsFragment extends Fragment {
     private boolean fetching = false;
     private boolean showingProgressBar = false;
     private int offset = 0;
+    private String filter = "";
 
     private RecyclerView recyclerView;
     private GroupCardAdapter adapter;
@@ -63,6 +69,8 @@ public class ListGroupsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_list_groups, container, false);
+
+        setHasOptionsMenu(true);
 
         gIntent = getActivity().getIntent();
 
@@ -107,6 +115,7 @@ public class ListGroupsFragment extends Fragment {
                 if (!fetching) {
                     refreshing = true;
                     offset = 0;
+                    filter = "";
                     fetchGroups();
                 }
             }
@@ -151,6 +160,7 @@ public class ListGroupsFragment extends Fragment {
         try {
             params.put("offset", offset);
             params.put("quantity", 15);
+            params.put("filter", filter);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -178,7 +188,7 @@ public class ListGroupsFragment extends Fragment {
                                             group.getInt("groupid"),
                                             group.getString("type"),
                                             group.getString("teacherName"),
-                                            group.getString("year"),
+                                            group.getString("YEAR"),
                                             R.drawable.ic_launcher_foreground
                                     ));
                                     offset++;
@@ -245,5 +255,41 @@ public class ListGroupsFragment extends Fragment {
                 getActivity().finish();
             }
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.search_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!fetching) {
+                    refreshing = true;
+                    offset = 0;
+                    filter = query;
+                    fetchGroups();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!fetching) {
+                    refreshing = true;
+                    offset = 0;
+                    filter = newText;
+                    fetchGroups();
+                }
+                return false;
+            }
+        });
     }
 }
