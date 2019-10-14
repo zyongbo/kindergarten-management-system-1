@@ -53,9 +53,9 @@ public class ChildCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             Child child = children.get(position);
             ((ChildrenCardViewHolder) holder).imageView.setImageResource(child.getImageResource());
             ((ChildrenCardViewHolder) holder).textViewChildName.setText(child.getName());
-            ((ChildrenCardViewHolder) holder).textViewGroupType.setText(child.getGroupType());
             ((ChildrenCardViewHolder) holder).textViewParentName.setText(child.getParentName());
             ((ChildrenCardViewHolder) holder).textViewParentEmail.setText(child.getParentEmail());
+            ((ChildrenCardViewHolder) holder).textViewGroupType.setText(child.getGroupType());
         } else {
             ((ProgressBarViewHolder) holder).progressBar.setIndeterminate(true);
         }

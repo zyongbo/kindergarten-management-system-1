@@ -11,6 +11,16 @@ public class Child {
     private String parentEmail;
     private int absences;
     private String isCheckedToday;
+    private int groupId;
+
+    public Child(int id, int groupId) {
+        this.id = id;
+        this.groupId = groupId;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
 
     public Child(int id, int imageResource, String name, String groupType, String parentName, String parentEmail) {
         this.id = id;
@@ -75,6 +85,10 @@ public class Child {
         return imageResource;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }
@@ -84,6 +98,8 @@ public class Child {
     }
 
     public String getGroupType() {
+        if (this.groupType.equals("null"))
+            return "";
         return groupType;
     }
 

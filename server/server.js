@@ -190,7 +190,7 @@ app.post('/children', (req, res) => {
                     (
                         (
                             thesis.children AS children
-                            INNER JOIN thesis.groups AS groups ON children.groupid = groups.groupid
+                            LEFT JOIN thesis.groups AS groups ON children.groupid = groups.groupid
                         )
                         INNER JOIN thesis.users AS users ON children.parentid = users.userid
                     )
@@ -527,17 +527,19 @@ app.post('/child', async (req, res) => {
     try{
         const child = await query(`
         SELECT
+            children.childid as childId,
             children.name AS childName,
             DATE_FORMAT(children.birth, \'%Y/%m/%d\') AS childBirth,
             parent.Name AS parentName,
             teacher.Name AS teacherName,
+            groups.groupId AS groupId,
             groups.Type AS groupType,
             COUNT(absentees.date) AS 'absences'
         FROM
             children
-        INNER JOIN groups ON children.GroupID = groups.GroupID
-        INNER JOIN users AS parent ON children.ParentID = parent.UserID
-        INNER JOIN users AS teacher ON groups.TeacherID = teacher.UserID
+        LEFT JOIN groups ON children.GroupID = groups.GroupID
+        LEFT JOIN users AS parent ON children.ParentID = parent.UserID
+        LEFT JOIN users AS teacher ON groups.TeacherID = teacher.UserID
         LEFT JOIN absentees ON absentees.ChildID = children.ChildID
         WHERE
             children.ChildID = ?
@@ -776,7 +778,8 @@ app.get('/myGroupAbsentees', (req, res) => {
     INNER JOIN users ON groups.TeacherID = users.UserID
     LEFT JOIN absentees ON absentees.ChildID = children.ChildID
     WHERE
-        users.UserID = ?
+        users.UserID = ?,
+        absentees.Date > DATEFROMPARTS(year(getdate()) -1, 08, 01)
     AND groups.type != 'FINISHED'
     GROUP BY
         children.NAME,
@@ -839,6 +842,72 @@ app.post('/saveMyGroupAbsentees',  async (req, res) => {
         })
         console.log(err.code)
     }
+})
+
+app.post('/removeChildFromGroup', (req, res) => {
+    console.log('/removeChildFromGroup--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    /*if (req.session.role != 'PRINCIPAL') {
+        res.send({
+            'status': 'failed',
+            'code': 'NO_PERMISSION'
+        })
+    }*/
+
+    con.query(`
+    UPDATE children
+    SET GroupID = NULL
+    WHERE
+        ChildID = ?
+        `, [req.body.childId], (err, result) => {
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (err == null) {
+            res.send({
+                'status': 'success'
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed'
+            })
+        }
+    })
+})
+
+app.post('/addChildToGroup', (req, res) => {
+    console.log('/addChildToGroup--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    /*if (req.session.role != 'PRINCIPAL') {
+        res.send({
+            'status': 'failed',
+            'code': 'NO_PERMISSION'
+        })
+    }*/
+
+    con.query(`
+    UPDATE children
+    SET GroupID = ?
+    WHERE
+        ChildID = ?
+        `, [req.body.groupId, req.body.childId], (err, result) => {
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (err == null) {
+            res.send({
+                'status': 'success'
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed'
+            })
+        }
+    })
 })
 
 

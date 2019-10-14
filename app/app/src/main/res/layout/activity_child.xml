@@ -28,7 +28,7 @@
                 android:id="@+id/text_view_child_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Child One"
+                tools:text="Child One"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/textView4"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -60,7 +60,7 @@
                 android:id="@+id/text_view_parent_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Parent One"
+                tools:text="Parent One"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/textView5"
                 app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -99,7 +99,7 @@
                 android:id="@+id/text_view_date_of_birth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2015.02.04"
+                tools:text="2015.02.04"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/textView6"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -108,7 +108,7 @@
                 android:id="@+id/text_view_teacher_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Teacher One"
+                tools:text="Teacher One"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/textView7"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
@@ -137,7 +137,7 @@
                 android:id="@+id/text_view_group_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MEDIUM"
+                tools:text="MEDIUM"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/textView8"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -161,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="15"
+                tools:text="15"
                 android:textSize="18sp"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView10"
                 app:layout_constraintStart_toEndOf="@+id/textView10" />
@@ -174,9 +174,10 @@
             android:padding="16dp">
 
             <TextView
+                android:id="@+id/text_view_absences_display"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Absences"
+                tools:text="Absences"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 

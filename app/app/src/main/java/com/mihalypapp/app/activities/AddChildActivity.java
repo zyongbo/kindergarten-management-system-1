@@ -105,7 +105,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedParent = (User) adapterView.getAdapter().getItem(i);
-                Toast.makeText(AddChildActivity.this, Integer.valueOf(selectedParent.getId()).toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(AddChildActivity.this, Integer.valueOf(selectedParent.getId()).toString(), Toast.LENGTH_SHORT).show();
                 isParentSelected = true;
                 textInputLayoutParents.setError(null);
             }
@@ -134,7 +134,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedGroup = (Group) adapterView.getAdapter().getItem(i);
-                Toast.makeText(AddChildActivity.this, Integer.valueOf(selectedGroup.getId()).toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(AddChildActivity.this, Integer.valueOf(selectedGroup.getId()).toString(), Toast.LENGTH_SHORT).show();
                 isGroupSelected = true;
                 textInputLayoutGroups.setError(null);
             }

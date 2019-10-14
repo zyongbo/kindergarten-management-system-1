@@ -1,9 +1,11 @@
 package com.mihalypapp.app.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +40,7 @@ import java.util.Objects;
 public class GroupActivity extends AppCompatActivity implements FinishGroupDialog.FinishGroupListener, UpgradeGroupDialog.UpgradeGroupListener {
 
     private static final String TAG = "GroupActivity";
+    private static final int RC_CHILD = 88;
 
     public static final String GROUP_ID = "com.mihalypapp.GROUP_ID";
 
@@ -54,12 +57,14 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
 
     private int groupId;
 
+    private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-        Intent intent = getIntent();
+        intent = getIntent();
         groupId = intent.getIntExtra(GROUP_ID, -1);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -73,6 +78,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
         buttonFinishGroup = findViewById(R.id.button_finish_group);
         textViewGroupSize = findViewById(R.id.text_view_group_size);
 
+        adapter = new ChildCardArrayAdapter(GroupActivity.this, childList, 1);
 
         listView = findViewById(R.id.list_view_children);
 
@@ -82,7 +88,8 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                 Child child = (Child) adapterView.getItemAtPosition(i);
                 Intent intent = new Intent(GroupActivity.this, ChildActivity.class);
                 intent.putExtra(ChildActivity.CHILD_ID, child.getId());
-                startActivity(intent);
+                intent.putExtra("from", "group");
+                startActivityForResult(intent, RC_CHILD);
             }
         });
 
@@ -90,6 +97,8 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
     }
 
     private void fetchGroup() {
+        childList.clear();
+
         JSONObject params = new JSONObject();
         if (groupId == -1) {
             Log.e(TAG, "-1 groupId");
@@ -107,26 +116,45 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                     public void onResponse(JSONObject response) {
                         Log.i(TAG, "Response: " + response.toString());
                         try {
+
                             if (response.getString("status").equals("success")) {
                                 final JSONObject resGroup = response.getJSONArray("group").getJSONObject(0);
-                                if (response.getString("userRole").equals("PRINCIPAL") && !resGroup.getString("type").equals("FINISHED")) {
-                                    buttonFinishGroup.setVisibility(View.VISIBLE);
-                                    if (resGroup.getString("type").equals("BIG")) {
-                                        buttonFinishGroup.setText("Finish");
+
+                                if (intent.hasExtra("request")) {
+                                    if (Objects.requireNonNull(intent.getStringExtra("request")).equals("groupId")) {
+                                        buttonFinishGroup.setVisibility(View.VISIBLE);
+                                        buttonFinishGroup.setText("Select");
                                         buttonFinishGroup.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                openFinishDialog();
+                                                Intent returnIntent = new Intent();
+                                                returnIntent.putExtra("groupId", groupId);
+                                                setResult(Activity.RESULT_OK, returnIntent);
+                                                Log.i(TAG, Integer.valueOf(groupId).toString());
+                                                finish();
                                             }
                                         });
-                                    } else {
-                                        buttonFinishGroup.setText("Upgrade");
-                                        buttonFinishGroup.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                openUpgradeDialog();
-                                            }
-                                        });
+                                    }
+                                } else {
+                                    if (response.getString("userRole").equals("PRINCIPAL") && !resGroup.getString("type").equals("FINISHED")) {
+                                        buttonFinishGroup.setVisibility(View.VISIBLE);
+                                        if (resGroup.getString("type").equals("BIG")) {
+                                            buttonFinishGroup.setText("Finish");
+                                            buttonFinishGroup.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    openFinishDialog();
+                                                }
+                                            });
+                                        } else {
+                                            buttonFinishGroup.setText("Upgrade");
+                                            buttonFinishGroup.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    openUpgradeDialog();
+                                                }
+                                            });
+                                        }
                                     }
                                 }
 
@@ -152,10 +180,10 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                             child.getString("parentName"),
                                             child.getString("parentEmail")
                                     ));
-                                    adapter = new ChildCardArrayAdapter(GroupActivity.this, childList, 1);
-                                    listView.setAdapter(adapter);
                                 }
 
+                                adapter.notifyDataSetChanged();
+                                listView.setAdapter(adapter);
                                 textViewGroupSize.setText(Integer.valueOf(group.getSize()).toString());
                             } else {
                                 Toast.makeText(GroupActivity.this,"Error", Toast.LENGTH_SHORT).show();
@@ -286,5 +314,16 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
     public void onUpgradeYesClicked() {
         Log.i(TAG, Integer.valueOf(groupId).toString());
         upgradeGroup();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_CHILD) {
+            if (resultCode == Activity.RESULT_OK) {
+                fetchGroup();
+                Log.i(TAG, Integer.valueOf(requestCode).toString());
+            }
+        }
     }
 }

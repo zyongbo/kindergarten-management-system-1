@@ -1,17 +1,17 @@
 package com.mihalypapp.app.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,13 +36,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
 public class ListGroupsFragment extends Fragment {
 
     private static final String TAG = "ListGroupsFragment";
 
     private static final int RC_ADD_GROUP = 9;
     private static final int RC_OVERVIEW_GROUP = 10;
+    public static final int RC_CHOOSE_GROUP_FOR_CHILD = 11;
 
     private ArrayList<Group> groupCardList = new ArrayList<>();
 
@@ -56,13 +56,30 @@ public class ListGroupsFragment extends Fragment {
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
 
+    private Intent gIntent;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_list_groups, container, false);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Groups");
+        gIntent = getActivity().getIntent();
+
+        if (gIntent.hasExtra("request")) {
+            if (gIntent.getStringExtra("request").equals("groupId")) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+                Toolbar toolbar = view.findViewById(R.id.toolbar_fragment_list_groups);
+                toolbar.setVisibility(View.VISIBLE);
+                ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Select group");
+
+            }
+        } else {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Groups");
+        }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new GroupCardAdapter(groupCardList);
@@ -102,7 +119,15 @@ public class ListGroupsFragment extends Fragment {
                 //Toast.makeText(getContext(), Integer.valueOf(groupId).toString() + " was clicked!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), GroupActivity.class);
                 intent.putExtra(GroupActivity.GROUP_ID, groupId);
-                startActivityForResult(intent, RC_OVERVIEW_GROUP);
+                Intent gIntent = getActivity().getIntent();
+                if (gIntent.hasExtra("request")) {
+                    if (gIntent.getStringExtra("request").equals("groupId")) {
+                        intent.putExtra("request", "groupId");
+                        startActivityForResult(intent, RC_CHOOSE_GROUP_FOR_CHILD);
+                    }
+                } else {
+                    startActivityForResult(intent, RC_OVERVIEW_GROUP);
+                }
             }
         });
 
@@ -204,6 +229,21 @@ public class ListGroupsFragment extends Fragment {
             showingProgressBar = false;
             groupCardList.remove(groupCardList.size() - 1);
             adapter.notifyItemRemoved(groupCardList.size());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i(TAG, Integer.valueOf(requestCode).toString());
+        if (requestCode == ListGroupsFragment.RC_CHOOSE_GROUP_FOR_CHILD) {
+            Intent returnIntent = new Intent();
+            if (resultCode == Activity.RESULT_OK) {
+                returnIntent.putExtra("groupId", data.getIntExtra("groupId", -1));
+                Log.i(TAG, Integer.valueOf(data.getIntExtra("groupId", -1)).toString());
+                getActivity().setResult(Activity.RESULT_OK, returnIntent);
+                getActivity().finish();
+            }
         }
     }
 }

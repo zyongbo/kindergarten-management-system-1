@@ -1,5 +1,6 @@
 package com.mihalypapp.app.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -14,13 +15,24 @@ import com.mihalypapp.app.fragments.ListUsersScreenSlideFragment;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.fragments.MyUserFragment;
 
+import java.util.Objects;
+
 public class PrincipalActivity extends DrawerActivity {
 
     private static final String TAG = "PrincipalActivity";
 
+    private boolean hasRequest = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        if (intent.hasExtra("request")) {
+            hasRequest = true;
+            if (Objects.requireNonNull(intent.getStringExtra("request")).equals("groupId")) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListGroupsFragment()).commit();
+            }
+        }
     }
 
     @Override
@@ -64,5 +76,28 @@ public class PrincipalActivity extends DrawerActivity {
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(hasRequest) {
+            finish();
+        } else {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                moveTaskToBack(true);
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId()==android.R.id.home)
+        {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

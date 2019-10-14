@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/item_view_group"
+        android:title="View group"
+        app:showAsAction="never"/>
+    <item android:id="@+id/item_remove_from_group"
+        android:title="Remove from the group"
+        app:showAsAction="never"/>
+    <item android:id="@+id/item_add_to_group"
+        android:title="Add to group"
+        app:showAsAction="never"/>
+</menu>

@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i(TAG, Integer.valueOf(requestCode).toString());
         switch (requestCode) {
             case RC_PRINCIPAL:
             case RC_PARENT:
@@ -194,6 +195,8 @@ public class MainActivity extends AppCompatActivity {
                     logout();
                 } else if (resultCode == RESULT_CANCELED) {
                     Log.i(TAG, "Cookies after RESULT_CANCELED: " + cookieManager.getCookieStore().getCookies().toString());
+                } else {
+                    moveTaskToBack(true);
                 }
                 break;
         }

@@ -13,7 +13,7 @@ import com.mihalypapp.app.fragments.MyUserFragment;
 
 public class ParentActivity extends DrawerActivity {
 
-    private static final String TAG = "PrincipalActivity";
+    private static final String TAG = "ParentActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
