@@ -48,7 +48,8 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
     private TextView textViewGroupType;
     private TextView textViewGroupYear;
     private TextView textViewGroupSize;
-    private Button buttonFinishGroup;
+    private Button buttonGroup;
+    private TextView textViewChildrenDisplay;
 
     private Group group;
     private ArrayList<Child> childList = new ArrayList<>();
@@ -75,8 +76,9 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
         textViewTeacherName = findViewById(R.id.text_view_teacher_name);
         textViewGroupType = findViewById(R.id.text_view_group_type);
         textViewGroupYear = findViewById(R.id.text_view_group_year);
-        buttonFinishGroup = findViewById(R.id.button_finish_group);
+        buttonGroup = findViewById(R.id.button_group);
         textViewGroupSize = findViewById(R.id.text_view_group_size);
+        textViewChildrenDisplay = findViewById(R.id.text_view_children_display);
 
         adapter = new ChildCardArrayAdapter(GroupActivity.this, childList, 1);
 
@@ -122,9 +124,9 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
 
                                 if (intent.hasExtra("request")) {
                                     if (Objects.requireNonNull(intent.getStringExtra("request")).equals("groupId")) {
-                                        buttonFinishGroup.setVisibility(View.VISIBLE);
-                                        buttonFinishGroup.setText("Select");
-                                        buttonFinishGroup.setOnClickListener(new View.OnClickListener() {
+                                        buttonGroup.setVisibility(View.VISIBLE);
+                                        buttonGroup.setText("Select");
+                                        buttonGroup.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
                                                 Intent returnIntent = new Intent();
@@ -137,18 +139,18 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                     }
                                 } else {
                                     if (response.getString("userRole").equals("PRINCIPAL") && !resGroup.getString("type").equals("FINISHED")) {
-                                        buttonFinishGroup.setVisibility(View.VISIBLE);
+                                        buttonGroup.setVisibility(View.VISIBLE);
                                         if (resGroup.getString("type").equals("BIG")) {
-                                            buttonFinishGroup.setText("Finish");
-                                            buttonFinishGroup.setOnClickListener(new View.OnClickListener() {
+                                            buttonGroup.setText("Finish");
+                                            buttonGroup.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
                                                     openFinishDialog();
                                                 }
                                             });
                                         } else {
-                                            buttonFinishGroup.setText("Upgrade");
-                                            buttonFinishGroup.setOnClickListener(new View.OnClickListener() {
+                                            buttonGroup.setText("Upgrade");
+                                            buttonGroup.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
                                                     openUpgradeDialog();
@@ -170,6 +172,11 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                 textViewGroupYear.setText(group.getYear());
 
                                 JSONArray children = response.getJSONArray("children");
+                                if (children.length() > 0) {
+                                    textViewChildrenDisplay.setText("Children");
+                                } else {
+                                    textViewChildrenDisplay.setText("No children");
+                                }
                                 for (int i = 0; i < children.length(); i++) {
                                     JSONObject child = children.getJSONObject(i);
                                     childList.add(new Child(
@@ -224,6 +231,8 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                         try {
                             if (response.getString("status").equals("success")) {
                                 Toast.makeText(GroupActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                                fetchGroup();
+                                buttonGroup.setVisibility(View.INVISIBLE);
                             } else {
                                 Toast.makeText(GroupActivity.this,"Failed!", Toast.LENGTH_SHORT).show();
                             }
@@ -263,6 +272,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                         try {
                             if (response.getString("status").equals("success")) {
                                 Toast.makeText(GroupActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                                fetchGroup();
                             } else {
                                 Toast.makeText(GroupActivity.this,"Failed!", Toast.LENGTH_SHORT).show();
                             }

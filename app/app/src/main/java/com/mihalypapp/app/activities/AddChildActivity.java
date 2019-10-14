@@ -273,7 +273,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
                         try {
                             if (response.getString("status").equals("success")) {
                                 clearFields();
-                                Toast.makeText(AddChildActivity.this, "Group successfully added!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddChildActivity.this, "Child successfully added!", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(AddChildActivity.this, "ERROR!?", Toast.LENGTH_SHORT).show();
                             }

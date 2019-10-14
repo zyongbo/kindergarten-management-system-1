@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -86,6 +87,7 @@ public class ChildActivity extends AppCompatActivity {
     }
 
     private void fetchChild() {
+        absenceList.clear();
         JSONObject params = new JSONObject();
         final Intent intent = getIntent();
         final int childId = intent.getIntExtra(CHILD_ID, -1);
@@ -117,18 +119,30 @@ public class ChildActivity extends AppCompatActivity {
                                 textViewDateOfBirth.setText(child.getString("childBirth"));
                                 textViewAbsences.setText(child.getString("absences"));
 
-                                if (selectedChild.getGroupId() == -1) {
+                                if (response.getString("userRole").equals("TEACHER")) {
                                     itemViewGroup.setVisible(false);
-                                    itemAddChildToGroup.setVisible(true);
-                                    itemRemoveChildFromGroup.setVisible(false);
-                                    textViewTeacherName.setText("-");
-                                    textViewGroupType.setText("-");
-                                } else {
-                                    itemAddChildToGroup.setVisible(false);
-                                    itemRemoveChildFromGroup.setVisible(true);
-                                    itemViewGroup.setVisible(true);
-                                    textViewTeacherName.setText(child.getString("teacherName"));
-                                    textViewGroupType.setText(child.getString("groupType"));
+                                } else if (response.getString("userRole").equals("PRINCIPAL")) {
+                                    if (selectedChild.getGroupId() == -1) {
+                                        itemViewGroup.setVisible(false);
+                                        itemAddChildToGroup.setVisible(true);
+                                        itemRemoveChildFromGroup.setVisible(false);
+                                        textViewTeacherName.setText("-");
+                                        textViewGroupType.setText("-");
+                                    } else {
+                                        if (getIntent().hasExtra("from")) {
+                                            if (getIntent().getStringExtra("from").equals("group")) {
+                                                itemViewGroup.setVisible(false);
+                                            } else {
+                                                itemViewGroup.setVisible(true);
+                                            }
+                                        } else {
+                                            itemViewGroup.setVisible(true);
+                                        }
+                                        itemAddChildToGroup.setVisible(false);
+                                        itemRemoveChildFromGroup.setVisible(true);
+                                        textViewTeacherName.setText(child.getString("teacherName"));
+                                        textViewGroupType.setText(child.getString("groupType"));
+                                    }
                                 }
 
                                 JSONArray absences = response.getJSONArray("absences");

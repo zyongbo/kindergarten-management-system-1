@@ -127,102 +127,246 @@ app.post('/addUser', (req, res) => {
     })
 })
 
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
     console.log('/users----------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
     console.log('Request: ' + JSON.stringify(req.body))
 
-    setTimeout(() => {
-        if (req.session.role == 'PRINCIPAL') {
-            con.query(`
-                SELECT
-                    userid AS userId,
-                    name,
-                    email
-                FROM
-                    thesis.users
-                WHERE
-                    role = ?
-                ORDER BY
-                    name ASC
-                LIMIT ?, ?
-                `, [req.body.role, req.body.offset, req.body.quantity], function (err, users) {
-                console.log('Result: ' + JSON.stringify(users))
-                if (err) {
-                    res.send({
-                        'status': 'failed',
-                        'code': 'ERROR'
-                    })
-                    throw err
-                } else {
-                    res.send({
-                        'status': 'success',
-                        'users': users
-                    })
+    if (req.session.role == 'PRINCIPAL') {
+        var users = null
+        try{
+            if(req.body.filter.includes(':')){
+                const splittedFilter = req.body.filter.split(':')
+                if(splittedFilter[0] == 'name') {
+                    users = await query(`
+                        SELECT
+                            userid AS userId,
+                            name,
+                            email
+                        FROM
+                            thesis.users
+                        WHERE
+                            role = ? AND name LIKE ?
+                        ORDER BY
+                            name ASC
+                        LIMIT ?, ?
+                    `, [req.body.role, splittedFilter[1] + '%', req.body.offset, req.body.quantity])
+                } else if (splittedFilter[0] == 'email') {
+                    users = await query(`
+                        SELECT
+                            userid AS userId,
+                            name,
+                            email
+                        FROM
+                            thesis.users
+                        WHERE
+                            role = ? AND email LIKE ?
+                        ORDER BY
+                            name ASC
+                        LIMIT ?, ?
+                    `, [req.body.role, splittedFilter[1] + '%', req.body.offset, req.body.quantity])
                 }
-            });
-        } else {
+            } else {
+                users = await query(`
+                    SELECT
+                        userid AS userId,
+                        name,
+                        email
+                    FROM
+                        thesis.users
+                    WHERE
+                        role = ?
+                    ORDER BY
+                        name ASC
+                    LIMIT ?, ?
+                `, [req.body.role, req.body.offset, req.body.quantity])
+            }
+            res.send({
+                'status': 'success',
+                'users': users
+            })
+        } catch (err) {
+            console.log(err)
             res.send({
                 'status': 'failed',
-                'code': 'NO_PERMISSION'
+                'code': 'ERROR'
             })
         }
-    }, 200);
+    } else {
+        res.send({
+            'status': 'failed',
+            'code': 'NO_PERMISSION'
+        })
+    }
 })
 
-app.post('/children', (req, res) => {
+app.post('/children', async (req, res) => {
     console.log('/children--------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
     console.log('Request: ' + JSON.stringify(req.body))
 
-    setTimeout(() => {
-        if (req.session.role == 'PRINCIPAL') {
-            con.query(`
-                SELECT
-                    children.childid AS childId,
-                    children.name AS childName,
-                    groups.type AS groupType,
-                    users.name AS parentName,
-                    users.email as parentEmail
-                FROM 
-                    (
+
+    if (req.session.role == 'PRINCIPAL') {
+        let children = null
+        try {
+            if(req.body.filter.includes(':')) {
+                const splittedFilter = req.body.filter.split(':')
+                if(splittedFilter[0] == 'name') {
+                    children = await query(`
+                    SELECT
+                        children.childid AS childId,
+                        children.name AS childName,
+                        groups.type AS groupType,
+                        users.name AS parentName,
+                        users.email as parentEmail
+                    FROM 
                         (
-                            thesis.children AS children
-                            LEFT JOIN thesis.groups AS groups ON children.groupid = groups.groupid
+                            (
+                                thesis.children AS children
+                                LEFT JOIN thesis.groups AS groups ON children.groupid = groups.groupid
+                            )
+                            INNER JOIN thesis.users AS users ON children.parentid = users.userid
                         )
-                        INNER JOIN thesis.users AS users ON children.parentid = users.userid
-                    )
-                ORDER BY
-                    childName
-                ASC LIMIT ?, ?
-            `, [req.body.offset, req.body.quantity],
-                function (err, children) {
-                    console.log('Result: ' + JSON.stringify(children))
-                    if (err) {
-                        res.send({
-                            'status': 'failed',
-                            'code': 'ERROR'
-                        })
-                        throw err
+                    WHERE
+                        children.name LIKE ?
+                    ORDER BY
+                        childName
+                    ASC LIMIT ?, ?
+                    `, [splittedFilter[1] + '%', req.body.offset, req.body.quantity])
+                } else if(splittedFilter[0] == 'type') {
+                    if(splittedFilter[1] == '') {
+                        children = await query(`
+                        SELECT
+                            children.childid AS childId,
+                            children.name AS childName,
+                            groups.type AS groupType,
+                            users.name AS parentName,
+                            users.email as parentEmail
+                        FROM 
+                            (
+                                (
+                                    thesis.children AS children
+                                    LEFT JOIN thesis.groups AS groups ON children.groupid = groups.groupid
+                                )
+                                INNER JOIN thesis.users AS users ON children.parentid = users.userid
+                            )
+                        WHERE
+                            groups.type is NULL
+                        ORDER BY
+                            childName
+                        ASC LIMIT ?, ?
+                        `, [req.body.offset, req.body.quantity])
                     } else {
-                        res.send({
-                            'status': 'success',
-                            'children': children
-                        })
+                        children = await query(`
+                        SELECT
+                            children.childid AS childId,
+                            children.name AS childName,
+                            groups.type AS groupType,
+                            users.name AS parentName,
+                            users.email as parentEmail
+                        FROM 
+                            (
+                                (
+                                    thesis.children AS children
+                                    LEFT JOIN thesis.groups AS groups ON children.groupid = groups.groupid
+                                )
+                                INNER JOIN thesis.users AS users ON children.parentid = users.userid
+                            )
+                        WHERE
+                            groups.type LIKE ?
+                        ORDER BY
+                            childName
+                        ASC LIMIT ?, ?
+                        `, [splittedFilter[1] + '%', req.body.offset, req.body.quantity])
                     }
-                });
-        } else {
+                } else if(splittedFilter[0] == 'parent') {
+                    children = await query(`
+                    SELECT
+                        children.childid AS childId,
+                        children.name AS childName,
+                        groups.type AS groupType,
+                        users.name AS parentName,
+                        users.email as parentEmail
+                    FROM 
+                        (
+                            (
+                                thesis.children AS children
+                                LEFT JOIN thesis.groups AS groups ON children.groupid = groups.groupid
+                            )
+                            INNER JOIN thesis.users AS users ON children.parentid = users.userid
+                        )
+                    WHERE
+                        users.name LIKE ?
+                    ORDER BY
+                        childName
+                    ASC LIMIT ?, ?
+                    `, [splittedFilter[1] + '%', req.body.offset, req.body.quantity])
+                } else if(splittedFilter[0] == 'email') {
+                    children = await query(`
+                    SELECT
+                        children.childid AS childId,
+                        children.name AS childName,
+                        groups.type AS groupType,
+                        users.name AS parentName,
+                        users.email as parentEmail
+                    FROM 
+                        (
+                            (
+                                thesis.children AS children
+                                LEFT JOIN thesis.groups AS groups ON children.groupid = groups.groupid
+                            )
+                            INNER JOIN thesis.users AS users ON children.parentid = users.userid
+                        )
+                    WHERE
+                        users.email LIKE ?
+                    ORDER BY
+                        childName
+                    ASC LIMIT ?, ?
+                    `, [splittedFilter[1] + '%', req.body.offset, req.body.quantity])
+                }
+            } else {
+                children = await query(`
+                    SELECT
+                        children.childid AS childId,
+                        children.name AS childName,
+                        groups.type AS groupType,
+                        users.name AS parentName,
+                        users.email as parentEmail
+                    FROM 
+                        (
+                            (
+                                thesis.children AS children
+                                LEFT JOIN thesis.groups AS groups ON children.groupid = groups.groupid
+                            )
+                            INNER JOIN thesis.users AS users ON children.parentid = users.userid
+                        )
+                    ORDER BY
+                        childName
+                    ASC LIMIT ?, ?
+                    `, [req.body.offset, req.body.quantity])
+            }
+            res.send({
+                'status': 'success',
+                'children': children
+            })
+        } catch (err) {
+            console.log(err)
             res.send({
                 'status': 'failed',
-                'code': 'NO_PERMISSION'
+                'code': 'ERROR'
             })
         }
-    }, 200);
+    } else {
+        res.send({
+            'status': 'failed',
+            'code': 'NO_PERMISSION'
+        })
+    }
 })
 
-app.post('/groups', (req, res) => {
+/*app.post('/groups', (req, res) => {
     console.log('/groups----------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
@@ -230,7 +374,20 @@ app.post('/groups', (req, res) => {
 
     setTimeout(() => {
         if (req.session.role == 'PRINCIPAL') {
-            con.query("SELECT groups.groupid, groups.type, groups.year, users.name as teacherName FROM thesis.groups AS groups INNER JOIN thesis.users AS users ON (groups.teacherid = users.userid) ORDER BY year DESC LIMIT ?, ?",
+            con.query(`
+                SELECT
+                    groups.groupid,
+                    groups.type,
+                    groups. YEAR,
+                    users. NAME AS teacherName
+                FROM
+                    thesis.groups AS groups
+                INNER JOIN thesis.users AS users ON (
+                    groups.teacherid = users.userid
+                )
+                ORDER BY
+                    YEAR DESC
+                LIMIT ?, ?`,
                 [req.body.offset, req.body.quantity],
                 function (err, groups) {
                     console.log('Result: ' + JSON.stringify(groups))
@@ -254,6 +411,113 @@ app.post('/groups', (req, res) => {
             })
         }
     }, 200);
+})*/
+
+app.post('/groups', async (req, res) => {
+    console.log('/groups----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    if (req.session.role == 'PRINCIPAL') {
+        let groups = null
+        try {
+            if(req.body.filter.includes(':')) {
+                const splittedFilter = req.body.filter.split(':')
+                console.log(splittedFilter[0])
+                if(splittedFilter[0] == 'name') {
+                    console.log(splittedFilter[1])
+                    groups = await query(`
+                    SELECT
+                        groups.groupid,
+                        groups.type,
+                        groups.YEAR,
+                        users.NAME AS teacherName
+                    FROM
+                        thesis.groups AS groups
+                    INNER JOIN thesis.users AS users ON (
+                        groups.teacherid = users.userid
+                    )
+                    WHERE
+                        users.NAME LIKE ?
+                    ORDER BY
+                        YEAR DESC
+                    LIMIT ?, ?`,
+                    [splittedFilter[1] + '%', req.body.offset, req.body.quantity]);
+                } else if (splittedFilter[0] == 'type') {
+                    console.log(splittedFilter[1])
+                    groups = await query(`
+                    SELECT
+                        groups.groupid,
+                        groups.type,
+                        groups.YEAR,
+                        users.NAME AS teacherName
+                    FROM
+                        thesis.groups AS groups
+                    INNER JOIN thesis.users AS users ON (
+                        groups.teacherid = users.userid
+                    )
+                    WHERE
+                        groups.type LIKE ?
+                    ORDER BY
+                        YEAR DESC
+                    LIMIT ?, ?`,
+                    [splittedFilter[1] + '%', req.body.offset, req.body.quantity]);
+                } else if (splittedFilter[0] == "year") {
+                    console.log(splittedFilter[1])
+                    groups = await query(`
+                    SELECT
+                        groups.groupid,
+                        groups.type,
+                        groups.YEAR,
+                        users.NAME AS teacherName
+                    FROM
+                        thesis.groups AS groups
+                    INNER JOIN thesis.users AS users ON (
+                        groups.teacherid = users.userid
+                    )
+                    WHERE
+                        groups.YEAR = ?
+                    ORDER BY
+                        YEAR DESC
+                    LIMIT ?, ?`,
+                    [splittedFilter[1], req.body.offset, req.body.quantity]);
+                }
+            } else {
+                groups = await query(`
+                SELECT
+                    groups.groupid,
+                    groups.type,
+                    groups.YEAR,
+                    users.NAME AS teacherName
+                FROM
+                    thesis.groups AS groups
+                INNER JOIN thesis.users AS users ON (
+                    groups.teacherid = users.userid
+                )
+                ORDER BY
+                    YEAR DESC
+                LIMIT ?, ?`,
+                [req.body.offset, req.body.quantity]);
+            }
+
+            res.send({
+                'status': 'success',
+                'groups': groups
+            })
+        } catch (err) {
+            console.log(err)
+            res.send({
+                'status': 'failed',
+                'code': 'ERROR'
+            })
+        }
+    } else {
+        res.send({
+            'status': 'failed',
+            'code': 'NO_PERMISSION'
+        })
+    }
 })
 
 app.get('/teachers/noGroup', (req, res) => {
@@ -563,7 +827,8 @@ app.post('/child', async (req, res) => {
         res.send({
             'status': 'success',
             'child': child,
-            'absences': absences
+            'absences': absences,
+            'userRole': req.session.role
         })
     } catch (err) {
         res.send({
@@ -737,28 +1002,34 @@ app.post('/upgradeGroup', async (req, res) => {
         })
     }
 
-    con.query(`
-    UPDATE groups
-    SET
-        type = type + 1 
-    WHERE
-        groupid = ?
-    AND type != 'FINISHED'
-    `, [req.body.groupId], (err, result) => {
+    try {
+        await query(`
+            UPDATE groups
+            SET
+                type = type + 1 
+            WHERE
+                groupid = ?
+            AND type != 'FINISHED'
+        `, [req.body.groupId])
 
-        if (err) throw err
-        console.log('Result: ' + JSON.stringify(result))
-        if (err == null) {
-            res.send({
-                'status': 'success'
-            })
-        } else {
-            console.log(err)
-            res.send({
-                'status': 'failed'
-            })
-        }
-    })
+        await query(`
+            DELETE absentees
+            FROM
+                absentees
+            INNER JOIN children ON absentees.ChildID = children.ChildID
+            INNER JOIN groups ON children.GroupID = groups.GroupID
+            WHERE
+                groups.GroupID = ?
+        `, [req.body.groupId])      
+
+        res.send({
+            'status': 'success'
+        })
+    } catch (err) {
+        res.send({
+            'status': 'failed'
+        })
+    }
 })
 
 app.get('/myGroupAbsentees', (req, res) => {
@@ -778,8 +1049,7 @@ app.get('/myGroupAbsentees', (req, res) => {
     INNER JOIN users ON groups.TeacherID = users.UserID
     LEFT JOIN absentees ON absentees.ChildID = children.ChildID
     WHERE
-        users.UserID = ?,
-        absentees.Date > DATEFROMPARTS(year(getdate()) -1, 08, 01)
+        users.UserID = ?
     AND groups.type != 'FINISHED'
     GROUP BY
         children.NAME,

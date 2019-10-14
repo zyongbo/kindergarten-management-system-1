@@ -189,7 +189,7 @@ public class ListGroupsFragment extends Fragment {
                                             group.getString("type"),
                                             group.getString("teacherName"),
                                             group.getString("YEAR"),
-                                            R.drawable.ic_launcher_foreground
+                                            R.drawable.ic_groups
                                     ));
                                     offset++;
                                 }
