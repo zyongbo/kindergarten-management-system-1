@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:paddingRight="16dp"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/text_view_group_teacher_name"
@@ -12,7 +13,7 @@
         android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="Teacher One"
+        tools:text="Teacher One"
         android:textAppearance="?attr/textAppearanceSubtitle1" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -23,7 +24,7 @@
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="BIG" />
+        tools:text="BIG" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/text_view_group_year"
@@ -34,7 +35,7 @@
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="2019" />
+        tools:text="2019" />
 
 
 </RelativeLayout>

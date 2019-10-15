@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/image_view"
-            android:text="Children One"
+            tools:text="Children One"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -35,7 +36,7 @@
             android:layout_above="@+id/text_view_parent_email"
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="0dp"
-            android:text="Parent One"
+            tools:text="Parent One"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
 
@@ -46,7 +47,7 @@
             android:layout_below="@+id/text_view_child_name"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/image_view"
-            android:text="Medium group"
+            tools:text="Medium group"
             android:textSize="15sp" />
 
         <TextView
@@ -54,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_view_child_name"
-            android:text="parent1@gmail.com"
+            tools:text="parent1@gmail.com"
             android:layout_alignParentEnd="true"
             android:textSize="15sp" />
 

@@ -127,7 +127,7 @@ public class AddGroupActivity extends AppCompatActivity {
     }
 
     private void fetchTeachers() {
-        JsonObjectRequest fetchTeachersRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/teachers/noGroup", null,
+        JsonObjectRequest fetchTeachersRequest = new JsonObjectRequest(Request.Method.GET, MainActivity.URL + "teachers/noGroup", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -176,7 +176,7 @@ public class AddGroupActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest addUserRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/addGroup", params,
+        JsonObjectRequest addUserRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "addGroup", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

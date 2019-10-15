@@ -54,11 +54,12 @@ public class ChildActivity extends AppCompatActivity {
     private MenuItem itemRemoveChildFromGroup;
     private MenuItem itemAddChildToGroup;
     private MenuItem itemViewGroup;
+    private MenuItem itemSendMessageToParent;
 
     private ArrayList<String> absenceList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
 
-    private Child selectedChild;
+    private Child selectedChild = new Child();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +82,6 @@ public class ChildActivity extends AppCompatActivity {
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, absenceList);
 
-
-
         fetchChild();
     }
 
@@ -101,7 +100,7 @@ public class ChildActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest childRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/child", params,
+        JsonObjectRequest childRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "child", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -114,6 +113,9 @@ public class ChildActivity extends AppCompatActivity {
                                 } else {
                                     selectedChild = new Child(child.getInt("childId"), child.getInt("groupId"));
                                 }
+                                selectedChild.setParentName(child.getString("parentName"));
+                                selectedChild.setParentId(child.getInt("parentId"));
+                                itemSendMessageToParent.setVisible(true);
                                 textViewChildName.setText(child.getString("childName"));
                                 textViewParentName.setText(child.getString("parentName"));
                                 textViewDateOfBirth.setText(child.getString("childBirth"));
@@ -186,7 +188,7 @@ public class ChildActivity extends AppCompatActivity {
 
         Log.i(TAG, Integer.valueOf(selectedChild.getId()).toString());
 
-        JsonObjectRequest removeChildFromGroupRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/removeChildFromGroup", params,
+        JsonObjectRequest removeChildFromGroupRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "removeChildFromGroup", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -226,7 +228,7 @@ public class ChildActivity extends AppCompatActivity {
 
         Log.i(TAG, Integer.valueOf(selectedChild.getId()).toString());
 
-        JsonObjectRequest addChildToGroupRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/addChildToGroup", params,
+        JsonObjectRequest addChildToGroupRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "addChildToGroup", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -263,9 +265,11 @@ public class ChildActivity extends AppCompatActivity {
         itemRemoveChildFromGroup = menu.findItem(R.id.item_remove_from_group);
         itemAddChildToGroup = menu.findItem(R.id.item_add_to_group);
         itemViewGroup = menu.findItem(R.id.item_view_group);
+        itemSendMessageToParent = menu.findItem(R.id.item_send_message_to_parent);
         itemRemoveChildFromGroup.setVisible(false);
         itemAddChildToGroup.setVisible(false);
         itemAddChildToGroup.setVisible(false);
+        itemSendMessageToParent.setVisible(false);
         return true;
     }
 
@@ -294,6 +298,12 @@ public class ChildActivity extends AppCompatActivity {
                     intent.putExtra(GroupActivity.GROUP_ID, selectedChild.getGroupId());
                     startActivity(intent);
                 }
+                return true;
+            case R.id.item_send_message_to_parent:
+                intent = new Intent(this, MessageActivity.class);
+                intent.putExtra(MessageActivity.PARTNER_NAME, selectedChild.getParentName());
+                intent.putExtra(MessageActivity.PARTNER_ID, selectedChild.getParentId());
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -4,7 +4,8 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <include android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
@@ -47,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"
-        android:text=""
+        tools:text="Papp Mihály"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -67,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text=""
+        tools:text="papp@gmail.com"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/text_view_full_name"
         app:layout_constraintTop_toBottomOf="@+id/text_view_full_name" />
@@ -88,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text=""
+        tools:text="PRINCIPAL"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/text_view_email"
         app:layout_constraintTop_toBottomOf="@+id/text_view_email" />
@@ -98,7 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Something"
+        tools:text="GROUPS OR CHILDREN"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="parent"

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.fragments.AbsenteeFragment;
+import com.mihalypapp.app.fragments.ListMessagePartnersFragment;
 import com.mihalypapp.app.fragments.MyGroupFragment;
 import com.mihalypapp.app.fragments.MyUserFragment;
 
@@ -41,6 +42,9 @@ public class TeacherActivity extends DrawerActivity {
         switch (item.getItemId()) {
             case R.id.nav_my_user:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyUserFragment()).commit();
+                break;
+            case R.id.nav_message:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListMessagePartnersFragment()).commit();
                 break;
             case R.id.nav_my_group:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyGroupFragment()).commit();

@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:paddingRight="16dp"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/text_view_absentees"
@@ -12,7 +13,7 @@
         android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="This is a long name"
+        tools:text="This is a long name"
         android:textAppearance="?attr/textAppearanceSubtitle1" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -23,7 +24,7 @@
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="testlongemail@gmail.com" />
+        tools:text="testlongemail@gmail.com" />
 
 
 </RelativeLayout>

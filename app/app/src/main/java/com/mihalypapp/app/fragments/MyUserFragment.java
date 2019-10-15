@@ -52,7 +52,7 @@ public class MyUserFragment extends Fragment {
     }
 
     private void fetchUserData() {
-                JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/myUserData", null,
+                JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.GET, MainActivity.URL + "myUserData", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

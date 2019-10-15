@@ -67,7 +67,7 @@ public class MyChildrenFragment extends Fragment {
     }
 
     private void fetchMyChildren() {
-        JsonObjectRequest childrenRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/myChildren", null,
+        JsonObjectRequest childrenRequest = new JsonObjectRequest(Request.Method.GET, MainActivity.URL + "myChildren", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

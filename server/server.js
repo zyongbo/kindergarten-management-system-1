@@ -795,6 +795,7 @@ app.post('/child', async (req, res) => {
             children.name AS childName,
             DATE_FORMAT(children.birth, \'%Y/%m/%d\') AS childBirth,
             parent.Name AS parentName,
+            parent.userId AS parentId,
             teacher.Name AS teacherName,
             groups.groupId AS groupId,
             groups.Type AS groupType,
@@ -1175,6 +1176,134 @@ app.post('/addChildToGroup', (req, res) => {
             console.log(err)
             res.send({
                 'status': 'failed'
+            })
+        }
+    })
+})
+
+app.post('/myMessagePartners', (req, res) => {
+    console.log('/myMessagePartners--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    con.query(`
+        SELECT
+            PartnerID AS partnerId,
+            MAX(DATE_FORMAT(Date, "%Y-%m-%d %H:%i:%s")) AS datetime,
+            users.NAME as partnerName
+        FROM
+            (
+                SELECT
+                IF (
+                    SenderID = ?,
+                    ReceiverID,
+                    SenderID
+                ) AS PartnerID,
+                MAX(DATE_FORMAT(Date, "%Y-%m-%d %H:%i:%s")) AS Date
+            FROM
+                messages
+            WHERE
+                SenderID = ?
+            OR ReceiverID = ?
+            GROUP BY
+                SenderID,
+                ReceiverID
+            ) partners
+        INNER JOIN users ON PartnerID = users.UserID
+        GROUP BY
+            PartnerID
+        ORDER BY
+	        datetime DESC
+        LIMIT ?, ?
+        `, [req.session.userId, req.session.userId, req.session.userId, req.body.offset, req.body.quantity], (err, result) => {
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (err == null) {
+            res.send({
+                'status': 'success',
+                'myMessagePartners': result
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed',
+                'code': err.code
+            })
+        }
+    })
+})
+
+app.post('/messages', (req, res) => {
+    console.log('/messages--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    con.query(`
+        SELECT
+            1 AS Own,
+            Message as message,
+            DATE_FORMAT(Date, "%Y-%m-%d %H:%i:%s") as datetime
+        FROM
+            messages
+        WHERE
+            SenderID = ?
+        AND ReceiverID = ?
+        UNION
+            SELECT
+                0 AS Own,
+                Message,
+                DATE_FORMAT(Date, "%Y-%m-%d %H:%i:%s") as datetime
+            FROM
+                messages
+            WHERE
+                ReceiverID = ?
+            AND SenderID = ?
+            ORDER BY
+		        datetime DESC
+            LIMIT ?, ?
+        `, [req.session.userId, req.body.partnerId, req.session.userId, req.body.partnerId, req.body.offset, req.body.quantity], (err, result) => {
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (err == null) {
+            res.send({
+                'status': 'success',
+                'messages': result
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed',
+                'code': err.code
+            })
+        }
+    })
+})
+
+app.post('/addMessage', (req, res) => {
+    console.log('/addMessage--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    con.query(`
+        INSERT INTO messages
+        VALUES
+            (
+                ?,
+                ?,
+                ?,
+                ?
+            )
+        `, [req.session.userId, req.body.partnerId, req.body.datetime, req.body.message], (err, result) => {
+        console.log('Result: ' + JSON.stringify(result))
+        if (err == null) {
+            res.send({
+                'status': 'success'
+            })
+        } else {
+            console.log(err.code)
+            res.send({
+                'status': 'failed',
+                'code': err.code
             })
         }
     })

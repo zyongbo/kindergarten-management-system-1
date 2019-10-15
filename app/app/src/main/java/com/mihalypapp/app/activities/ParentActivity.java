@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.fragments.ListMessagePartnersFragment;
 import com.mihalypapp.app.fragments.MyChildrenFragment;
 import com.mihalypapp.app.fragments.MyUserFragment;
 
@@ -40,6 +41,9 @@ public class ParentActivity extends DrawerActivity {
         switch (item.getItemId()) {
             case R.id.nav_my_user:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyUserFragment()).commit();
+                break;
+            case R.id.nav_message:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListMessagePartnersFragment()).commit();
                 break;
             case R.id.nav_my_children:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyChildrenFragment()).commit();

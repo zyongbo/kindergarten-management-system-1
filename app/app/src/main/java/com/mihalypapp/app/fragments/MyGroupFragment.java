@@ -23,6 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.activities.GroupActivity;
+import com.mihalypapp.app.activities.MainActivity;
 import com.mihalypapp.app.adapters.GroupCardArrayAdapter;
 import com.mihalypapp.app.models.Group;
 
@@ -45,7 +46,7 @@ public class MyGroupFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My group");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My groups");
 
         View view = inflater.inflate(R.layout.fragment_my_groups, container, false);
         listView = view.findViewById(R.id.list_view_groups);
@@ -64,7 +65,7 @@ public class MyGroupFragment extends Fragment {
     }
 
     private void fetchMyGroup() {
-        JsonObjectRequest groupsRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/myGroups", null,
+        JsonObjectRequest groupsRequest = new JsonObjectRequest(Request.Method.GET, MainActivity.URL + "myGroups", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

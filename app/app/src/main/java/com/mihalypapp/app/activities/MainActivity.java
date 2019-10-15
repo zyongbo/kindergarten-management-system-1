@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int RESULT_LOGGED_OUT = 100;
 
+    public static final String URL = "http://192.168.0.157:3000/";
+
     private CookieManager cookieManager;
     private SharedPreferences sharedPreferences;
 
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/login", params,
+        JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.POST, URL + "login", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logout() {
-        StringRequest logoutRequest = new StringRequest(Request.Method.GET, "http://192.168.0.157:3000/logout",
+        StringRequest logoutRequest = new StringRequest(Request.Method.GET, MainActivity.URL + "logout",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

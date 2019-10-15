@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"
-        android:text=""
+        tools:text="Papp Mihály"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text=""
+        tools:text="papp@gmail.com"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/text_view_full_name"
         app:layout_constraintTop_toBottomOf="@+id/text_view_full_name" />
@@ -80,7 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text=""
+        tools:text="PRINCIPAL"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/text_view_email"
         app:layout_constraintTop_toBottomOf="@+id/text_view_email" />

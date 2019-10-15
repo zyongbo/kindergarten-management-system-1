@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +28,7 @@ import com.mihalypapp.app.adapters.ChildCardArrayAdapter;
 import com.mihalypapp.app.adapters.GroupCardArrayAdapter;
 import com.mihalypapp.app.models.Child;
 import com.mihalypapp.app.models.Group;
+import com.mihalypapp.app.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,12 +48,15 @@ public class UserActivity extends AppCompatActivity {
     private TextView textViewRole;
     private TextView textView;
 
+    private MenuItem itemSendMessage;
 
     private ArrayList<Child> childList = new ArrayList<>();
     private ArrayList<Group> groupList = new ArrayList<>();
-    ChildCardArrayAdapter childAdapter;
-    GroupCardArrayAdapter groupAdapter;
-    ListView listView;
+    private ChildCardArrayAdapter childAdapter;
+    private GroupCardArrayAdapter groupAdapter;
+    private ListView listView;
+
+    private User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +109,7 @@ public class UserActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest userRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/user", params,
+        JsonObjectRequest userRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "user", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -112,6 +118,8 @@ public class UserActivity extends AppCompatActivity {
                             if (response.getString("status").equals("success")) {
                                 JSONObject user = response.getJSONArray("user").getJSONObject(0);
                                 String role = user.getString("Role");
+                                mUser = new User(getIntent().getIntExtra(USER_ID, -1), user.getString("Name"));
+                                itemSendMessage.setVisible(true);
                                 textViewFullName.setText(user.getString("Name"));
                                 textViewEmail.setText(user.getString("Email"));
                                 textViewRole.setText(role);
@@ -171,10 +179,25 @@ public class UserActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.user_menu, menu);
+        itemSendMessage = menu.findItem(R.id.item_send_message);
+        itemSendMessage.setVisible(false);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.item_send_message:
+                Intent intent = new Intent(this, MessageActivity.class);
+                intent.putExtra(MessageActivity.PARTNER_NAME, mUser.getName());
+                intent.putExtra(MessageActivity.PARTNER_ID, mUser.getId());
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

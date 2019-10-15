@@ -12,6 +12,11 @@ public class Child {
     private int absences;
     private String isCheckedToday;
     private int groupId;
+    private int parentId;
+
+    public Child(){
+
+    }
 
     public Child(int id, int groupId) {
         this.id = id;
@@ -103,6 +108,10 @@ public class Child {
         return groupType;
     }
 
+    public int getParentId() {
+        return parentId;
+    }
+
     public String getParentName() {
         return parentName;
     }
@@ -110,6 +119,39 @@ public class Child {
     public String getParentEmail() {
         return parentEmail;
     }
+
+    public void setImageResource(int imageResource) {
+        this.imageResource = imageResource;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGroupType(String groupType) {
+        this.groupType = groupType;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public void setParentEmail(String parentEmail) {
+        this.parentEmail = parentEmail;
+    }
+
+    public void setAbsences(int absences) {
+        this.absences = absences;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
 
     @NonNull
     @Override

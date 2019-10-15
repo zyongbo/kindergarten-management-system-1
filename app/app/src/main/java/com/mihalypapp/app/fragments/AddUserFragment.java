@@ -25,6 +25,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.activities.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,7 +87,7 @@ public class AddUserFragment extends Fragment {
             e.printStackTrace();
         }
 
-        JsonObjectRequest addUserRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/addUser", params,
+        JsonObjectRequest addUserRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "addUser", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

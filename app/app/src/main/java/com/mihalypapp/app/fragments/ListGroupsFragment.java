@@ -32,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.activities.AddGroupActivity;
 import com.mihalypapp.app.activities.GroupActivity;
+import com.mihalypapp.app.activities.MainActivity;
 import com.mihalypapp.app.adapters.GroupCardAdapter;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
 import com.mihalypapp.app.models.Group;
@@ -165,7 +166,7 @@ public class ListGroupsFragment extends Fragment {
             e.printStackTrace();
         }
 
-        final JsonObjectRequest getGroupsRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/groups", params,
+        final JsonObjectRequest getGroupsRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "groups", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

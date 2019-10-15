@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.activities.MainActivity;
 import com.mihalypapp.app.models.Child;
 
 import org.json.JSONArray;
@@ -139,7 +140,7 @@ public class AbsenteeFragment extends Fragment {
         }
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        JsonObjectRequest saveAbsenteesRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/saveMyGroupAbsentees", params,
+        JsonObjectRequest saveAbsenteesRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "saveMyGroupAbsentees", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -159,7 +160,7 @@ public class AbsenteeFragment extends Fragment {
 
     private void fetchAbsentees() {
         childList = new ArrayList<>();
-        JsonObjectRequest childRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/myGroupAbsentees", null,
+        JsonObjectRequest childRequest = new JsonObjectRequest(Request.Method.GET, MainActivity.URL + "myGroupAbsentees", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

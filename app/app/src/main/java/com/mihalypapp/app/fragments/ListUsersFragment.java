@@ -28,10 +28,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.activities.MainActivity;
 import com.mihalypapp.app.activities.UserActivity;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
 import com.mihalypapp.app.models.User;
-import com.mihalypapp.app.models.UserCard;
 import com.mihalypapp.app.adapters.UserCardAdapter;
 
 import org.json.JSONArray;
@@ -129,7 +129,7 @@ public abstract class ListUsersFragment extends Fragment {
             e.printStackTrace();
         }
 
-        final JsonObjectRequest getUsersRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/users", params,
+        final JsonObjectRequest getUsersRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "users", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

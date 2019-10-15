@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <RelativeLayout
@@ -28,7 +29,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginBottom="9dp"
             android:layout_toEndOf="@+id/text_view"
-            android:text="0" />
+            tools:text="0" />
 
         <ImageView
 
@@ -58,7 +59,7 @@
             android:id="@+id/text_view_child_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Child name"
+            tools:text="Child name"
             android:textSize="20sp"
             android:layout_marginLeft="31dp"
             android:layout_marginStart="31dp"

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.mihalypapp.app.fragments.AddUserFragment;
 import com.mihalypapp.app.fragments.ListChildrenFragment;
 import com.mihalypapp.app.fragments.ListGroupsFragment;
+import com.mihalypapp.app.fragments.ListMessagePartnersFragment;
 import com.mihalypapp.app.fragments.ListUsersScreenSlideFragment;
 import com.mihalypapp.app.R;
 import com.mihalypapp.app.fragments.MyUserFragment;
@@ -55,6 +56,9 @@ public class PrincipalActivity extends DrawerActivity {
         switch (item.getItemId()) {
             case R.id.nav_my_user:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyUserFragment()).commit();
+                break;
+            case R.id.nav_message:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListMessagePartnersFragment()).commit();
                 break;
             case R.id.nav_add_user:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddUserFragment()).commit();
