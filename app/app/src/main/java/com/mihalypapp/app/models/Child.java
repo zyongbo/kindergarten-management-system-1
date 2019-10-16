@@ -9,6 +9,8 @@ public class Child {
     private String groupType;
     private String parentName;
     private String parentEmail;
+    private String teacherName;
+    private int teacherId;
     private int absences;
     private String isCheckedToday;
     private int groupId;
@@ -72,6 +74,22 @@ public class Child {
         this.name = name;
         this.groupType = groupType;
         this.absences = absences;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(int teacherId) {
+        this.teacherId = teacherId;
     }
 
     public void setIsCheckedToday(String isCheckedToday) {

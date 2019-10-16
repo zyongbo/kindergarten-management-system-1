@@ -55,6 +55,7 @@ public class ChildActivity extends AppCompatActivity {
     private MenuItem itemAddChildToGroup;
     private MenuItem itemViewGroup;
     private MenuItem itemSendMessageToParent;
+    private MenuItem itemSendMessageToTeacher;
 
     private ArrayList<String> absenceList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
@@ -115,15 +116,19 @@ public class ChildActivity extends AppCompatActivity {
                                 }
                                 selectedChild.setParentName(child.getString("parentName"));
                                 selectedChild.setParentId(child.getInt("parentId"));
-                                itemSendMessageToParent.setVisible(true);
                                 textViewChildName.setText(child.getString("childName"));
                                 textViewParentName.setText(child.getString("parentName"));
                                 textViewDateOfBirth.setText(child.getString("childBirth"));
                                 textViewAbsences.setText(child.getString("absences"));
 
                                 if (response.getString("userRole").equals("TEACHER")) {
+                                    textViewTeacherName.setText(child.getString("teacherName"));
+                                    textViewGroupType.setText(child.getString("groupType"));
+                                    itemSendMessageToParent.setVisible(true);
                                     itemViewGroup.setVisible(false);
                                 } else if (response.getString("userRole").equals("PRINCIPAL")) {
+                                    itemSendMessageToParent.setVisible(true);
+                                    itemSendMessageToTeacher.setVisible(true);
                                     if (selectedChild.getGroupId() == -1) {
                                         itemViewGroup.setVisible(false);
                                         itemAddChildToGroup.setVisible(true);
@@ -143,6 +148,16 @@ public class ChildActivity extends AppCompatActivity {
                                         itemAddChildToGroup.setVisible(false);
                                         itemRemoveChildFromGroup.setVisible(true);
                                         textViewTeacherName.setText(child.getString("teacherName"));
+                                        selectedChild.setTeacherName(child.getString("teacherName"));
+                                        selectedChild.setTeacherId(child.getInt("teacherId"));
+                                        textViewGroupType.setText(child.getString("groupType"));
+                                    }
+                                } else if (response.getString("userRole").equals("PARENT")) {
+                                    itemSendMessageToTeacher.setVisible(true);
+                                    if (selectedChild.getGroupId() != -1) {
+                                        textViewTeacherName.setText(child.getString("teacherName"));
+                                        selectedChild.setTeacherName(child.getString("teacherName"));
+                                        selectedChild.setTeacherId(child.getInt("teacherId"));
                                         textViewGroupType.setText(child.getString("groupType"));
                                     }
                                 }
@@ -266,6 +281,8 @@ public class ChildActivity extends AppCompatActivity {
         itemAddChildToGroup = menu.findItem(R.id.item_add_to_group);
         itemViewGroup = menu.findItem(R.id.item_view_group);
         itemSendMessageToParent = menu.findItem(R.id.item_send_message_to_parent);
+        itemSendMessageToTeacher = menu.findItem(R.id.item_send_message_to_teacher);
+        itemSendMessageToTeacher.setVisible(false);
         itemRemoveChildFromGroup.setVisible(false);
         itemAddChildToGroup.setVisible(false);
         itemAddChildToGroup.setVisible(false);
@@ -305,6 +322,11 @@ public class ChildActivity extends AppCompatActivity {
                 intent.putExtra(MessageActivity.PARTNER_ID, selectedChild.getParentId());
                 startActivity(intent);
                 return true;
+            case R.id.item_send_message_to_teacher:
+                intent = new Intent(this, MessageActivity.class);
+                intent.putExtra(MessageActivity.PARTNER_NAME, selectedChild.getTeacherName());
+                intent.putExtra(MessageActivity.PARTNER_ID, selectedChild.getTeacherId());
+                startActivity(intent);
             default:
                 return super.onOptionsItemSelected(item);
 

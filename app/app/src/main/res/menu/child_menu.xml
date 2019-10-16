@@ -13,4 +13,7 @@
     <item android:id="@+id/item_send_message_to_parent"
         android:title="Send message to parent"
         app:showAsAction="never"/>
+    <item android:id="@+id/item_send_message_to_teacher"
+        android:title="Send message to teacher"
+        app:showAsAction="never"/>
 </menu>

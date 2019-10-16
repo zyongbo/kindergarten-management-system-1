@@ -685,7 +685,8 @@ app.post('/group', async (req, res) => {
             groups.groupid,
             groups.type,
             groups.year,
-            users.name AS teacherName
+            users.name AS teacherName,
+            users.userId as teacherId
         FROM
             thesis.groups AS groups
         INNER JOIN thesis.users AS users ON groups.teacherid = users.userid
@@ -696,6 +697,7 @@ app.post('/group', async (req, res) => {
         SELECT
             children.childid AS childId,
             children.name AS childName,
+            users.userid as parentId,
             users.name AS parentName,
             users.email as parentEmail
         FROM 
@@ -797,6 +799,7 @@ app.post('/child', async (req, res) => {
             parent.Name AS parentName,
             parent.userId AS parentId,
             teacher.Name AS teacherName,
+            teacher.userId as teacherId,
             groups.groupId AS groupId,
             groups.Type AS groupType,
             COUNT(absentees.date) AS 'absences'

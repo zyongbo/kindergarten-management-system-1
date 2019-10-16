@@ -125,8 +125,12 @@ public class UserActivity extends AppCompatActivity {
                                 textViewRole.setText(role);
 
                                 if (role.equals("PARENT")) {
-                                    textView.setText("Children");
                                     JSONArray children = response.getJSONArray("data");
+                                    if (children.length() == 0) {
+                                        textView.setText("No children");
+                                    } else {
+                                        textView.setText("Children");
+                                    }
                                     for (int i = 0; i < children.length(); i++) {
                                         JSONObject child = children.getJSONObject(i);
                                         childList.add(new Child(

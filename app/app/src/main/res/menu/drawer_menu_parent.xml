@@ -10,10 +10,6 @@
             android:icon="@drawable/ic_children"
             android:title="My children"/>
         <item
-            android:id="@+id/nav_liabilities"
-            android:icon="@drawable/ic_liabilities"
-            android:title="Liabilities" />
-        <item
             android:id="@+id/nav_message"
             android:icon="@drawable/ic_message"
             android:title="Message" />
@@ -25,6 +21,10 @@
             android:id="@+id/nav_documents"
             android:icon="@drawable/ic_documents"
             android:title="Documents"/>
+        <item
+            android:id="@+id/nav_liabilities"
+            android:icon="@drawable/ic_liabilities"
+            android:title="Liabilities" />
     </group>
 
     <group android:id="@+id/group_actions">

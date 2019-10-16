@@ -7,6 +7,7 @@ public class Group {
     private String year;
     private int imageResource;
     private int size;
+    private int teacherId;
 
     public Group(int id, String type, String teacherName, String year, int imageResource) {
         this.id = id;
@@ -50,6 +51,10 @@ public class Group {
         return id;
     }
 
+    public int getTeacherId() {
+        return teacherId;
+    }
+
     public String getType() {
         return type;
     }
@@ -64,5 +69,29 @@ public class Group {
 
     public int getImageResource() {
         return imageResource;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTeacherId(int teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public void setImageResource(int imageResource) {
+        this.imageResource = imageResource;
     }
 }

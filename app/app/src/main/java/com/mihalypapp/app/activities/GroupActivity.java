@@ -9,6 +9,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -51,6 +53,9 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
     private Button buttonGroup;
     private TextView textViewChildrenDisplay;
 
+    private MenuItem itemSendMessageToTeacher;
+
+    private String userRole;
     private Group group;
     private ArrayList<Child> childList = new ArrayList<>();
     private ChildCardArrayAdapter adapter;
@@ -87,11 +92,21 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Child child = (Child) adapterView.getItemAtPosition(i);
-                Intent intent = new Intent(GroupActivity.this, ChildActivity.class);
-                intent.putExtra(ChildActivity.CHILD_ID, child.getId());
-                intent.putExtra("from", "group");
-                startActivityForResult(intent, RC_CHILD);
+                if (userRole.equals("PARENT")) {
+                    Intent intent;
+                    Child child = (Child) adapterView.getItemAtPosition(i);
+                    intent = new Intent(GroupActivity.this, MessageActivity.class);
+                    intent.putExtra(MessageActivity.PARTNER_NAME, child.getParentName());
+                    intent.putExtra(MessageActivity.PARTNER_ID, child.getParentId());
+                    Log.i(TAG, Integer.valueOf(child.getParentId()).toString());
+                    startActivity(intent);
+                } else {
+                    Child child = (Child) adapterView.getItemAtPosition(i);
+                    Intent intent = new Intent(GroupActivity.this, ChildActivity.class);
+                    intent.putExtra(ChildActivity.CHILD_ID, child.getId());
+                    intent.putExtra("from", "group");
+                    startActivityForResult(intent, RC_CHILD);
+                }
             }
         });
 
@@ -121,6 +136,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
 
                             if (response.getString("status").equals("success")) {
                                 final JSONObject resGroup = response.getJSONArray("group").getJSONObject(0);
+                                userRole = response.getString("userRole");
 
                                 if (intent.hasExtra("request")) {
                                     if (Objects.requireNonNull(intent.getStringExtra("request")).equals("groupId")) {
@@ -138,7 +154,10 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                         });
                                     }
                                 } else {
-                                    if (response.getString("userRole").equals("PRINCIPAL") && !resGroup.getString("type").equals("FINISHED")) {
+                                    if(!userRole.equals("TEACHER")) {
+                                        itemSendMessageToTeacher.setVisible(true);
+                                    }
+                                    if (userRole.equals("PRINCIPAL") && !resGroup.getString("type").equals("FINISHED")) {
                                         buttonGroup.setVisibility(View.VISIBLE);
                                         if (resGroup.getString("type").equals("BIG")) {
                                             buttonGroup.setText("Finish");
@@ -167,6 +186,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                         response.getJSONArray("groupSize").getJSONObject(0).getInt("groupSize"),
                                         resGroup.getString("year")
                                 );
+                                group.setTeacherId(resGroup.getInt("teacherId"));
                                 textViewTeacherName.setText(group.getTeacherName());
                                 textViewGroupType.setText(group.getType());
                                 textViewGroupYear.setText(group.getYear());
@@ -179,14 +199,16 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                 }
                                 for (int i = 0; i < children.length(); i++) {
                                     JSONObject child = children.getJSONObject(i);
-                                    childList.add(new Child(
+                                    Child newChild = new Child(
                                             child.getInt("childId"),
                                             R.drawable.ic_launcher_foreground,
                                             child.getString("childName"),
                                             "",
                                             child.getString("parentName"),
                                             child.getString("parentEmail")
-                                    ));
+                                    );
+                                    newChild.setParentId(child.getInt("parentId"));
+                                    childList.add(newChild);
                                 }
 
                                 adapter.notifyDataSetChanged();
@@ -293,10 +315,25 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.group_menu, menu);
+        itemSendMessageToTeacher = menu.findItem(R.id.item_send_message_to_teacher);
+        itemSendMessageToTeacher.setVisible(false);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.item_send_message_to_teacher:
+                intent = new Intent(this, MessageActivity.class);
+                intent.putExtra(MessageActivity.PARTNER_NAME, group.getTeacherName());
+                intent.putExtra(MessageActivity.PARTNER_ID, group.getTeacherId());
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
