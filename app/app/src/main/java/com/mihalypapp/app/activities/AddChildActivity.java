@@ -173,7 +173,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void fetchParents() {
-        JsonObjectRequest fetchParentsRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/parents", null,
+        JsonObjectRequest fetchParentsRequest = new JsonObjectRequest(Request.Method.GET, MainActivity.URL + "parents", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -213,7 +213,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void fetchGroups() {
-        JsonObjectRequest fetchGroupsRequest = new JsonObjectRequest(Request.Method.GET, "http://192.168.0.157:3000/groups", null,
+        JsonObjectRequest fetchGroupsRequest = new JsonObjectRequest(Request.Method.GET, MainActivity.URL + "groups", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -265,7 +265,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
             e.printStackTrace();
         }
 
-        JsonObjectRequest addUserRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/addChild", params,
+        JsonObjectRequest addUserRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "addChild", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

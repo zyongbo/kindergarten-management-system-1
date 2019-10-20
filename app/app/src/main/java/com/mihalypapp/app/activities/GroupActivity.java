@@ -127,7 +127,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
             e.printStackTrace();
         }
 
-        JsonObjectRequest childRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/group", params,
+        JsonObjectRequest childRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "group", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -245,7 +245,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
             e.printStackTrace();
         }
 
-        JsonObjectRequest finishGroupRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/finishGroup", params,
+        JsonObjectRequest finishGroupRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "finishGroup", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -286,7 +286,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
             e.printStackTrace();
         }
 
-        JsonObjectRequest upgradeGroupRequest = new JsonObjectRequest(Request.Method.POST, "http://192.168.0.157:3000/upgradeGroup", params,
+        JsonObjectRequest upgradeGroupRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "upgradeGroup", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
