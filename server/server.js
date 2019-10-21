@@ -3,6 +3,8 @@ const util = require('util');
 const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
+const fs = require('fs')
+const fileUpload = require('express-fileupload')
 
 var con = mysql.createConnection({
     host: "localhost",
@@ -32,6 +34,8 @@ app.use(session({
     saveUninitialized: true
 }))
 
+app.use(fileUpload());
+
 app.get('/', (req, res) => {
     console.log('/-----------------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
@@ -58,8 +62,7 @@ app.post('/login', (req, res) => {
         WHERE
             email = ?
         AND
-            password = ?`
-    , [req.body.email, req.body.password], (err, result) => {
+            password = ?`, [req.body.email, req.body.password], (err, result) => {
 
         if (err) throw err
         console.log('Result: ' + JSON.stringify(result))
@@ -135,10 +138,10 @@ app.post('/users', async (req, res) => {
 
     if (req.session.role == 'PRINCIPAL') {
         var users = null
-        try{
-            if(req.body.filter.includes(':')){
+        try {
+            if (req.body.filter.includes(':')) {
                 const splittedFilter = req.body.filter.split(':')
-                if(splittedFilter[0] == 'name') {
+                if (splittedFilter[0] == 'name') {
                     users = await query(`
                         SELECT
                             userid AS userId,
@@ -211,9 +214,9 @@ app.post('/children', async (req, res) => {
     if (req.session.role == 'PRINCIPAL') {
         let children = null
         try {
-            if(req.body.filter.includes(':')) {
+            if (req.body.filter.includes(':')) {
                 const splittedFilter = req.body.filter.split(':')
-                if(splittedFilter[0] == 'name') {
+                if (splittedFilter[0] == 'name') {
                     children = await query(`
                     SELECT
                         children.childid AS childId,
@@ -235,8 +238,8 @@ app.post('/children', async (req, res) => {
                         childName
                     ASC LIMIT ?, ?
                     `, [splittedFilter[1] + '%', req.body.offset, req.body.quantity])
-                } else if(splittedFilter[0] == 'type') {
-                    if(splittedFilter[1] == '') {
+                } else if (splittedFilter[0] == 'type') {
+                    if (splittedFilter[1] == '') {
                         children = await query(`
                         SELECT
                             children.childid AS childId,
@@ -281,7 +284,7 @@ app.post('/children', async (req, res) => {
                         ASC LIMIT ?, ?
                         `, [splittedFilter[1] + '%', req.body.offset, req.body.quantity])
                     }
-                } else if(splittedFilter[0] == 'parent') {
+                } else if (splittedFilter[0] == 'parent') {
                     children = await query(`
                     SELECT
                         children.childid AS childId,
@@ -303,7 +306,7 @@ app.post('/children', async (req, res) => {
                         childName
                     ASC LIMIT ?, ?
                     `, [splittedFilter[1] + '%', req.body.offset, req.body.quantity])
-                } else if(splittedFilter[0] == 'email') {
+                } else if (splittedFilter[0] == 'email') {
                     children = await query(`
                     SELECT
                         children.childid AS childId,
@@ -422,10 +425,10 @@ app.post('/groups', async (req, res) => {
     if (req.session.role == 'PRINCIPAL') {
         let groups = null
         try {
-            if(req.body.filter.includes(':')) {
+            if (req.body.filter.includes(':')) {
                 const splittedFilter = req.body.filter.split(':')
                 console.log(splittedFilter[0])
-                if(splittedFilter[0] == 'name') {
+                if (splittedFilter[0] == 'name') {
                     console.log(splittedFilter[1])
                     groups = await query(`
                     SELECT
@@ -443,7 +446,7 @@ app.post('/groups', async (req, res) => {
                     ORDER BY
                         YEAR DESC
                     LIMIT ?, ?`,
-                    [splittedFilter[1] + '%', req.body.offset, req.body.quantity]);
+                        [splittedFilter[1] + '%', req.body.offset, req.body.quantity]);
                 } else if (splittedFilter[0] == 'type') {
                     console.log(splittedFilter[1])
                     groups = await query(`
@@ -462,7 +465,7 @@ app.post('/groups', async (req, res) => {
                     ORDER BY
                         YEAR DESC
                     LIMIT ?, ?`,
-                    [splittedFilter[1] + '%', req.body.offset, req.body.quantity]);
+                        [splittedFilter[1] + '%', req.body.offset, req.body.quantity]);
                 } else if (splittedFilter[0] == "year") {
                     console.log(splittedFilter[1])
                     groups = await query(`
@@ -481,7 +484,7 @@ app.post('/groups', async (req, res) => {
                     ORDER BY
                         YEAR DESC
                     LIMIT ?, ?`,
-                    [splittedFilter[1], req.body.offset, req.body.quantity]);
+                        [splittedFilter[1], req.body.offset, req.body.quantity]);
                 }
             } else {
                 groups = await query(`
@@ -498,7 +501,7 @@ app.post('/groups', async (req, res) => {
                 ORDER BY
                     YEAR DESC
                 LIMIT ?, ?`,
-                [req.body.offset, req.body.quantity]);
+                    [req.body.offset, req.body.quantity]);
             }
 
             res.send({
@@ -654,7 +657,7 @@ app.post('/addChild', (req, res) => {
     console.log('Session: ' + JSON.stringify(req.session))
     console.log('Request: ' + JSON.stringify(req.body))
 
-    date = req.body.birth.replace(/\//g,"-");
+    date = req.body.birth.replace(/\//g, "-");
     console.log(date)
 
     con.query(`INSERT INTO thesis.children (parentid, groupid, name, birth) VALUES (?, ?, ?, STR_TO_DATE(?, '%m-%d-%y'))`, [req.body.parentId, req.body.groupId, req.body.childName, date], (err, result) => {
@@ -790,7 +793,7 @@ app.post('/child', async (req, res) => {
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
 
-    try{
+    try {
         const child = await query(`
         SELECT
             children.childid as childId,
@@ -860,30 +863,30 @@ app.get('/myGroups', (req, res) => {
     WHERE
         users.UserID = ?
     `,
-    [req.session.userId], (err, result) => {
+        [req.session.userId], (err, result) => {
 
-        if (err) throw err
-        console.log('Result: ' + JSON.stringify(result))
-        if (result.length > 0) {
-            res.send({
-                'status': 'success',
-                'groups': result
-            })
-        } else {
-            console.log(err)
-            res.send({
-                'status': 'failed'
-            })
-        }
-    })
+            if (err) throw err
+            console.log('Result: ' + JSON.stringify(result))
+            if (result.length > 0) {
+                res.send({
+                    'status': 'success',
+                    'groups': result
+                })
+            } else {
+                console.log(err)
+                res.send({
+                    'status': 'failed'
+                })
+            }
+        })
 })
 
 app.post('/user', async (req, res) => {
     console.log('/user--------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
-        try {
-            const user = await query(`
+    try {
+        const user = await query(`
             SELECT
                 users.Name,
                 users.Email,
@@ -894,10 +897,10 @@ app.post('/user', async (req, res) => {
                 users.UserID = ?
             `, [req.body.userId])
 
-            console.log(user)
+        console.log(user)
 
-            if (user[0].Role == 'PARENT') {
-                const children = await query(`
+        if (user[0].Role == 'PARENT') {
+            const children = await query(`
                 SELECT
                     children.childid AS childId,
                     children.name AS childName,
@@ -911,18 +914,18 @@ app.post('/user', async (req, res) => {
                 INNER JOIN users AS Teacher ON groups.TeacherID = Teacher.UserID
                 WHERE
                     User.UserID = ?
-                `,[req.body.userId])
+                `, [req.body.userId])
 
-                console.log(children)
+            console.log(children)
 
-                res.send({
-                    'status': 'success',
-                    'role': user.role,
-                    'user': user,
-                    'data': children
-                })
-            } else if (user[0].Role == 'TEACHER') {
-                const groups = await query(`
+            res.send({
+                'status': 'success',
+                'role': user.role,
+                'user': user,
+                'data': children
+            })
+        } else if (user[0].Role == 'TEACHER') {
+            const groups = await query(`
                 SELECT
                     groups.GroupID AS groupId,
                     groups.Type AS groupType,
@@ -933,30 +936,30 @@ app.post('/user', async (req, res) => {
                     groups.TeacherID = ?
                 `, [req.body.userId])
 
-                console.log(groups)
+            console.log(groups)
 
-                res.send({
-                    'status': 'success',
-                    'role': user.role,
-                    'user': user,
-                    'data': groups
-                })
-            } else if (user[0].Role == 'PRINCIPAL') {
-                res.send({
-                    'status': 'success',
-                    'role': user.role,
-                    'user': user
-                
-                })
-            }
-
-        } catch (err) {
             res.send({
-                'status': 'failed',
-                'code': err.code
+                'status': 'success',
+                'role': user.role,
+                'user': user,
+                'data': groups
             })
-            console.log(err.code)
+        } else if (user[0].Role == 'PRINCIPAL') {
+            res.send({
+                'status': 'success',
+                'role': user.role,
+                'user': user
+
+            })
         }
+
+    } catch (err) {
+        res.send({
+            'status': 'failed',
+            'code': err.code
+        })
+        console.log(err.code)
+    }
 })
 
 app.post('/finishGroup', (req, res) => {
@@ -1024,7 +1027,7 @@ app.post('/upgradeGroup', async (req, res) => {
             INNER JOIN groups ON children.GroupID = groups.GroupID
             WHERE
                 groups.GroupID = ?
-        `, [req.body.groupId])      
+        `, [req.body.groupId])
 
         res.send({
             'status': 'success'
@@ -1058,25 +1061,25 @@ app.get('/myGroupAbsentees', (req, res) => {
     GROUP BY
         children.NAME,
         children.ChildID;`,
-    [req.session.userId], (err, result) => {
+        [req.session.userId], (err, result) => {
 
-        if (err) throw err
-        console.log('Result: ' + JSON.stringify(result))
-        if (err == null) {            
-            res.send({
-                'status': 'success',
-                'children': result
-            })
-        } else {
-            console.log(err)
-            res.send({
-                'status': 'failed'
-            })
-        }
-    })
+            if (err) throw err
+            console.log('Result: ' + JSON.stringify(result))
+            if (err == null) {
+                res.send({
+                    'status': 'success',
+                    'children': result
+                })
+            } else {
+                console.log(err)
+                res.send({
+                    'status': 'failed'
+                })
+            }
+        })
 })
 
-app.post('/saveMyGroupAbsentees',  async (req, res) => {
+app.post('/saveMyGroupAbsentees', async (req, res) => {
     console.log('/saveMyGroupAbsentees--------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
@@ -1312,6 +1315,27 @@ app.post('/addMessage', (req, res) => {
     })
 })
 
+app.post('/addDocument', (req, res) => {
+    console.log('/addDocument--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    console.log(req.files)
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+
+    let sampleFile = req.files.document;
+    console.log(sampleFile.mimetype.split('/')[1])
+
+    sampleFile.mv('documents/' + sampleFile.name + '.' +sampleFile.mimetype.split('/')[1], function (err) {
+        if (err)
+            return res.status(500).send(err);
+
+        res.send('OK');
+    });
+})
 
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`))

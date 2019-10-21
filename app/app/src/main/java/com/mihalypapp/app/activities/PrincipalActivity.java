@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.mihalypapp.app.fragments.AddUserFragment;
 import com.mihalypapp.app.fragments.ListChildrenFragment;
+import com.mihalypapp.app.fragments.ListDocumentsFragment;
 import com.mihalypapp.app.fragments.ListGroupsFragment;
 import com.mihalypapp.app.fragments.ListMessagePartnersFragment;
 import com.mihalypapp.app.fragments.ListUsersScreenSlideFragment;
@@ -60,9 +61,6 @@ public class PrincipalActivity extends DrawerActivity {
             case R.id.nav_message:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListMessagePartnersFragment()).commit();
                 break;
-            case R.id.nav_add_user:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddUserFragment()).commit();
-                break;
             case R.id.nav_users:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListUsersScreenSlideFragment()).commit();
                 break;
@@ -71,6 +69,9 @@ public class PrincipalActivity extends DrawerActivity {
                 break;
             case R.id.nav_groups:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListGroupsFragment()).commit();
+                break;
+            case R.id.nav_documents:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListDocumentsFragment()).commit();
                 break;
             case R.id.nav_logout:
                 setResult(RESULT_LOGGED_OUT);

@@ -23,7 +23,9 @@
                 android:layout_height="wrap_content"
                 android:text="Add a new group"
                 android:textAlignment="textEnd"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:layout_marginBottom="24dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
             <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_input_group_types"

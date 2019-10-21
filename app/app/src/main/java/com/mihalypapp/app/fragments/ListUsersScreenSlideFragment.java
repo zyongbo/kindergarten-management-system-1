@@ -1,5 +1,6 @@
 package com.mihalypapp.app.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,11 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.activities.AddChildActivity;
+import com.mihalypapp.app.activities.AddUserActivity;
 
 public class ListUsersScreenSlideFragment extends Fragment {
 
@@ -30,6 +34,15 @@ public class ListUsersScreenSlideFragment extends Fragment {
         pager.setAdapter(pagerAdapter);
         pager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(pager);
+
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.floating_action_button);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), AddUserActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
