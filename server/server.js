@@ -5,6 +5,7 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const fs = require('fs')
 const fileUpload = require('express-fileupload')
+const path = require('path');
 
 var con = mysql.createConnection({
     host: "localhost",
@@ -531,8 +532,6 @@ app.get('/teachers/noGroup', (req, res) => {
 
     setTimeout(() => {
         if (req.session.role == 'PRINCIPAL') {
-            //var date = new Date()
-            //var year = date.getFullYear()
             con.query("SELECT userid, name, email FROM thesis.users WHERE role = ? AND NOT EXISTS (SELECT * FROM thesis.groups WHERE groups.teacherid = users.userid AND type != 'FINISHED')",
                 ["TEACHER"],
                 function (err, teachers) {
@@ -1320,21 +1319,175 @@ app.post('/addDocument', (req, res) => {
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
 
-    console.log(req.files)
-
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
 
     let sampleFile = req.files.document;
-    console.log(sampleFile.mimetype.split('/')[1])
 
-    sampleFile.mv('documents/' + sampleFile.name + '.' +sampleFile.mimetype.split('/')[1], function (err) {
-        if (err)
-            return res.status(500).send(err);
+    con.query(`
+        INSERT INTO
+            documents
+                (name, description, role)
+            VALUES
+                (?, ?, ?)
+        `, [sampleFile.name, req.body.description, req.body.role], (err, result) => {
+        if (err) throw err
+            console.log('Result: ' + JSON.stringify(result))
+        if (err == null) {
+            sampleFile.mv('documents/' + result.insertId + '.' +sampleFile.mimetype.split('/')[1], function (err) {
+                if (err)
+                    return res.status(500).send(err);
+                res.send('OK');
+            });
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed',
+                'code': err.code
+            })
+        }
+    })
 
-        res.send('OK');
-    });
+    console.log(req.body)
+    console.log(req.files)
+
+})
+
+app.get('/documents', async (req, res) => {
+    console.log('/documents--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    let documents = []
+    try {
+        if (req.session.role != 'PRINCIPAL') {
+            documents = await query(`
+            SELECT
+                    documents.DocID as documentId,
+                    documents.Name as documentName,
+                    documents.Role as documentRole,
+                    documents.Description as documentDescription,
+                    DATE_FORMAT(documents.Date, \'%Y/%m/%d\') as documentDate
+                FROM
+                    documents
+                WHERE
+                    documents.Role = ?
+                OR
+                    documents.Role = 'ALL'
+            `, [req.session.role]);
+        } else {
+            documents = await query(`
+            SELECT
+                    documents.DocID as documentId,
+                    documents.Name as documentName,
+                    documents.Role as documentRole,
+                    documents.Description as documentDescription,
+                    DATE_FORMAT(documents.Date, \'%Y/%m/%d\') as documentDate
+                FROM
+                    documents
+            `);
+        }
+
+        console.log(documents)
+        res.send({
+            'status': 'success',
+            'documents': documents,
+            'userRole': req.session.role
+        })
+    } catch (err) {
+        console.log(err);
+        res.send({
+            'status': 'failed',
+            'code': err.code
+        })
+    }
+})
+
+app.get('/document/:documentId', async (req, res) => {
+    console.log('/documents--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    try {
+        const document = await query(`
+        SELECT
+            documents.Name as documentName
+        FROM
+            documents
+        WHERE
+            docId = ?
+        `, [req.params.documentId]);
+
+        const fileName = req.params.documentId + '.' + document[0].documentName.split('.')[1]
+        console.log(fileName)
+
+        res.download('documents/' + fileName, document[0].documentName, (err) => {
+            if (err) {
+              //handle error
+              return
+            } else {
+              //do something
+            }
+          })
+
+
+        /*res.send({
+            'status': 'success',
+            'documents': documents,
+            'userRole': req.session.role
+        })*/
+    } catch (err) {
+        console.log(err);
+        res.send({
+            'status': 'failed',
+            'code': err.code
+        })
+    }
+
+})
+
+app.post('/deleteDocument', async(req, res) => {
+    console.log('/deleteDocument--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    try {
+        const doc = await query(`
+            SELECT 
+                Name
+            FROM
+                documents
+            WHERE
+                DocID = ?
+        `, [req.body.docId])
+
+        console.log(doc[0].Name)
+
+        await query(`
+            DELETE documents
+            FROM
+                documents
+            WHERE
+                documents.DocID = ?
+        `, [req.body.docId])
+        
+        fs.unlink('documents/' + req.body.docId + '.' +doc[0].Name.split('.')[1], (err) => {
+            if (err) throw err;
+            console.log('documents/' + req.body.docId + '.' +doc[0].Name.split('.')[1] + ' was deleted');
+        });
+
+        res.send({
+            'status': 'success'
+        })
+
+    } catch (err) {
+        console.log(err);
+        res.send({
+            'status': 'failed',
+            'code': err.code
+        })
+    }
 })
 
 

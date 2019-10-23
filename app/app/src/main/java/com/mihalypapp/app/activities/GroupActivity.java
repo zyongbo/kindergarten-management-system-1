@@ -353,13 +353,13 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
 
     @Override
     public void onFinishYesClicked() {
-        Log.i(TAG, Integer.valueOf(groupId).toString());
+        //Log.i(TAG, Integer.valueOf(groupId).toString());
         finishGroup();
     }
 
     @Override
     public void onUpgradeYesClicked() {
-        Log.i(TAG, Integer.valueOf(groupId).toString());
+        //Log.i(TAG, Integer.valueOf(groupId).toString());
         upgradeGroup();
     }
 

@@ -77,7 +77,7 @@ public class AddDocumentActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Add a new document");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String[] ROLES = new String[]{"Parent", "Teacher", "Principal"};
+        String[] ROLES = new String[]{"Parent", "Teacher", "Principal", "All"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.dropdown_menu_popup_item, ROLES);
         AutoCompleteTextView exposedDropdown = findViewById(R.id.exposed_dropdown_role);

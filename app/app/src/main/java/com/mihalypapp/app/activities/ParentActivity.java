@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.fragments.ListDocumentsFragment;
 import com.mihalypapp.app.fragments.ListMessagePartnersFragment;
 import com.mihalypapp.app.fragments.MyChildrenFragment;
 import com.mihalypapp.app.fragments.MyUserFragment;
@@ -47,6 +48,9 @@ public class ParentActivity extends DrawerActivity {
                 break;
             case R.id.nav_my_children:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyChildrenFragment()).commit();
+                break;
+            case R.id.nav_documents:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListDocumentsFragment()).commit();
                 break;
             case R.id.nav_logout:
                 setResult(RESULT_LOGGED_OUT);
