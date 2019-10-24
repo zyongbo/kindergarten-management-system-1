@@ -1,5 +1,6 @@
 package com.mihalypapp.app.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.activities.AddUserActivity;
 import com.mihalypapp.app.activities.MainActivity;
 import com.mihalypapp.app.activities.UserActivity;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
@@ -45,6 +48,7 @@ public abstract class ListUsersFragment extends Fragment {
     private static final String TAG = "LUSSPFragment";
 
     private static final int RC_OVERVIEW_USER = 11;
+    private static final int RC_ADD_USER = 111;
 
     private ArrayList<User> userCardList = new ArrayList<>();
 
@@ -68,6 +72,15 @@ public abstract class ListUsersFragment extends Fragment {
         setHasOptionsMenu(true);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Users");
+
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.floating_action_button);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), AddUserActivity.class);
+                startActivityForResult(intent, RC_ADD_USER);
+            }
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new UserCardAdapter(userCardList);
@@ -105,10 +118,9 @@ public abstract class ListUsersFragment extends Fragment {
             @Override
             public void onItemClick(View itemView, int position) {
                 int userId = userCardList.get(position).getId();
-                //Toast.makeText(getContext(), Integer.valueOf(userId).toString() + " was clicked!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), UserActivity.class);
                 intent.putExtra(UserActivity.USER_ID, userId);
-                startActivity(intent);
+                startActivityForResult(intent, RC_OVERVIEW_USER);
             }
         });
 
@@ -240,6 +252,19 @@ public abstract class ListUsersFragment extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_ADD_USER) {
+            if (resultCode == Activity.RESULT_OK) {
+                refreshing = true;
+                offset = 0;
+                fetchUsers();
+            }
+        }
+    }
+
 
     public abstract String getRole();
 }

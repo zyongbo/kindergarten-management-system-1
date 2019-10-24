@@ -4,8 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +33,7 @@ import com.mihalypapp.app.activities.MessageActivity;
 import com.mihalypapp.app.adapters.MessagePartnerCardAdapter;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
 import com.mihalypapp.app.models.MessagePartner;
+import com.mihalypapp.app.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +46,7 @@ public class ListMessagePartnersFragment extends Fragment {
     private static final String TAG = "ListMessagePartnersF";
 
     private ArrayList<MessagePartner> messagePartnerList = new ArrayList<>();
+    private ArrayList<User> userPrincipals = new ArrayList<>();
 
     private boolean refreshing = false;
     private boolean fetching = false;
@@ -51,6 +58,8 @@ public class ListMessagePartnersFragment extends Fragment {
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
 
+    private MenuItem itemPrincipals;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,6 +67,8 @@ public class ListMessagePartnersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list_message_partners, container, false);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Messages");
+
+        setHasOptionsMenu(true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         //linearLayoutManager.setReverseLayout(true);
@@ -104,6 +115,7 @@ public class ListMessagePartnersFragment extends Fragment {
         });
 
         fetchMyMessagePartners();
+        fetchPrincipals();
         return view;
     }
 
@@ -175,6 +187,53 @@ public class ListMessagePartnersFragment extends Fragment {
         requestQueue.add(getMessagePartnerRequest);
     }
 
+    private void fetchPrincipals() {
+        userPrincipals.clear();
+
+        final JsonObjectRequest fetchPrincipalsRequest = new JsonObjectRequest(Request.Method.GET, MainActivity.URL + "principals", null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getString("status").equals("success")) {
+                                Log.i(TAG, response.toString());
+                                JSONArray principals = response.getJSONArray("principals");
+
+                                for (int i = 0; i < principals.length(); i++) {
+                                    JSONObject principal = principals.getJSONObject(i);
+                                    User userPrincipal = new User();
+                                    userPrincipal.setId(principal.getInt("userId"));
+                                    userPrincipal.setName(principal.getString("name"));
+                                    userPrincipals.add(userPrincipal);
+                                }
+                                addPrincipalSubItems();
+
+                            } else {
+                                Log.e(TAG, "fetchPrincipals ERROR");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(fetchPrincipalsRequest);
+    }
+
+    private void addPrincipalSubItems() {
+        SubMenu sub = itemPrincipals.getSubMenu();
+        sub.clear();
+        for(int i = 0; i < userPrincipals.size(); i++) {
+            sub.add(0, userPrincipals.get(i).getId(), 0, userPrincipals.get(i).getName());
+        }
+    }
+
     private void addProgressBar() {
         showingProgressBar = true;
         messagePartnerList.add(null);
@@ -192,5 +251,25 @@ public class ListMessagePartnersFragment extends Fragment {
             messagePartnerList.remove(messagePartnerList.size() - 1);
             adapter.notifyItemRemoved(messagePartnerList.size());
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.message_partners_menu, menu);
+
+        itemPrincipals = menu.findItem(R.id.item_principals);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if(!item.hasSubMenu()) {
+            Intent intent = new Intent(getContext(), MessageActivity.class);
+            intent.putExtra(MessageActivity.PARTNER_ID, item.getItemId());
+            intent.putExtra(MessageActivity.PARTNER_NAME, item.getTitle());
+            startActivity(intent);
+        }
+        return false;
     }
 }

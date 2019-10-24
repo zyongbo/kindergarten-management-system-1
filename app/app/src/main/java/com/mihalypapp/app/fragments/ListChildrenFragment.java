@@ -1,5 +1,6 @@
 package com.mihalypapp.app.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -248,5 +249,17 @@ public class ListChildrenFragment extends Fragment {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_ADD_CHILD) {
+            if (resultCode == Activity.RESULT_OK) {
+                refreshing = true;
+                offset = 0;
+                fetchChildren();
+            }
+        }
     }
 }

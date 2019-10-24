@@ -8,6 +8,10 @@ public class User {
     private String role;
     private int imageResource;
 
+    public User() {
+
+    }
+
     public User(String email, String password, String role) {
         this.email = email;
         this.password = password;
@@ -74,5 +78,9 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setImageResource(int imageResource) {
+        this.imageResource = imageResource;
     }
 }

@@ -131,6 +131,40 @@ app.post('/addUser', (req, res) => {
     })
 })
 
+app.get('/principals', (req, res) => {
+    console.log('/principals----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    con.query(`
+        SELECT
+            userid as userId,
+            NAME as name
+        FROM
+            thesis.users
+        WHERE
+            role = 'PRINCIPAL'
+        `,
+        function (err, principals) {
+            console.log('Result: ' + JSON.stringify(principals))
+                if (err) {
+                    console.log(err)
+                    res.send({
+                        'status': 'failed',
+                        'code': 'ERROR'
+                    })
+                    throw err
+                } else {
+                    res.send({
+                        'status': 'success',
+                        'principals': principals
+                    })
+                }
+            }
+    );
+})
+
 app.post('/users', async (req, res) => {
     console.log('/users----------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
@@ -1375,6 +1409,8 @@ app.get('/documents', async (req, res) => {
                     documents.Role = ?
                 OR
                     documents.Role = 'ALL'
+                ORDER BY
+                    Date DESC
             `, [req.session.role]);
         } else {
             documents = await query(`
@@ -1386,6 +1422,8 @@ app.get('/documents', async (req, res) => {
                     DATE_FORMAT(documents.Date, \'%Y/%m/%d\') as documentDate
                 FROM
                     documents
+                ORDER BY
+                    Date DESC
             `);
         }
 
@@ -1488,6 +1526,68 @@ app.post('/deleteDocument', async(req, res) => {
             'code': err.code
         })
     }
+})
+
+app.post('/news', (req, res) => {
+    console.log('/news--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+
+    con.query(`
+        SELECT
+            news.NewsID as newsId,
+            news.Title as newsTitle,
+            news.Content as newsContent,
+            DATE_FORMAT(news.Date, \'%Y/%m/%d\') as newsDate
+        FROM
+            news
+        ORDER BY
+	        Date DESC
+        LIMIT ?, ?
+        `, [req.body.offset, req.body.quantity], (err, result) => {
+        if (err) throw err
+        console.log('Result: ' + JSON.stringify(result))
+        if (err == null) {
+            res.send({
+                'status': 'success',
+                'allNews': result,
+                'userRole': req.session.role
+            })
+        } else {
+            console.log(err)
+            res.send({
+                'status': 'failed',
+                'code': err.code
+            })
+        }
+    })
+})
+
+app.post('/addNews', (req, res) => {
+    console.log('/addNews----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    con.query(`
+        INSERT INTO
+            news
+                (title, content)
+            VALUES
+                (?, ?)
+        `, [req.body.title, req.body.content], (err, result) => {
+        console.log('Result: ' + JSON.stringify(result))
+        if (err) {
+            res.send({
+                'status': 'failed',
+                'code': err.code
+            })
+        } else {
+            res.send({
+                'status': 'success'
+            })
+        }
+    })
 })
 
 

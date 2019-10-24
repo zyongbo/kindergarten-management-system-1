@@ -1,6 +1,7 @@
 package com.mihalypapp.app.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -55,12 +56,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ListDocumentsFragment extends Fragment implements DeleteDocumentDialog.DeleteDocumentListener {
 
     private static final String TAG = "ListDocumentsFragment";
 
     private static final int WRITE_REQUEST = 112;
+    private static final int RC_ADD_DOCUMENT = 9850;
 
     private long downloadID;
 
@@ -73,13 +76,15 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
 
     private String userRole;
 
+    private BroadcastReceiver broadcastReceiver;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_documents, container, false);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Documents");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("News");
 
         setHasOptionsMenu(true);
 
@@ -87,25 +92,25 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
 
         floatingActionButton = view.findViewById(R.id.floating_action_button);
         floatingActionButton.setEnabled(false);
-        floatingActionButton.setVisibility(View.INVISIBLE);
+        floatingActionButton.setVisibility(View.GONE);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), AddDocumentActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, RC_ADD_DOCUMENT);
             }
         });
 
         fetchDocuments();
 
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        getActivity().registerReceiver(new BroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                long broadcatedDownloadID = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                long broadcastDownloadID = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
 
-                if(broadcatedDownloadID == downloadID) {
+                if(broadcastDownloadID == downloadID) {
                     if(getDownloadStatus() == DownloadManager.STATUS_SUCCESSFUL) {
                         Toast.makeText(context, "Download complete", Toast.LENGTH_SHORT).show();
                     } else {
@@ -113,9 +118,25 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
                     }
                 }
             }
-        }, filter);
+        };
+
+        getActivity().registerReceiver(broadcastReceiver, filter);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        getActivity().registerReceiver(broadcastReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+            Objects.requireNonNull(getActivity()).unregisterReceiver(broadcastReceiver);
     }
 
     private void fetchDocuments() {
@@ -298,5 +319,15 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
     public void onDeleteYesClicked(int docId) {
         Toast.makeText(getContext(), Integer.valueOf(docId).toString(), Toast.LENGTH_SHORT).show();
         deleteDocument(docId);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_ADD_DOCUMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                fetchDocuments();
+            }
+        }
     }
 }

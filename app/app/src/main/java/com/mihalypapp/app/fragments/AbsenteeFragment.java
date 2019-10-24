@@ -64,7 +64,6 @@ public class AbsenteeFragment extends Fragment {
         buttonSelectAll = view.findViewById(R.id.button_select_all);
         buttonDeselectAll = view.findViewById(R.id.button_deselect_all);
         textViewDateToday = view.findViewById(R.id.text_view_date_today);
-        textViewDateToday.setText(getCurrentDate());
 
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
@@ -168,6 +167,13 @@ public class AbsenteeFragment extends Fragment {
                         try {
                             if (response.getString("status").equals("success")) {
                                 JSONArray children = response.getJSONArray("children");
+                                if (children.length() == 0) {
+                                    buttonDeselectAll.setVisibility(View.INVISIBLE);
+                                    buttonSelectAll.setVisibility(View.INVISIBLE);
+                                    textViewDateToday.setText("You have no active group!");
+                                } else {
+                                    textViewDateToday.setText(getCurrentDate());
+                                }
                                 for (int i = 0; i < children.length(); i++) {
                                     JSONObject child = children.getJSONObject(i);
                                     childList.add(new Child(

@@ -35,15 +35,6 @@ public class ListUsersScreenSlideFragment extends Fragment {
         pager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(pager);
 
-        FloatingActionButton floatingActionButton = view.findViewById(R.id.floating_action_button);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), AddUserActivity.class);
-                startActivity(intent);
-            }
-        });
-
         return view;
     }
 

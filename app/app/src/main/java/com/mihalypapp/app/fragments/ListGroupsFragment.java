@@ -84,7 +84,6 @@ public class ListGroupsFragment extends Fragment {
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Select group");
-
             }
         } else {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Groups");
@@ -254,6 +253,13 @@ public class ListGroupsFragment extends Fragment {
                 Log.i(TAG, Integer.valueOf(data.getIntExtra("groupId", -1)).toString());
                 getActivity().setResult(Activity.RESULT_OK, returnIntent);
                 getActivity().finish();
+            }
+        }
+        if (requestCode == RC_ADD_GROUP) {
+            if (resultCode == Activity.RESULT_OK) {
+                refreshing = true;
+                offset = 0;
+                fetchGroups();
             }
         }
     }
