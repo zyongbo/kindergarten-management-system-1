@@ -167,7 +167,6 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
                                     adapter = new DocumentCardArrayAdapter(getContext(), documentList, 1);
                                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                                         if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                            Log.i(TAG, "megtagadvba");
                                             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_REQUEST);
                                         } else {
                                             floatingActionButton.setEnabled(true);
@@ -248,7 +247,6 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
         requestQueue.add(deleteDocumentRequest);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void beginDownload(int fileId, String fileName) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(MainActivity.URL + "document/" + Integer.valueOf(fileId).toString()))
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI)
