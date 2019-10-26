@@ -43,6 +43,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
 
     private static final String TAG = "GroupActivity";
     private static final int RC_CHILD = 88;
+    private static final int RC_ADD_LIABILITY = 99;
 
     public static final String GROUP_ID = "com.mihalypapp.GROUP_ID";
 
@@ -54,6 +55,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
     private TextView textViewChildrenDisplay;
 
     private MenuItem itemSendMessageToTeacher;
+    private MenuItem itemAddLiability;
 
     private String userRole;
     private Group group;
@@ -156,6 +158,9 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                 } else {
                                     if(!userRole.equals("TEACHER")) {
                                         itemSendMessageToTeacher.setVisible(true);
+                                    }
+                                    if(!userRole.equals("PARENT")) {
+                                        itemAddLiability.setVisible(true);
                                     }
                                     if (userRole.equals("PRINCIPAL") && !resGroup.getString("type").equals("FINISHED")) {
                                         buttonGroup.setVisibility(View.VISIBLE);
@@ -318,8 +323,10 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.group_menu, menu);
+        itemAddLiability = menu.findItem(R.id.item_add_liability);
         itemSendMessageToTeacher = menu.findItem(R.id.item_send_message_to_teacher);
         itemSendMessageToTeacher.setVisible(false);
+        itemAddLiability.setVisible(false);
         return true;
     }
 
@@ -334,6 +341,12 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                 intent.putExtra(MessageActivity.PARTNER_NAME, group.getTeacherName());
                 intent.putExtra(MessageActivity.PARTNER_ID, group.getTeacherId());
                 startActivity(intent);
+                return true;
+            case R.id.item_add_liability:
+                intent = new Intent(this, AddLiabilityActivity.class);
+                Log.i(TAG, Integer.valueOf(group.getId()).toString());
+                intent.putExtra(AddLiabilityActivity.GROUP_ID, group.getId());
+                startActivityForResult(intent, RC_ADD_LIABILITY);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -370,6 +383,11 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
             if (resultCode == Activity.RESULT_OK) {
                 fetchGroup();
                 Log.i(TAG, Integer.valueOf(requestCode).toString());
+            }
+        }
+        if (requestCode == RC_ADD_LIABILITY) {
+            if (resultCode == Activity.RESULT_OK) {
+                //fetchGroup();
             }
         }
     }

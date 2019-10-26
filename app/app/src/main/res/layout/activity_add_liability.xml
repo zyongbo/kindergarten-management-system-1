@@ -22,84 +22,45 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add a new user"
+                android:text="Add liability"
                 android:textAlignment="textEnd"
                 android:textSize="30sp"
                 android:layout_marginBottom="24dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_email"
+                android:id="@+id/text_input_liability_charge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_email"
+                    android:id="@+id/edit_charge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
-                    android:inputType="textEmailAddress" />
+                    android:hint="Charge"
+                    android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:inputType="textPassword" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Full name"
-                    android:inputType="textEmailAddress" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/text_input_role"
+                android:id="@+id/text_input_liability_type"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Role"
+                android:hint="Type"
                 app:errorEnabled="true">
 
                 <AutoCompleteTextView
-                    android:id="@+id/exposed_dropdown_role"
+                    android:id="@+id/exposed_dropdown_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/addChildLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
             <Button
-                android:id="@+id/button_add_user"
+                android:id="@+id/button_add_liability"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Add" />

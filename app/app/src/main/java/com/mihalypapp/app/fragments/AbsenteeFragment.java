@@ -52,6 +52,11 @@ public class AbsenteeFragment extends Fragment {
     private ArrayAdapter<Child> adapter;
     private ArrayList<Child> childList;
 
+    private boolean isFetchedFirst = true;
+
+    private int index;
+    private int top;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -70,6 +75,9 @@ public class AbsenteeFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int arg2, long arg3) {
+                index = listView.getFirstVisiblePosition();
+                View v = listView.getChildAt(0);
+                top = (v == null) ? 0 : (v.getTop() - listView.getPaddingTop());
                 saveAbsentees();
             }
         });
@@ -90,7 +98,7 @@ public class AbsenteeFragment extends Fragment {
                 for (int i = 0; i < listView.getCount(); i++) {
                     listView.setItemChecked(i, false);
                 }
-                saveAbsentees();;
+                saveAbsentees();
             }
         });
 
@@ -125,6 +133,7 @@ public class AbsenteeFragment extends Fragment {
             try {
                 object.put("childId", childList.get(i).getId());
                 object.put("isCheckedToday", childList.get(i).getIsCheckedToday());
+                object.put("mealSubscription", childList.get(i).getMealSubscription());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -176,22 +185,27 @@ public class AbsenteeFragment extends Fragment {
                                 }
                                 for (int i = 0; i < children.length(); i++) {
                                     JSONObject child = children.getJSONObject(i);
-                                    childList.add(new Child(
+                                    Child c = new Child(
                                             child.getInt("childId"),
                                             R.drawable.ic_launcher_foreground,
                                             child.getString("childName"),
                                             child.getInt("absences"),
-                                            child.getString("isCheckedToday")
-                                    ));
+                                            child.getString("isCheckedToday"));
+                                    c.setMealSubscription(child.getInt("mealSubscription"));
+                                    childList.add(c);
                                 }
                                 adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_multiple_choice, childList);
                                 listView.setAdapter(adapter);
                                 for (int i = 0; i < childList.size(); i++) {
                                     if (childList.get(i).getIsCheckedToday().equals("TRUE")) {
                                         listView.setItemChecked(i, true);
-                                        listView.setSelection(i);
                                         adapter.notifyDataSetChanged();
                                     }
+                                }
+                                if (isFetchedFirst) {
+                                    listView.setSelectionFromTop(index, top);
+                                } else {
+                                    isFetchedFirst = false;
                                 }
                             } else {
                                 Toast.makeText(getContext(),"Error fetchAbsentees", Toast.LENGTH_SHORT).show();

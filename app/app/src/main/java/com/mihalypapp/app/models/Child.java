@@ -15,6 +15,7 @@ public class Child {
     private String isCheckedToday;
     private int groupId;
     private int parentId;
+    private int mealSubscription;
 
     public Child(){
 
@@ -169,6 +170,15 @@ public class Child {
     public void setParentId(int parentId) {
         this.parentId = parentId;
     }
+
+    public int getMealSubscription() {
+        return mealSubscription;
+    }
+
+    public void setMealSubscription(int mealSubscription) {
+        this.mealSubscription = mealSubscription;
+    }
+
 
 
     @NonNull

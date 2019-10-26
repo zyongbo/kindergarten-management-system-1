@@ -4,4 +4,7 @@
     <item android:id="@+id/item_send_message_to_teacher"
         android:title="Send message to teacher"
         app:showAsAction="never"/>
+    <item android:id="@+id/item_add_liability"
+        android:title="Add liability"
+        app:showAsAction="never"/>
 </menu>

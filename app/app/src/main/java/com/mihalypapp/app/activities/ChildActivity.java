@@ -41,6 +41,7 @@ public class ChildActivity extends AppCompatActivity {
     public static final String CHILD_ID = "com.mihalypapp.CHILD_ID";
 
     private static final int RC_GROUP = 152;
+    private static final int RC_ADD_LIABILITY = 99;
 
     private TextView textViewChildName;
     private TextView textViewParentName;
@@ -49,16 +50,25 @@ public class ChildActivity extends AppCompatActivity {
     private TextView textViewGroupType;
     private TextView textViewAbsences;
     private ListView listViewAbsences;
+    private ListView listViewLiabilities;
     private TextView textViewAbsencesDisplay;
+    private TextView textViewLiabilitiesDisplay;
+    private TextView textViewLiabilityInThisMonth;
+    private TextView textViewMealSubscription;
 
     private MenuItem itemRemoveChildFromGroup;
     private MenuItem itemAddChildToGroup;
     private MenuItem itemViewGroup;
     private MenuItem itemSendMessageToParent;
     private MenuItem itemSendMessageToTeacher;
+    private MenuItem itemMealSubscription;
+    private MenuItem itemAddLiabilityToChild;
 
     private ArrayList<String> absenceList = new ArrayList<>();
-    private ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> absenceAdapter;
+
+    private ArrayList<String> liabilityList = new ArrayList<>();
+    private ArrayAdapter<String> liabilityAdapter;
 
     private Child selectedChild = new Child();
 
@@ -79,15 +89,23 @@ public class ChildActivity extends AppCompatActivity {
         textViewGroupType = findViewById(R.id.text_view_group_type);
         textViewAbsences = findViewById(R.id.text_view_absences);
         listViewAbsences = findViewById(R.id.list_view_absences);
+        listViewLiabilities = findViewById(R.id.list_view_liabilities);
         textViewAbsencesDisplay = findViewById(R.id.text_view_absences_display);
+        textViewLiabilitiesDisplay = findViewById(R.id.text_view_liabilities_display);
+        textViewLiabilityInThisMonth = findViewById(R.id.text_view_liability_in_this_month);
+        textViewMealSubscription = findViewById(R.id.text_view_meal_subscription);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, absenceList);
+
+        liabilityAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, liabilityList);
+        absenceAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, absenceList);
 
         fetchChild();
     }
 
     private void fetchChild() {
         absenceList.clear();
+        liabilityList.clear();
+
         JSONObject params = new JSONObject();
         final Intent intent = getIntent();
         final int childId = intent.getIntExtra(CHILD_ID, -1);
@@ -116,17 +134,30 @@ public class ChildActivity extends AppCompatActivity {
                                 }
                                 selectedChild.setParentName(child.getString("parentName"));
                                 selectedChild.setParentId(child.getInt("parentId"));
+                                selectedChild.setMealSubscription(child.getInt("mealSubscription"));
+                                if(selectedChild.getMealSubscription() == 1) {
+                                    textViewMealSubscription.setText("ACTIVE");
+                                } else {
+                                    textViewMealSubscription.setText("DISABLED");
+                                }
                                 textViewChildName.setText(child.getString("childName"));
                                 textViewParentName.setText(child.getString("parentName"));
                                 textViewDateOfBirth.setText(child.getString("childBirth"));
                                 textViewAbsences.setText(child.getString("absences"));
+                                if(response.getString("liabilityInThisMonth").equals("null")) {
+                                    textViewLiabilityInThisMonth.setText("0");
+                                } else {
+                                    textViewLiabilityInThisMonth.setText(response.getString("liabilityInThisMonth"));
+                                }
 
                                 if (response.getString("userRole").equals("TEACHER")) {
                                     textViewTeacherName.setText(child.getString("teacherName"));
                                     textViewGroupType.setText(child.getString("groupType"));
                                     itemSendMessageToParent.setVisible(true);
                                     itemViewGroup.setVisible(false);
+                                    itemAddLiabilityToChild.setVisible(true);
                                 } else if (response.getString("userRole").equals("PRINCIPAL")) {
+                                    itemAddLiabilityToChild.setVisible(true);
                                     itemSendMessageToParent.setVisible(true);
                                     itemSendMessageToTeacher.setVisible(true);
                                     if (selectedChild.getGroupId() == -1) {
@@ -154,6 +185,12 @@ public class ChildActivity extends AppCompatActivity {
                                     }
                                 } else if (response.getString("userRole").equals("PARENT")) {
                                     itemSendMessageToTeacher.setVisible(true);
+                                    if (selectedChild.getMealSubscription() == 1) {
+                                        itemMealSubscription.setChecked(true);
+                                    } else {
+                                        itemMealSubscription.setChecked(false);
+                                    }
+                                    itemMealSubscription.setVisible(true);
                                     if (selectedChild.getGroupId() != -1) {
                                         textViewTeacherName.setText(child.getString("teacherName"));
                                         selectedChild.setTeacherName(child.getString("teacherName"));
@@ -167,13 +204,26 @@ public class ChildActivity extends AppCompatActivity {
                                     textViewAbsencesDisplay.setText("No absences");
                                 } else {
                                     textViewAbsencesDisplay.setText("Absences");
+                                    for (int i = 0; i < absences.length(); i++) {
+                                        JSONObject absence = absences.getJSONObject(i);
+                                        absenceList.add(absence.getString("date"));
+                                    }
                                 }
-                                for (int i = 0; i < absences.length(); i++) {
-                                    JSONObject absence = absences.getJSONObject(i);
-                                    absenceList.add(absence.getString("date"));
+                                absenceAdapter.notifyDataSetChanged();
+                                listViewAbsences.setAdapter(absenceAdapter);
+
+                                JSONArray liabilities = response.getJSONArray("liabilities");
+                                if (liabilities.length() == 0) {
+                                    textViewLiabilitiesDisplay.setText("No liability");
+                                } else {
+                                    textViewLiabilitiesDisplay.setText("Liabilities");
+                                    for (int i = 0; i < liabilities.length(); i++) {
+                                        JSONObject liability = liabilities.getJSONObject(i);
+                                        liabilityList.add(liability.getString("liabilityDate") + " - " + liability.getString("liabilityType") + " - " + Integer.valueOf(liability.getInt("liabilityCharge")).toString());
+                                    }
                                 }
-                                adapter.notifyDataSetChanged();
-                                listViewAbsences.setAdapter(adapter);
+                                liabilityAdapter.notifyDataSetChanged();
+                                listViewLiabilities.setAdapter(liabilityAdapter);
                             } else {
                                 Toast.makeText(ChildActivity.this,"Error", Toast.LENGTH_SHORT).show();
                             }
@@ -251,7 +301,7 @@ public class ChildActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("success")) {
                                 Toast.makeText(ChildActivity.this, "Successful!", Toast.LENGTH_SHORT).show();
-                                fetchChild();
+                                //fetchChild();
                             } else {
                                 Toast.makeText(ChildActivity.this, "The child wasn't added to the group!", Toast.LENGTH_SHORT).show();
                             }
@@ -282,11 +332,15 @@ public class ChildActivity extends AppCompatActivity {
         itemViewGroup = menu.findItem(R.id.item_view_group);
         itemSendMessageToParent = menu.findItem(R.id.item_send_message_to_parent);
         itemSendMessageToTeacher = menu.findItem(R.id.item_send_message_to_teacher);
+        itemMealSubscription = menu.findItem(R.id.item_meal_subscription);
+        itemAddLiabilityToChild = menu.findItem(R.id.item_add_liability_to_child);
+        itemMealSubscription.setVisible(false);
         itemSendMessageToTeacher.setVisible(false);
         itemRemoveChildFromGroup.setVisible(false);
         itemAddChildToGroup.setVisible(false);
         itemAddChildToGroup.setVisible(false);
         itemSendMessageToParent.setVisible(false);
+        itemAddLiabilityToChild.setVisible(false);
         return true;
     }
 
@@ -295,6 +349,7 @@ public class ChildActivity extends AppCompatActivity {
         Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
+                setResult(RESULT_OK);
                 finish();
                 return true;
             case R.id.item_remove_from_group:
@@ -327,10 +382,65 @@ public class ChildActivity extends AppCompatActivity {
                 intent.putExtra(MessageActivity.PARTNER_NAME, selectedChild.getTeacherName());
                 intent.putExtra(MessageActivity.PARTNER_ID, selectedChild.getTeacherId());
                 startActivity(intent);
+                return true;
+            case R.id.item_meal_subscription:
+                if (itemMealSubscription.isChecked()) {
+                    item.setChecked(false);
+                    selectedChild.setMealSubscription(0);
+                } else {
+                    item.setChecked(true);
+                    selectedChild.setMealSubscription(1);
+                }
+                setMealSubscription();
+                return true;
+            case R.id.item_add_liability_to_child:
+                intent = new Intent(this, AddLiabilityActivity.class);
+                intent.putExtra(AddLiabilityActivity.CHILD_ID, selectedChild.getId());
+                startActivityForResult(intent, RC_ADD_LIABILITY);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    private void setMealSubscription() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("childId", selectedChild.getId());
+            params.put("mealSubscription", selectedChild.getMealSubscription());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.i(TAG, Integer.valueOf(selectedChild.getId()).toString());
+
+        JsonObjectRequest setMealSubscriptionRequest = new JsonObjectRequest(Request.Method.POST, MainActivity.URL + "setMealSubscription", params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "Response:" + response.toString());
+                        try {
+                            if (response.getString("status").equals("success")) {
+                                Toast.makeText(ChildActivity.this, "Updated successfully!", Toast.LENGTH_SHORT).show();
+                                fetchChild();
+                            } else {
+                                Toast.makeText(ChildActivity.this, "Something wrong!", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, error.toString());
+                    }
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(setMealSubscriptionRequest);
     }
 
     @Override
@@ -344,6 +454,11 @@ public class ChildActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, "Group ID can't be -1", Toast.LENGTH_SHORT).show();
                 }
+            }
+        }
+        if (requestCode == RC_ADD_LIABILITY) {
+            if (resultCode == Activity.RESULT_OK) {
+                fetchChild();
             }
         }
     }

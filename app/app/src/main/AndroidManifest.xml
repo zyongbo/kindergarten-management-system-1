@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.AddNewsActivity"></activity>
+        <activity android:name=".activities.AddLiabilityActivity"></activity>
+        <activity android:name=".activities.AddNewsActivity" />
         <activity android:name=".activities.AddDocumentActivity" />
         <activity android:name=".activities.AddUserActivity" />
         <activity android:name=".activities.MessageActivity" />
@@ -41,10 +42,10 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

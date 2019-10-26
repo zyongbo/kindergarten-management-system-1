@@ -838,7 +838,8 @@ app.post('/child', async (req, res) => {
             teacher.userId as teacherId,
             groups.groupId AS groupId,
             groups.Type AS groupType,
-            COUNT(absentees.date) AS 'absences'
+            COUNT(absentees.date) AS 'absences',
+            children.mealSubscription as mealSubscription
         FROM
             children
         LEFT JOIN groups ON children.GroupID = groups.GroupID
@@ -861,14 +862,46 @@ app.post('/child', async (req, res) => {
         DESC
         `, [req.body.childId])
 
+        const liabilities = await query(`
+        SELECT
+            liabilities.type as liabilityType,
+            DATE_FORMAT(liabilities.date,  \'%Y/%m/%d\') as liabilityDate,
+            liabilities.charge as liabilityCharge
+        FROM
+            liabilities
+        INNER JOIN children ON liabilities.childID = children.ChildID
+        WHERE
+            children.ChildID = ?
+        AND
+            month(liabilities.date) = MONTH(current_date())
+        ORDER BY 
+            date DESC
+        `, [req.body.childId])
+
+        const liabilityInThisMonth = await query(`
+        SELECT
+            SUM(liabilities.charge) as liabilityInThisMonth
+        FROM
+            liabilities
+        INNER JOIN children ON liabilities.childID = children.ChildID
+        WHERE
+            children.ChildID = ?
+        AND
+            month(liabilities.date) = MONTH(current_date())
+        `, [req.body.childId])
+
         console.log(child)
         console.log(absences)
+        console.log(liabilities)
+        console.log(liabilityInThisMonth)
 
         res.send({
             'status': 'success',
             'child': child,
             'absences': absences,
-            'userRole': req.session.role
+            'userRole': req.session.role,
+            'liabilities': liabilities,
+            'liabilityInThisMonth': liabilityInThisMonth[0].liabilityInThisMonth
         })
     } catch (err) {
         res.send({
@@ -1081,6 +1114,7 @@ app.get('/myGroupAbsentees', (req, res) => {
     SELECT
         children.NAME AS 'childName',
         children.ChildID AS 'childId',
+        children.mealSubscription as 'mealSubscription',
         COUNT(absentees.Date) AS 'absences',
         CASE WHEN MAX(absentees.date) = CURDATE() THEN 'TRUE' ELSE 'FALSE' END AS 'isCheckedToday'
     FROM
@@ -1130,6 +1164,15 @@ app.post('/saveMyGroupAbsentees', async (req, res) => {
                 ON DUPLICATE KEY UPDATE
                     ChildID = ?
                 `, [req.body.absentees[i].childId, req.body.absentees[i].childId])
+
+                if(req.body.absentees[i].mealSubscription == 1) {
+                    await query(`
+                    INSERT INTO
+                        liabilities (type, charge, childID, date)
+                    VALUES
+                        (?, ?, ?, CURDATE() + INTERVAL 1 DAY)
+                    `, ['meal', 300, req.body.absentees[i].childId])
+                }
             } else {
                 await query(`
                 DELETE
@@ -1139,6 +1182,15 @@ app.post('/saveMyGroupAbsentees', async (req, res) => {
                     childId = ?
                 AND
                     date = CURDATE()
+                `, [req.body.absentees[i].childId])
+                await query(`
+                DELETE
+                FROM
+                    liabilities
+                WHERE
+                    childId = ?
+                AND
+                    date = CURDATE() + INTERVAL 1 DAY
                 `, [req.body.absentees[i].childId])
             }
         }
@@ -1150,7 +1202,7 @@ app.post('/saveMyGroupAbsentees', async (req, res) => {
             'status': 'failed',
             'code': err.code
         })
-        console.log(err.code)
+        console.log(err)
     }
 })
 
@@ -1588,6 +1640,97 @@ app.post('/addNews', (req, res) => {
             })
         }
     })
+})
+
+app.post('/setMealSubscription', (req, res) => {
+    console.log('/setMealSubscription----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    con.query(`
+        UPDATE children
+        SET
+            mealSubscription = ?
+        WHERE
+            childId = ?
+        `, [req.body.mealSubscription, req.body.childId], (err, result) => {
+        console.log('Result: ' + JSON.stringify(result))
+        if (err) {
+            res.send({
+                'status': 'failed',
+                'code': err.code
+            })
+        } else {
+            res.send({
+                'status': 'success'
+            })
+        }
+    })
+})
+
+app.post('/addGroupLiability', async (req, res) => {
+    console.log('/addLiability----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    try {
+        const children = await query(`
+        SELECT
+            children.ChildID
+        FROM
+            groups
+        INNER JOIN children ON children.GroupID = groups.GroupID
+        WHERE
+            groups.GroupID = ?
+        `, [req.body.groupId])
+
+        console.log(children)
+
+        for (let i = 0; i < children.length; i++) {
+            await query(`
+            INSERT INTO
+                liabilities (type, charge, childID)
+            VALUES
+                (?, ?, ?)
+            `, [req.body.type, req.body.charge, children[i].ChildID])
+        }
+        res.send({
+            'status': 'success'
+        })
+    } catch (err) {
+        console.log(err);
+        res.send({
+            'status': 'failed',
+            'code': err.code
+        })
+    }
+})
+
+app.post('/addChildLiability', async (req, res) => {
+    console.log('/addLiability----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    try {
+        await query(`
+        INSERT INTO
+            liabilities (type, charge, childID)
+        VALUES
+            (?, ?, ?)
+        `, [req.body.type, req.body.charge, req.body.childId])
+        res.send({
+            'status': 'success'
+        })
+    } catch (err) {
+        console.log(err);
+        res.send({
+            'status': 'failed',
+            'code': err.code
+        })
+    }
 })
 
 
