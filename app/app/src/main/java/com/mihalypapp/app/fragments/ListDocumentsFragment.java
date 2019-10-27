@@ -315,7 +315,7 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
 
     @Override
     public void onDeleteYesClicked(int docId) {
-        Toast.makeText(getContext(), Integer.valueOf(docId).toString(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), Integer.valueOf(docId).toString(), Toast.LENGTH_SHORT).show();
         deleteDocument(docId);
     }
 

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.mihalypapp.app.fragments.AddUserFragment;
 import com.mihalypapp.app.fragments.DeleteDocumentDialog;
+import com.mihalypapp.app.fragments.ImportExportFragment;
 import com.mihalypapp.app.fragments.ListChildrenFragment;
 import com.mihalypapp.app.fragments.ListDocumentsFragment;
 import com.mihalypapp.app.fragments.ListGroupsFragment;
@@ -78,6 +79,9 @@ public class PrincipalActivity extends DrawerActivity {
                 break;
             case R.id.nav_news:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListNewsFragment()).commit();
+                break;
+            case R.id.nav_csv:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ImportExportFragment()).commit();
                 break;
             case R.id.nav_logout:
                 setResult(RESULT_LOGGED_OUT);

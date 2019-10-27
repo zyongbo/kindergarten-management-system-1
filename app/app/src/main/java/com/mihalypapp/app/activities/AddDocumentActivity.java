@@ -124,7 +124,6 @@ public class AddDocumentActivity extends AppCompatActivity {
                         Log.i(TAG, result);
                     }
                 }.start();
-
             }
         });
     }
@@ -292,7 +291,7 @@ public class AddDocumentActivity extends AppCompatActivity {
 
             if (200 != connection.getResponseCode()) {
                 //throw new Exception("Failed to upload code:" + connection.getResponseCode() + " " + connection.getResponseMessage());
-                Toast.makeText(this, "Upload failed!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Upload failed!!", Toast.LENGTH_SHORT).show();
             }
 
             inputStream = connection.getInputStream();

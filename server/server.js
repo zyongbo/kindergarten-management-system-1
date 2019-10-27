@@ -5,7 +5,7 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const fs = require('fs')
 const fileUpload = require('express-fileupload')
-const path = require('path');
+const csv = require('fast-csv');
 
 var con = mysql.createConnection({
     host: "localhost",
@@ -659,7 +659,7 @@ app.get('/groups', (req, res) => {
                 'code': 'NO_PERMISSION'
             })
         }
-    }, 2000);
+    }, 500);
 })
 
 app.post('/addGroup', (req, res) => {
@@ -1405,9 +1405,9 @@ app.post('/addDocument', (req, res) => {
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
 
-    if (!req.files || Object.keys(req.files).length === 0) {
+    /*if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
-    }
+    }*/
 
     let sampleFile = req.files.document;
 
@@ -1421,7 +1421,7 @@ app.post('/addDocument', (req, res) => {
         if (err) throw err
             console.log('Result: ' + JSON.stringify(result))
         if (err == null) {
-            sampleFile.mv('documents/' + result.insertId + '.' +sampleFile.mimetype.split('/')[1], function (err) {
+            sampleFile.mv('documents/' + result.insertId + '.' + sampleFile.name.split('.')[1], function (err) {
                 if (err)
                     return res.status(500).send(err);
                 res.send('OK');
@@ -1733,5 +1733,113 @@ app.post('/addChildLiability', async (req, res) => {
     }
 })
 
+app.post('/importCsv', (req, res) => {
+    console.log('/importCsv--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log(req.body)
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+
+    let sampleFile = req.files.document;
+    console.log(sampleFile)
+    if(sampleFile.name.split('.')[1] != 'csv') {
+        res.send({
+            status: 'failed',
+            err: 'NOT_CSV'
+        })
+        return
+    }
+
+
+    sampleFile.mv('csv/' + sampleFile.name, function (err) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        } else {
+            let stream = fs.createReadStream('csv/' + sampleFile.name);
+
+            let myData = [];
+            let csvStream = csv
+                .parse()
+                .on("data", (data) => {
+                    myData.push(data);
+                })
+                .on("end", function () {
+                    myData.shift()
+                    if (req.body.tableName == 'users') {
+                        let query = `INSERT INTO ?? (UserID, Email, Password, Role, Name) VALUES ?`
+                            con.query(query, [req.body.tableName, myData], (error, response) => {
+                                if(error) {
+                                    console.log(error)
+                                    res.send({
+                                        status: 'failed',
+                                        err: error.code
+                                    })
+                                } else {
+                                    console.log(response)
+                                    res.send({
+                                        status: 'success'
+                                    })
+                                }
+                            });
+                        } else if (req.body.tableName == 'children') {
+                            let newMyData = myData.map(row => row.concat([req.body.groupId]))
+                            let query = `INSERT INTO ?? (ChildID, ParentID, name, birth, mealSubscription, GroupID) VALUES ?`
+                            con.query(query, [req.body.tableName, newMyData, req.body.groupId], (error, response) => {
+                                if(error) {
+                                    console.log(error)
+                                    res.send({
+                                        status: 'failed',
+                                        err: error.code
+                                    })
+                                } else {
+                                    console.log(response)
+                                    res.send({
+                                        status: 'success'
+                                    })
+                                }
+                            });
+                        }
+                    }
+                )
+            
+            stream.pipe(csvStream);
+        }
+    });
+})
+
+app.get('/exportCsv/:tableName', (req, res) => {
+    console.log('/exportCsv--------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log(req.params)
+
+    let ws = fs.createWriteStream('csv/' + req.params.tableName + '.csv')
+    
+    con.query('SELECT * FROM ??', [req.params.tableName], (error, data) => {
+        if (error) throw error
+        const jsonData = JSON.parse(JSON.stringify(data))
+        console.log('jsonData', jsonData)
+
+        csv
+            .write(jsonData, {headers: true})
+            .on('finish', () => {
+                console.log('Write to csv/' + req.params.tableName + '.csv successfully!')
+                res.download('csv/' + req.params.tableName + '.csv', (err) => {
+                    if (err) {
+                      //handle error
+                      return
+                    } else {
+                      //do something
+                    }
+                  })
+            })
+            .pipe(ws)
+
+    })
+})
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`))
