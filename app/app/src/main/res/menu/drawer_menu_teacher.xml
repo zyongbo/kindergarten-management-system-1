@@ -33,6 +33,10 @@
                     android:id="@+id/nav_absentees"
                     android:icon="@drawable/ic_absentees"
                     android:title="Absentees" />
+                <item
+                    android:id="@+id/nav_polls"
+                    android:icon="@drawable/ic_poll"
+                    android:title="Polls" />
             </group>
         </menu>
     </item>

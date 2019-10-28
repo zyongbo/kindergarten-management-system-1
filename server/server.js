@@ -1842,4 +1842,273 @@ app.get('/exportCsv/:tableName', (req, res) => {
     })
 })
 
+app.post('/polls', async (req, res) => {
+    console.log('/polls----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    try {
+        let polls = []
+        if(req.session.role == 'TEACHER') {
+            polls = await query(`
+            SELECT
+                polls.status as status,
+                DATE_FORMAT(polls.date, \'%Y/%m/%d\') as date,
+                polls.question as question,
+                polls.pollID as pollId,
+                polls.groupID as groupId
+            FROM
+                groups
+            INNER JOIN polls ON polls.groupID = groups.GroupID
+            INNER JOIN users ON groups.TeacherID = users.UserID
+            WHERE
+                users.UserID = ?
+            ORDER BY date DESC
+            LIMIT ?, ?
+            `, [req.session.userId, req.body.offset, req.body.quantity])
+            console.log(req.session.userId)
+            console.log(polls)
+            res.send({
+                'status': 'success',
+                'polls': polls,
+                'userRole': req.session.role
+            })
+            return;
+        } else if (req.session.role == 'PARENT') {
+            polls = await query(`
+            SELECT
+                polls.pollID as pollId,
+                polls.question as question,
+                polls.status as status,
+                DATE_FORMAT(polls.date, \'%Y/%m/%d\') as date,
+                polls.groupID as groupId,
+                children.name as childName
+            FROM
+                users
+            INNER JOIN children ON children.ParentID = users.UserID
+            INNER JOIN groups ON children.GroupID = groups.GroupID
+            INNER JOIN polls ON polls.groupID = groups.GroupID
+            WHERE
+                users.UserID = ?
+            GROUP BY
+                polls.pollID,
+                polls.question,
+                polls.status,
+                polls.date,
+                polls.groupID
+            ORDER BY date DESC
+            LIMIT ?, ?
+            `, [req.session.userId, req.body.offset, req.body.quantity])
+            console.log(req.session.userId)
+            console.log(polls)
+            res.send({
+                'status': 'success',
+                'polls': polls,
+                'userRole': req.session.role
+            })
+            return;
+        }
+    
+        res.send({
+            'status': 'failed',
+            'code': 'NOT_TEACHER'
+        })
+    } catch (err) {
+        console.log(err)
+        res.send({
+            'status': 'failed',
+            'code': 'ERROR'
+        })
+    }
+})
+
+app.post('/options', async (req, res) => {
+    console.log('/options----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    try {
+        let options = await query(`
+        SELECT
+            options.option as option,
+            options.pollID as pollId,
+            options.optionID as optionId
+        FROM
+            options
+        WHERE
+            options.pollID = ?
+        `, [req.body.pollId])
+        console.log(options)
+
+        let alreadyVoted = await query(`
+        SELECT
+            count(*) > 0 as alreadyVoted,
+            optionId,
+            optionPos
+        FROM
+            answers
+        WHERE pollID = ?
+        AND userID = ?
+        `, [req.body.pollId, req.session.userId])
+        console.log(alreadyVoted);
+
+        res.send({
+            'status': 'success',
+            'options': options,
+            'alreadyVoted': alreadyVoted[0],
+            'userRole': req.session.role
+        })
+    } catch (err) {
+        console.log(err)
+        res.send({
+            'status': 'failed',
+            'code': err
+        })
+    }
+})
+
+app.post('/saveOptionAnswer', async (req, res) => {
+    console.log('/saveOptionAnswer----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    try {
+        await query(`
+        INSERT INTO
+            answers
+        VALUES
+            (?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            optionID = ?,
+            pollID = ?,
+            userID = ?,
+            optionPos = ?
+        `, [req.body.optionId, req.body.pollId, req.session.userId, req.body.optionPos, req.body.optionId, req.body.pollId, req.session.userId, req.body.optionPos])
+        res.send({
+            'status': 'success'
+        })
+    } catch (err) {
+        console.log(err)
+        res.send({
+            'status': 'failed',
+            'code': err
+        })
+    }
+})
+
+app.post('/endPoll', async (req, res) => {
+    console.log('/endPoll----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    try {
+        await query(`
+        UPDATE polls
+        SET
+            status = 'ENDED'
+        WHERE
+            pollID = ?
+        `, [req.body.pollId])
+        res.send({
+            'status': 'success'
+        })
+    } catch (err) {
+        console.log(err)
+        res.send({
+            'status': 'failed',
+            'code': err
+        })
+    }
+})
+
+app.post('/answers', async (req, res) => {
+    console.log('/answers----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    try {
+        const answers = await query(`
+        SELECT
+            OPTION as answer,
+            COUNT(OPTIONS.OPTION) AS count
+        FROM
+            answers
+        INNER JOIN options ON answers.optionID = options.optionID
+        WHERE
+            answers.pollID = ?
+        GROUP BY
+            OPTION
+        ORDER BY
+            count DESC
+        `, [req.body.pollId])
+        res.send({
+            'status': 'success',
+            'answers': answers
+        })
+    } catch (err) {
+        console.log(err)
+        res.send({
+            'status': 'failed',
+            'code': err
+        })
+    }
+})
+
+app.post('/addPoll', async (req, res) => {
+    console.log('/addPoll----------------------------------------------------------------------')
+    console.log('Session ID: ' + req.sessionID)
+    console.log('Session: ' + JSON.stringify(req.session))
+    console.log('Request: ' + JSON.stringify(req.body))
+
+    try {
+        const teacher = await query(`
+        SELECT
+            groups.groupID
+        FROM
+            groups
+        INNER JOIN users ON groups.TeacherID = users.UserID
+        WHERE
+            users.UserID = ?
+        AND groups.type != 'FINISHED'
+        `, [req.session.userId])
+
+        await query(`
+        INSERT INTO
+            polls (question, groupID)
+        VALUES
+            (?, ?)
+        `, [req.body.question, teacher[0].groupID], (err, result) => {
+            if (err) {
+                res.send({
+                    'status': 'failed',
+                    'code': err
+                })
+            }
+            for (let i = 0; i < req.body.options.length; i++) {
+                query(`
+                INSERT INTO
+                    options (pollID, option)
+                VALUES
+                    (?, ?)
+                `, [result.insertId, req.body.options[i]])
+            }
+            res.send({
+                'status': 'success'
+            })
+        })
+    
+    } catch (err) {
+        console.log(err)
+        res.send({
+            'status': 'failed',
+            'code': err
+        })
+    }
+})
+
 app.listen(port, () => console.log(`Server listening on port ${port}!`))

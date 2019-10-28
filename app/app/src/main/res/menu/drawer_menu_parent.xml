@@ -22,9 +22,9 @@
             android:icon="@drawable/ic_documents"
             android:title="Documents"/>
         <item
-            android:id="@+id/nav_liabilities"
-            android:icon="@drawable/ic_liabilities"
-            android:title="Liabilities" />
+            android:id="@+id/nav_polls"
+            android:icon="@drawable/ic_poll"
+            android:title="Polls" />
     </group>
 
     <group android:id="@+id/group_actions">

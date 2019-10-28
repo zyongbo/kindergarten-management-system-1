@@ -90,14 +90,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/addChildLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
             <Button
                 android:id="@+id/button_add_user"
                 android:layout_width="match_parent"

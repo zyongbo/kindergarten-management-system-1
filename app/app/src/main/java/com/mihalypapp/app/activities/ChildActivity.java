@@ -225,7 +225,7 @@ public class ChildActivity extends AppCompatActivity {
                                 liabilityAdapter.notifyDataSetChanged();
                                 listViewLiabilities.setAdapter(liabilityAdapter);
                             } else {
-                                Toast.makeText(ChildActivity.this,"Error", Toast.LENGTH_SHORT).show();
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -301,7 +301,7 @@ public class ChildActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("success")) {
                                 Toast.makeText(ChildActivity.this, "Successful!", Toast.LENGTH_SHORT).show();
-                                //fetchChild();
+                                fetchChild();
                             } else {
                                 Toast.makeText(ChildActivity.this, "The child wasn't added to the group!", Toast.LENGTH_SHORT).show();
                             }
@@ -327,6 +327,7 @@ public class ChildActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.child_menu, menu);
+
         itemRemoveChildFromGroup = menu.findItem(R.id.item_remove_from_group);
         itemAddChildToGroup = menu.findItem(R.id.item_add_to_group);
         itemViewGroup = menu.findItem(R.id.item_view_group);
@@ -334,6 +335,7 @@ public class ChildActivity extends AppCompatActivity {
         itemSendMessageToTeacher = menu.findItem(R.id.item_send_message_to_teacher);
         itemMealSubscription = menu.findItem(R.id.item_meal_subscription);
         itemAddLiabilityToChild = menu.findItem(R.id.item_add_liability_to_child);
+
         itemMealSubscription.setVisible(false);
         itemSendMessageToTeacher.setVisible(false);
         itemRemoveChildFromGroup.setVisible(false);
@@ -341,6 +343,7 @@ public class ChildActivity extends AppCompatActivity {
         itemAddChildToGroup.setVisible(false);
         itemSendMessageToParent.setVisible(false);
         itemAddLiabilityToChild.setVisible(false);
+
         return true;
     }
 
@@ -400,7 +403,6 @@ public class ChildActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
         }
     }
 

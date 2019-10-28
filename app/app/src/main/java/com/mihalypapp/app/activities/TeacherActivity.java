@@ -12,6 +12,7 @@ import com.mihalypapp.app.fragments.AbsenteeFragment;
 import com.mihalypapp.app.fragments.ListDocumentsFragment;
 import com.mihalypapp.app.fragments.ListMessagePartnersFragment;
 import com.mihalypapp.app.fragments.ListNewsFragment;
+import com.mihalypapp.app.fragments.ListPollsFragment;
 import com.mihalypapp.app.fragments.MyGroupFragment;
 import com.mihalypapp.app.fragments.MyUserFragment;
 
@@ -59,6 +60,9 @@ public class TeacherActivity extends DrawerActivity {
                 break;
             case R.id.nav_news:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListNewsFragment()).commit();
+                break;
+            case R.id.nav_polls:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ListPollsFragment()).commit();
                 break;
             case R.id.nav_logout:
                 setResult(RESULT_LOGGED_OUT);
