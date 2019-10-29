@@ -86,7 +86,7 @@ public class AutoCompleteGroupAdapter extends ArrayAdapter<Group> {
 
         @Override
         public CharSequence convertResultToString(Object resultValue) {
-            return ((Group) resultValue).getTeacherName() + " (" +((Group) resultValue).getType() + " group)" ;
+            return ((Group) resultValue).getTeacherName() + " (" +((Group) resultValue).getType() + " " + R.string.group + ")";
         }
     };
 }

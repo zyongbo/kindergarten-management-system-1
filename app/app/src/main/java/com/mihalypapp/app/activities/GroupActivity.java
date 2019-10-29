@@ -77,7 +77,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Group");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.group);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textViewTeacherName = findViewById(R.id.text_view_teacher_name);
@@ -143,7 +143,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                 if (intent.hasExtra("request")) {
                                     if (Objects.requireNonNull(intent.getStringExtra("request")).equals("groupId")) {
                                         buttonGroup.setVisibility(View.VISIBLE);
-                                        buttonGroup.setText("Select");
+                                        buttonGroup.setText(getString(R.string.select));
                                         buttonGroup.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
@@ -165,7 +165,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                     if (userRole.equals("PRINCIPAL") && !resGroup.getString("type").equals("FINISHED")) {
                                         buttonGroup.setVisibility(View.VISIBLE);
                                         if (resGroup.getString("type").equals("BIG")) {
-                                            buttonGroup.setText("Finish");
+                                            buttonGroup.setText(R.string.finish);
                                             buttonGroup.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
@@ -173,7 +173,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                                 }
                                             });
                                         } else {
-                                            buttonGroup.setText("Upgrade");
+                                            buttonGroup.setText(R.string.upgrade);
                                             buttonGroup.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
@@ -198,9 +198,9 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
 
                                 JSONArray children = response.getJSONArray("children");
                                 if (children.length() > 0) {
-                                    textViewChildrenDisplay.setText("Children");
+                                    textViewChildrenDisplay.setText(R.string.children);
                                 } else {
-                                    textViewChildrenDisplay.setText("No children");
+                                    textViewChildrenDisplay.setText(R.string.no_children);
                                 }
                                 for (int i = 0; i < children.length(); i++) {
                                     JSONObject child = children.getJSONObject(i);
@@ -220,7 +220,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                                 listView.setAdapter(adapter);
                                 textViewGroupSize.setText(Integer.valueOf(group.getSize()).toString());
                             } else {
-                                Toast.makeText(GroupActivity.this,"Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GroupActivity.this,getString(R.string.error), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -257,11 +257,11 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                         Log.i(TAG, "Response: " + response.toString());
                         try {
                             if (response.getString("status").equals("success")) {
-                                Toast.makeText(GroupActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GroupActivity.this, getString(R.string.group_suc_finished), Toast.LENGTH_SHORT).show();
                                 fetchGroup();
                                 buttonGroup.setVisibility(View.INVISIBLE);
                             } else {
-                                Toast.makeText(GroupActivity.this,"Failed!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GroupActivity.this,getString(R.string.failed), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -298,10 +298,10 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                         Log.i(TAG, "Response: " + response.toString());
                         try {
                             if (response.getString("status").equals("success")) {
-                                Toast.makeText(GroupActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GroupActivity.this, getString(R.string.group_suc_upgraded), Toast.LENGTH_SHORT).show();
                                 fetchGroup();
                             } else {
-                                Toast.makeText(GroupActivity.this,"Failed!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GroupActivity.this,getString(R.string.failed), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

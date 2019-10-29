@@ -53,10 +53,10 @@ public class AddUserActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Add a new User");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.add_a_new_user);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String[] ROLES = new String[]{"Parent", "Teacher", "Principal"};
+        String[] ROLES = new String[]{"PARENT", "TEACHER", "PRINCIPAL"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.dropdown_menu_popup_item, ROLES);
         AutoCompleteTextView exposedDropdown = findViewById(R.id.exposed_dropdown_role);
@@ -93,14 +93,14 @@ public class AddUserActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("success")) {
                                 clearFields();
-                                Toast.makeText(AddUserActivity.this, "User successfully registered!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddUserActivity.this, getString(R.string.user_suc_reg), Toast.LENGTH_SHORT).show();
                             } else {
                                 switch (response.getString("code")) {
                                     case "ER_DUP_ENTRY":
-                                        textInputEmail.setError("Email is in use.");
+                                        textInputEmail.setError(getString(R.string.email_is_in_use));
                                         break;
                                     default:
-                                        Toast.makeText(AddUserActivity.this, "ERROR!?", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AddUserActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                                         break;
                                 }
                             }
@@ -112,7 +112,7 @@ public class AddUserActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(AddUserActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddUserActivity.this, getString(R.string.error)+ " " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -124,7 +124,7 @@ public class AddUserActivity extends AppCompatActivity {
         nameInput = textInputName.getEditText().getText().toString().trim();
 
         if (nameInput.isEmpty()) {
-            textInputName.setError("Field can't be empty.");
+            textInputName.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputName.setError(null);
@@ -136,7 +136,7 @@ public class AddUserActivity extends AppCompatActivity {
         emailInput = textInputEmail.getEditText().getText().toString().trim();
 
         if (emailInput.isEmpty()) {
-            textInputEmail.setError("Field can't be empty.");
+            textInputEmail.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputEmail.setError(null);
@@ -148,7 +148,7 @@ public class AddUserActivity extends AppCompatActivity {
         passwordInput = textInputPassword.getEditText().getText().toString().trim();
 
         if (passwordInput.isEmpty()) {
-            textInputPassword.setError("Field can't be empty.");
+            textInputPassword.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputPassword.setError(null);
@@ -160,7 +160,7 @@ public class AddUserActivity extends AppCompatActivity {
         roleInput = textInputRole.getEditText().getText().toString().trim();
 
         if (roleInput.isEmpty()) {
-            textInputRole.setError("Field can't be empty.");
+            textInputRole.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputRole.setError(null);

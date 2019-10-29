@@ -5,22 +5,22 @@
         <item
             android:id="@+id/nav_my_user"
             android:icon="@drawable/ic_my_user"
-            android:title="My user" />
+            android:title="@string/my_user" />
         <item
             android:id="@+id/nav_message"
             android:icon="@drawable/ic_message"
-            android:title="Message" />
+            android:title="@string/message" />
         <item
             android:id="@+id/nav_news"
             android:icon="@drawable/ic_news"
-            android:title="News"/>
+            android:title="@string/news"/>
         <item
             android:id="@+id/nav_documents"
             android:icon="@drawable/ic_documents"
-            android:title="Documents"/>
+            android:title="@string/documents"/>
     </group>
 
-    <item android:title="Manage">
+    <item android:title="@string/manage">
         <menu>
             <group
                 android:id="@+id/group_manage"
@@ -28,15 +28,15 @@
                 <item
                     android:id="@+id/nav_my_group"
                     android:icon="@drawable/ic_groups"
-                    android:title="My groups" />
+                    android:title="@string/my_groups" />
                 <item
                     android:id="@+id/nav_absentees"
                     android:icon="@drawable/ic_absentees"
-                    android:title="Absentees" />
+                    android:title="@string/absentees" />
                 <item
                     android:id="@+id/nav_polls"
                     android:icon="@drawable/ic_poll"
-                    android:title="Polls" />
+                    android:title="@string/polls" />
             </group>
         </menu>
     </item>
@@ -45,7 +45,7 @@
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_logout"
-            android:title="Logout" />
+            android:title="@string/logout" />
     </group>
 
 </menu>

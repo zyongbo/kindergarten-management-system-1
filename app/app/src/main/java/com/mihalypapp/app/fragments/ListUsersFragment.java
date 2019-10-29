@@ -71,7 +71,7 @@ public abstract class ListUsersFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Users");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.users);
 
         FloatingActionButton floatingActionButton = view.findViewById(R.id.floating_action_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {

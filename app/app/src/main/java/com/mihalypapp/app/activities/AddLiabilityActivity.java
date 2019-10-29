@@ -51,7 +51,7 @@ public class AddLiabilityActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Add liability");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.add_liability);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String[] TYPES = new String[]{"groupCharge", "Other"};
@@ -94,9 +94,9 @@ public class AddLiabilityActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("success")) {
                                 clearFields();
-                                Toast.makeText(AddLiabilityActivity.this, "Liability successfully added!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddLiabilityActivity.this, getString(R.string.liability_suc_added), Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(AddLiabilityActivity.this, "ERROR!?", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddLiabilityActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -106,7 +106,7 @@ public class AddLiabilityActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(AddLiabilityActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddLiabilityActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -132,9 +132,9 @@ public class AddLiabilityActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("success")) {
                                 clearFields();
-                                Toast.makeText(AddLiabilityActivity.this, "Liability successfully added!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddLiabilityActivity.this, getString(R.string.liability_suc_added), Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(AddLiabilityActivity.this, "ERROR!?", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddLiabilityActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -144,7 +144,7 @@ public class AddLiabilityActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(AddLiabilityActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddLiabilityActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -156,13 +156,13 @@ public class AddLiabilityActivity extends AppCompatActivity {
         chargeInput = textInputLiabilityCharge.getEditText().getText().toString().trim();
 
         if (chargeInput.isEmpty()) {
-            textInputLiabilityCharge.setError("Field can't be empty.");
+            textInputLiabilityCharge.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             try {
                 Integer.parseInt(chargeInput);
             } catch (NumberFormatException e) {
-                textInputLiabilityCharge.setError("Please use only numbers.");
+                textInputLiabilityCharge.setError(getString(R.string.use_only_num));
                 return false;
             }
             textInputLiabilityCharge.setError(null);
@@ -174,7 +174,7 @@ public class AddLiabilityActivity extends AppCompatActivity {
         liabilityTypeInput = textInputLiabilityType.getEditText().getText().toString().trim();
 
         if (liabilityTypeInput.isEmpty()) {
-            textInputLiabilityType.setError("Field can't be empty.");
+            textInputLiabilityType.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputLiabilityType.setError(null);

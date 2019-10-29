@@ -63,7 +63,7 @@ public class AbsenteeFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_absentee, container, false);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Absentees");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.absentees);
 
         listView = view.findViewById(R.id.list_view_absentees);
         buttonSelectAll = view.findViewById(R.id.button_select_all);
@@ -179,7 +179,7 @@ public class AbsenteeFragment extends Fragment {
                                 if (children.length() == 0) {
                                     buttonDeselectAll.setVisibility(View.INVISIBLE);
                                     buttonSelectAll.setVisibility(View.INVISIBLE);
-                                    textViewDateToday.setText("You have no active group!");
+                                    textViewDateToday.setText(getString(R.string.you_have_no_active_group));
                                 } else {
                                     textViewDateToday.setText(getCurrentDate());
                                 }
@@ -208,7 +208,7 @@ public class AbsenteeFragment extends Fragment {
                                     isFetchedFirst = false;
                                 }
                             } else {
-                                Toast.makeText(getContext(),"Error fetchAbsentees", Toast.LENGTH_SHORT).show();
+                                Log.i(TAG, "Error fetchAbsentee");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

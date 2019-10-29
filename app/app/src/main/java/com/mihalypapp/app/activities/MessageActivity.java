@@ -168,7 +168,7 @@ public class MessageActivity extends AppCompatActivity {
                                 int i;
                                 for (i = 0; i < messages.length(); i++) {
                                     JSONObject message = messages.getJSONObject(i);
-                                    String userName = "Me";
+                                    String userName = getString(R.string.me);
                                     if(message.getInt("Own") == 0) {
                                         userName = getIntent().getStringExtra(PARTNER_NAME);
                                     }

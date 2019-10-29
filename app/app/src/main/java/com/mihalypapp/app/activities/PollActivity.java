@@ -132,7 +132,7 @@ public class PollActivity extends AppCompatActivity {
 
                                 if (getIntent().getStringExtra("status").equals("ENDED")) {
                                     listViewOptions.setEnabled(false);
-                                    button.setText("View results");
+                                    button.setText(getString(R.string.view_results));
                                 }
 
                                 if (response.getJSONObject("alreadyVoted").getInt("alreadyVoted") == 1) {
@@ -141,10 +141,10 @@ public class PollActivity extends AppCompatActivity {
 
                             } else if (response.getString("status").equals("failed")) {
                                 if (response.getString("code").equals("ER_DUP_ENTRY")) {
-                                    Toast.makeText(PollActivity.this, "You have already voted!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(PollActivity.this, getString(R.string.already_voted), Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(PollActivity.this,"Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PollActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -178,9 +178,9 @@ public class PollActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             if (response.getString("status").equals("success")) {
-                                Toast.makeText(PollActivity.this, "Answer saved!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PollActivity.this,  getString(R.string.answer_suc_saved), Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(PollActivity.this,"Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PollActivity.this,getString(R.string.error) + " ", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -212,11 +212,11 @@ public class PollActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             if (response.getString("status").equals("success")) {
-                                Toast.makeText(PollActivity.this, "Poll ended!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PollActivity.this, getString(R.string.poll_suc_ended), Toast.LENGTH_SHORT).show();
                                 setResult(RESULT_OK);
                                 finish();
                             } else {
-                                Toast.makeText(PollActivity.this,"Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PollActivity.this,getString(R.string.error), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

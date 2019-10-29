@@ -40,7 +40,7 @@ public class ListUsersScreenSlideFragment extends Fragment {
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
-        private String[] tabTitles = new String[]{"Parents", "Teachers", "Principals"};
+        private String[] tabTitles = new String[]{"PARENTS", "TEACHERS", "PRINCIPALS"};
 
         ScreenSlidePagerAdapter(@NonNull FragmentManager fm) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);

@@ -66,7 +66,7 @@ public class ListMessagePartnersFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_list_message_partners, container, false);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Messages");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.messages);
 
         setHasOptionsMenu(true);
 

@@ -63,7 +63,7 @@ public class ListPollsFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_list_polls, container, false);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Polls");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.polls));
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new PollCardAdapter(pollCardList);

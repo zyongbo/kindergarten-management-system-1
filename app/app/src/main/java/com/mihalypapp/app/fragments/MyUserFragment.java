@@ -41,7 +41,7 @@ public class MyUserFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_my_user, container, false);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My user");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.my_user);
 
         textViewFullName = view.findViewById(R.id.text_view_full_name);
         textViewEmail = view.findViewById(R.id.text_view_email);

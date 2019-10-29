@@ -82,7 +82,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Add a new child");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.add_a_new_child));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textInputLayoutChildName = findViewById(R.id.text_input_child_name);
@@ -195,7 +195,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
                                 }
                                 textInputLayoutParents.setEnabled(true);
                             } else {
-                                Log.i(TAG, "Smthg wrong!");
+                                Log.i(TAG, getString(R.string.error));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -204,7 +204,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(AddChildActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddChildActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -237,7 +237,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
                                 textInputLayoutGroups.setEnabled(true);
                                 buttonAddChild.setEnabled(true);
                             } else {
-                                Log.i(TAG, "Smthg wrong!");
+                                Log.i(TAG, getString(R.string.error));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -246,7 +246,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(AddChildActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddChildActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -273,9 +273,9 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
                         try {
                             if (response.getString("status").equals("success")) {
                                 clearFields();
-                                Toast.makeText(AddChildActivity.this, "Child successfully added!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddChildActivity.this, getString(R.string.child_suc_added), Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(AddChildActivity.this, "ERROR!?", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddChildActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -285,7 +285,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(AddChildActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddChildActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -298,7 +298,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
         childNameInput = textInputLayoutChildName.getEditText().getText().toString().trim();
 
         if (childNameInput.isEmpty()) {
-            textInputLayoutChildName.setError("Field can't be empty.");
+            textInputLayoutChildName.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputLayoutChildName.setError(null);
@@ -311,7 +311,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
             textInputLayoutParents.setError(null);
             return true;
         } else {
-            textInputLayoutParents.setError("Please select a parent!");
+            textInputLayoutParents.setError(getString(R.string.select_a_parent));
             return false;
         }
     }
@@ -321,7 +321,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
             textInputLayoutGroups.setError(null);
             return true;
         } else {
-            textInputLayoutGroups.setError("Please select a group!");
+            textInputLayoutGroups.setError(getString(R.string.select_a_group));
             return false;
         }
     }
@@ -331,7 +331,7 @@ public class AddChildActivity extends AppCompatActivity implements DatePickerDia
             textViewDate.setError(null);
             return true;
         } else {
-            textViewDate.setError("Please select a date!");
+            textViewDate.setError(getString(R.string.select_a_date));
             return false;
         }
     }

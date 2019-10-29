@@ -74,7 +74,7 @@ public class AddDocumentActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Add a new document");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.add_a_new_document);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String[] ROLES = new String[]{"Parent", "Teacher", "Principal", "All"};
@@ -109,8 +109,8 @@ public class AddDocumentActivity extends AppCompatActivity {
                 params.put("description", descriptionInput);
 
                 progressDialog = new ProgressDialog(AddDocumentActivity.this);
-                progressDialog.setTitle("Uploading");
-                progressDialog.setMessage("Please wait...");
+                progressDialog.setTitle(getString(R.string.uploading));
+                progressDialog.setMessage(getString(R.string.please_wait));
                 progressDialog.show();
 
                 new Thread() {
@@ -132,7 +132,7 @@ public class AddDocumentActivity extends AppCompatActivity {
     Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            Toast.makeText(AddDocumentActivity.this, "File successfully uploaded!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddDocumentActivity.this, getString(R.string.file_suc_uploaded), Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -164,7 +164,7 @@ public class AddDocumentActivity extends AppCompatActivity {
         descriptionInput = textInputDescription.getEditText().getText().toString().trim();
 
         if (descriptionInput.isEmpty()) {
-            textInputDescription.setError("Field can't be empty.");
+            textInputDescription.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputDescription.setError(null);
@@ -176,7 +176,7 @@ public class AddDocumentActivity extends AppCompatActivity {
         roleInput = textInputRole.getEditText().getText().toString().trim();
 
         if (roleInput.isEmpty()) {
-            textInputRole.setError("Field can't be empty.");
+            textInputRole.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputRole.setError(null);
@@ -186,7 +186,7 @@ public class AddDocumentActivity extends AppCompatActivity {
 
     private boolean validateFile() {
         if (textViewFileName.length() == 0) {
-            Toast.makeText(this, "Please select a file!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.select_a_file), Toast.LENGTH_SHORT).show();
             return false;
         } else {
             return true;

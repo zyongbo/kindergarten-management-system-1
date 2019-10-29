@@ -84,7 +84,7 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_documents, container, false);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("News");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.news);
 
         setHasOptionsMenu(true);
 
@@ -112,9 +112,9 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
 
                 if(broadcastDownloadID == downloadID) {
                     if(getDownloadStatus() == DownloadManager.STATUS_SUCCESSFUL) {
-                        Toast.makeText(context, "Download complete", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getString(R.string.download_completed), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context, "Download not complete.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getString(R.string.download_is_not_completed), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -229,7 +229,7 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
                         Log.i(TAG, "Response: " + response.toString());
                         try {
                             if (response.getString("status").equals("success")) {
-                                Toast.makeText(getContext(), "Document successfully deleted!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), getString(R.string.doc_suc_deleted), Toast.LENGTH_SHORT).show();
                                 fetchDocuments();
                             }
                         } catch (JSONException e) {
@@ -240,7 +240,8 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getContext(),"Error deleteDocumentRequest", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(),"Error deleteDocumentRequest", Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "Error deleteDocumentRequest");
                     }
                 });
 
@@ -251,7 +252,7 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(MainActivity.URL + "document/" + Integer.valueOf(fileId).toString()))
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI)
                 .setTitle(fileName)
-                .setDescription("Downloading file...")
+                .setDescription(getString(R.string.downloading_file))
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
 

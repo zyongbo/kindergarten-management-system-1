@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 startActivityByRole(role);
                             } else {
-                                Toast.makeText(MainActivity.this, "Login was failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, getString(R.string.login_failed), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -144,18 +144,18 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Log.i(TAG, "Logout response: " + response);
                         if (response.equals("OK")) {
-                            Toast.makeText(MainActivity.this, "Successfully logged out!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, getString(R.string.suc_logged_out), Toast.LENGTH_SHORT).show();
                             clearSession();
                             clearFields();
                         } else {
-                            Toast.makeText(MainActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
                         }
                         Log.i(TAG, "Cookies after logout: " + cookieManager.getCookieStore().getCookies().toString());
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "No role for starting activity");
                 break;
         }
-        Toast.makeText(this, "Successfully logged in!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.suc_logged_in), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         emailInput = textInputEmail.getEditText().getText().toString().trim();
 
         if (emailInput.isEmpty()) {
-            textInputEmail.setError("Field can't be empty.");
+            textInputEmail.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputEmail.setError(null);
@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         passwordInput = textInputPassword.getEditText().getText().toString().trim();
 
         if (passwordInput.isEmpty()) {
-            textInputPassword.setError("Field can't be empty.");
+            textInputPassword.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputPassword.setError(null);

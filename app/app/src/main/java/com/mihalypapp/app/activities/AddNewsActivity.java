@@ -45,7 +45,7 @@ public class AddNewsActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Add a news");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.add_a_news));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Button buttonAddUser = findViewById(R.id.button_add_news);
@@ -77,9 +77,9 @@ public class AddNewsActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("success")) {
                                 clearFields();
-                                Toast.makeText(AddNewsActivity.this, "News successfully added!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddNewsActivity.this, getString(R.string.news_suc_added), Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(AddNewsActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddNewsActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
 
                             }
                         } catch (JSONException e) {
@@ -90,7 +90,7 @@ public class AddNewsActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(AddNewsActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddNewsActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -102,7 +102,7 @@ public class AddNewsActivity extends AppCompatActivity {
         titleInput = textInputTitle.getEditText().getText().toString().trim();
 
         if (titleInput.isEmpty()) {
-            textInputTitle.setError("Field can't be empty.");
+            textInputTitle.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputTitle.setError(null);
@@ -114,7 +114,7 @@ public class AddNewsActivity extends AppCompatActivity {
         contentInput = textInputContent.getEditText().getText().toString().trim();
 
         if (contentInput.isEmpty()) {
-            textInputContent.setError("Field can't be empty.");
+            textInputContent.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputContent.setError(null);

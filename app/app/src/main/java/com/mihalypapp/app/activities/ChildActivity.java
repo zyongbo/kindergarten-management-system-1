@@ -79,7 +79,7 @@ public class ChildActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Child");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.child);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textViewChildName = findViewById(R.id.text_view_child_name);
@@ -136,9 +136,9 @@ public class ChildActivity extends AppCompatActivity {
                                 selectedChild.setParentId(child.getInt("parentId"));
                                 selectedChild.setMealSubscription(child.getInt("mealSubscription"));
                                 if(selectedChild.getMealSubscription() == 1) {
-                                    textViewMealSubscription.setText("ACTIVE");
+                                    textViewMealSubscription.setText(getString(R.string.active));
                                 } else {
-                                    textViewMealSubscription.setText("DISABLED");
+                                    textViewMealSubscription.setText(getString(R.string.disabled));
                                 }
                                 textViewChildName.setText(child.getString("childName"));
                                 textViewParentName.setText(child.getString("parentName"));
@@ -201,9 +201,9 @@ public class ChildActivity extends AppCompatActivity {
 
                                 JSONArray absences = response.getJSONArray("absences");
                                 if (absences.length() == 0) {
-                                    textViewAbsencesDisplay.setText("No absences");
+                                    textViewAbsencesDisplay.setText(getString(R.string.no_absences));
                                 } else {
-                                    textViewAbsencesDisplay.setText("Absences");
+                                    textViewAbsencesDisplay.setText(R.string.absences);
                                     for (int i = 0; i < absences.length(); i++) {
                                         JSONObject absence = absences.getJSONObject(i);
                                         absenceList.add(absence.getString("date"));
@@ -214,9 +214,9 @@ public class ChildActivity extends AppCompatActivity {
 
                                 JSONArray liabilities = response.getJSONArray("liabilities");
                                 if (liabilities.length() == 0) {
-                                    textViewLiabilitiesDisplay.setText("No liability");
+                                    textViewLiabilitiesDisplay.setText(R.string.no_liability);
                                 } else {
-                                    textViewLiabilitiesDisplay.setText("Liabilities");
+                                    textViewLiabilitiesDisplay.setText(R.string.liabilities);
                                     for (int i = 0; i < liabilities.length(); i++) {
                                         JSONObject liability = liabilities.getJSONObject(i);
                                         liabilityList.add(liability.getString("liabilityDate") + " - " + liability.getString("liabilityType") + " - " + Integer.valueOf(liability.getInt("liabilityCharge")).toString());
@@ -260,11 +260,11 @@ public class ChildActivity extends AppCompatActivity {
                         Log.i(TAG, "Response:" + response.toString());
                         try {
                             if (response.getString("status").equals("success")) {
-                                Toast.makeText(ChildActivity.this, "Successful!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ChildActivity.this, getString(R.string.child_suc_removed), Toast.LENGTH_SHORT).show();
                                 fetchChild();
                                 setResult(Activity.RESULT_OK);
                             } else {
-                                Toast.makeText(ChildActivity.this, "The child wasn't deleted from the group!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ChildActivity.this, getString(R.string.child_wasnt_deleted_from_group), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -300,10 +300,10 @@ public class ChildActivity extends AppCompatActivity {
                         Log.i(TAG, "Response:" + response.toString());
                         try {
                             if (response.getString("status").equals("success")) {
-                                Toast.makeText(ChildActivity.this, "Successful!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ChildActivity.this, getString(R.string.child_suc_added), Toast.LENGTH_SHORT).show();
                                 fetchChild();
                             } else {
-                                Toast.makeText(ChildActivity.this, "The child wasn't added to the group!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ChildActivity.this, getString(R.string.child_wasnt_added_to_group), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -424,10 +424,10 @@ public class ChildActivity extends AppCompatActivity {
                         Log.i(TAG, "Response:" + response.toString());
                         try {
                             if (response.getString("status").equals("success")) {
-                                Toast.makeText(ChildActivity.this, "Updated successfully!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ChildActivity.this, getString(R.string.sub_updated_suc), Toast.LENGTH_SHORT).show();
                                 fetchChild();
                             } else {
-                                Toast.makeText(ChildActivity.this, "Something wrong!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ChildActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -454,7 +454,8 @@ public class ChildActivity extends AppCompatActivity {
                 if (groupId != -1) {
                     addChildToGroup(groupId);
                 } else {
-                    Toast.makeText(this, "Group ID can't be -1", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Group ID can't be -1", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "Group ID can't be -1");
                 }
             }
         }

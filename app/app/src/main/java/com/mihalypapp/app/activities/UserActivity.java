@@ -65,7 +65,7 @@ public class UserActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("User info");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.user_info));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textViewFullName = findViewById(R.id.text_view_full_name);
@@ -127,9 +127,9 @@ public class UserActivity extends AppCompatActivity {
                                 if (role.equals("PARENT")) {
                                     JSONArray children = response.getJSONArray("data");
                                     if (children.length() == 0) {
-                                        textView.setText("No children");
+                                        textView.setText(getString(R.string.no_children));
                                     } else {
-                                        textView.setText("Children");
+                                        textView.setText(getString(R.string.children));
                                     }
                                     for (int i = 0; i < children.length(); i++) {
                                         JSONObject child = children.getJSONObject(i);
@@ -145,8 +145,12 @@ public class UserActivity extends AppCompatActivity {
                                         listView.setAdapter(childAdapter);
                                     }
                                 } else if (role.equals("TEACHER")) {
-                                    textView.setText("Groups");
                                     JSONArray groups = response.getJSONArray("data");
+                                    if (groups.length() == 0) {
+                                        textView.setText(getString(R.string.no_groups));
+                                    } else {
+                                        textView.setText(getString(R.string.groups));
+                                    }
                                     for (int i = 0; i < groups.length(); i++) {
                                         JSONObject group = groups.getJSONObject(i);
                                         groupList.add(new Group(

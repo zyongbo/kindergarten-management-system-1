@@ -48,8 +48,8 @@ public class ViewPollResultsDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.dialog_view_poll_results, null);
 
         builder.setView(view)
-                .setTitle("Results")
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.results)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -92,7 +92,7 @@ public class ViewPollResultsDialog extends AppCompatDialogFragment {
                                 }
                                 adapter.notifyDataSetChanged();
                             } else {
-                                Toast.makeText(getContext(),"Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

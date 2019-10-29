@@ -46,7 +46,7 @@ public class MyGroupFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My groups");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.my_groups);
 
         View view = inflater.inflate(R.layout.fragment_my_groups, container, false);
         listView = view.findViewById(R.id.list_view_groups);

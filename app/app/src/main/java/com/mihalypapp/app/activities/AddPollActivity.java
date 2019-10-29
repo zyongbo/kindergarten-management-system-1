@@ -59,7 +59,7 @@ public class AddPollActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Add poll");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.add_a_poll);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         addNewOption();
@@ -116,11 +116,11 @@ public class AddPollActivity extends AppCompatActivity {
                         try {
                             Log.i(TAG, response.toString());
                             if (response.getString("status").equals("success")) {
-                                Toast.makeText(AddPollActivity.this,"Successfully added!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddPollActivity.this, getString(R.string.poll_suc_added), Toast.LENGTH_SHORT).show();
                                 setResult(RESULT_OK);
                                 finish();
                             } else {
-                                Toast.makeText(AddPollActivity.this,"Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddPollActivity.this,getString(R.string.error), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -168,7 +168,7 @@ public class AddPollActivity extends AppCompatActivity {
         questionInput = textInputQuestion.getEditText().getText().toString().trim();
 
         if (questionInput.isEmpty()) {
-            textInputQuestion.setError("Question can't be empty.");
+            textInputQuestion.setError(getString(R.string.question_cant_be_empty));
             return false;
         } else {
             textInputQuestion.setError(null);
@@ -184,7 +184,7 @@ public class AddPollActivity extends AppCompatActivity {
             String optionInput = textInputLayout.getEditText().getText().toString().trim();
 
             if (optionInput.isEmpty()) {
-                textInputLayout.setError("Option can't be empty.");
+                textInputLayout.setError(getString(R.string.option_cant_be_empty));
                 hasEmpty = true;
             } else {
                 optionInputs.add(optionInput);

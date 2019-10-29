@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.mihalypapp.app.fragments.AddUserFragment;
 import com.mihalypapp.app.fragments.DeleteDocumentDialog;
 import com.mihalypapp.app.fragments.ImportExportFragment;
 import com.mihalypapp.app.fragments.ListChildrenFragment;
@@ -43,7 +42,7 @@ public class PrincipalActivity extends DrawerActivity {
 
     @Override
     public String GetTitle() {
-        return "Principal";
+        return getString(R.string.principal);
     }
 
     @Override

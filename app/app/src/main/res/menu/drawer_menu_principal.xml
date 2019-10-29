@@ -5,14 +5,14 @@
         <item
             android:id="@+id/nav_my_user"
             android:icon="@drawable/ic_my_user"
-            android:title="My user" />
+            android:title="@string/my_user" />
         <item
             android:id="@+id/nav_message"
             android:icon="@drawable/ic_message"
-            android:title="Message" />
+            android:title="@string/message" />
     </group>
 
-    <item android:title="Manage">
+    <item android:title="@string/manage">
         <menu>
             <group
                 android:id="@+id/group_manage"
@@ -20,31 +20,27 @@
                 <item
                     android:id="@+id/nav_users"
                     android:icon="@drawable/ic_users"
-                    android:title="Users" />
+                    android:title="@string/users" />
                 <item
                     android:id="@+id/nav_children"
                     android:icon="@drawable/ic_children"
-                    android:title="Children" />
+                    android:title="@string/children" />
                 <item
                     android:id="@+id/nav_groups"
                     android:icon="@drawable/ic_groups"
-                    android:title="Groups" />
-                <item
-                    android:id="@+id/nav_liabilities"
-                    android:icon="@drawable/ic_liabilities"
-                    android:title="Liabilities" />
+                    android:title="@string/groups" />
                 <item
                     android:id="@+id/nav_news"
                     android:icon="@drawable/ic_news"
-                    android:title="News"/>
+                    android:title="@string/news"/>
                 <item
                     android:id="@+id/nav_documents"
                     android:icon="@drawable/ic_documents"
-                    android:title="Documents"/>
+                    android:title="@string/documents"/>
                 <item
                     android:id="@+id/nav_csv"
                     android:icon="@drawable/ic_csv"
-                    android:title="Import, export"/>
+                    android:title="@string/import_export"/>
             </group>
         </menu>
     </item>
@@ -53,7 +49,7 @@
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_logout"
-            android:title="Logout" />
+            android:title="@string/logout" />
     </group>
 
 </menu>

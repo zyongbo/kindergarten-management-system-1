@@ -26,7 +26,7 @@ public class ParentActivity extends DrawerActivity {
 
     @Override
     public String GetTitle() {
-        return "Parent";
+        return getString(R.string.parent);
     }
 
     @Override

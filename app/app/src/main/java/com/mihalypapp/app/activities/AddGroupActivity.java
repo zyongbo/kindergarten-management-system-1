@@ -66,7 +66,7 @@ public class AddGroupActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Add a new group");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.add_a_new_group));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textInputLayoutGroupTypes = findViewById(R.id.text_input_group_types);
@@ -150,7 +150,7 @@ public class AddGroupActivity extends AppCompatActivity {
                                 textInputLayoutTeachers.setEnabled(true);
                                 buttonAddGroup.setEnabled(true);
                             } else {
-                                Log.i(TAG, "Smthg wrong!");
+                                Log.i(TAG, getString(R.string.error));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -159,7 +159,7 @@ public class AddGroupActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(AddGroupActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddGroupActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -184,14 +184,14 @@ public class AddGroupActivity extends AppCompatActivity {
                         try {
                             if (response.getString("status").equals("success")) {
                                 clearFields();
-                                Toast.makeText(AddGroupActivity.this, "Group successfully added!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddGroupActivity.this, getString(R.string.group_suc_added), Toast.LENGTH_SHORT).show();
                             } else {
                                 switch (response.getString("code")) {
                                     case "ER_DUP_ENTRY":
-                                        textInputLayoutTeachers.setError("This teacher already has a group this year!");
+                                        textInputLayoutTeachers.setError(getString(R.string.teacher_already_has_group_this_year));
                                         break;
                                     default:
-                                        Toast.makeText(AddGroupActivity.this, "ERROR!?", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AddGroupActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
                                         break;
                                 }
                             }
@@ -203,7 +203,7 @@ public class AddGroupActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(AddGroupActivity.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddGroupActivity.this, getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -216,7 +216,7 @@ public class AddGroupActivity extends AppCompatActivity {
             textInputLayoutGroupTypes.setError(null);
             return true;
         } else {
-            textInputLayoutGroupTypes.setError("Select a group type");
+            textInputLayoutGroupTypes.setError(getString(R.string.select_a_group_type));
             return false;
         }
     }
@@ -226,7 +226,7 @@ public class AddGroupActivity extends AppCompatActivity {
             textInputLayoutTeachers.setError(null);
             return true;
         } else {
-            textInputLayoutTeachers.setError("Please select a teacher!");
+            textInputLayoutTeachers.setError(getString(R.string.select_a_teacher));
             return false;
         }
     }

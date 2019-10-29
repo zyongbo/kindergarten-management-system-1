@@ -27,7 +27,7 @@ public class TeacherActivity extends DrawerActivity {
 
     @Override
     public String GetTitle() {
-        return "Teacher";
+        return getString(R.string.teacher);
     }
 
     @Override

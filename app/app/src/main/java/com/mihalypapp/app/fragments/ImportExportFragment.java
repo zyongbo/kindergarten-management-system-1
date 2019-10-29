@@ -104,7 +104,7 @@ public class ImportExportFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.fragment_import_export, container, false);
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Import, export CSV");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.import_export_csv);
 
         textInputTable = view.findViewById(R.id.text_input_table);
         textInputLayoutGroups = view.findViewById(R.id.text_input_groups);
@@ -178,8 +178,8 @@ public class ImportExportFragment extends Fragment {
                 params.put("tableName", tableInput);
 
                 progressDialog = new ProgressDialog(getActivity());
-                progressDialog.setTitle("Uploading");
-                progressDialog.setMessage("Please wait...");
+                progressDialog.setTitle(R.string.uploading);
+                progressDialog.setMessage(getString(R.string.please_wait));
                 progressDialog.show();
 
                 new Thread() {
@@ -252,9 +252,9 @@ public class ImportExportFragment extends Fragment {
 
                 if(broadcastDownloadID == downloadID) {
                     if(getDownloadStatus() == DownloadManager.STATUS_SUCCESSFUL) {
-                        Toast.makeText(context, "Download complete", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getString(R.string.download_completed), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context, "Download not complete.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.download_is_not_completed, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -309,7 +309,7 @@ public class ImportExportFragment extends Fragment {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(MainActivity.URL + "exportCsv/" + tableName))
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI)
                 .setTitle(tableName + ".csv")
-                .setDescription("Downloading file...")
+                .setDescription(getString(R.string.downloading_file))
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, tableName + ".csv");
 
@@ -368,7 +368,7 @@ public class ImportExportFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "Error " + error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.error) + " " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -381,7 +381,7 @@ public class ImportExportFragment extends Fragment {
             textInputLayoutGroups.setError(null);
             return true;
         } else {
-            textInputLayoutGroups.setError("Please select a group!");
+            textInputLayoutGroups.setError(getString(R.string.select_a_group));
             return false;
         }
     }
@@ -389,7 +389,7 @@ public class ImportExportFragment extends Fragment {
         tableInput = textInputTable.getEditText().getText().toString().trim();
 
         if (tableInput.isEmpty()) {
-            textInputTable.setError("Field can't be empty.");
+            textInputTable.setError(getString(R.string.field_cant_be_empty));
             return false;
         } else {
             textInputTable.setError(null);
@@ -557,11 +557,11 @@ public class ImportExportFragment extends Fragment {
         public void handleMessage(@NonNull Message msg) {
             Bundle bundle = msg.getData();
             if(bundle.getString("status").equals("success")) {
-                Toast.makeText(getActivity(), "File successfully uploaded!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.file_suc_uploaded), Toast.LENGTH_SHORT).show();
             } else if (bundle.getString("status").equals("failed")) {
                 String err = bundle.getString("err");
                 if (err.equals("NOT_CSV")) {
-                    Toast.makeText(getActivity(), "The file extension should be .CSV!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.shuld_be_csv), Toast.LENGTH_SHORT).show();
                 } else if (err.equals("ER_DUP_ENTRY")) {
                     Toast.makeText(getActivity(), "ER_DUP_ENTRY!", Toast.LENGTH_SHORT).show();
                 } else if (err.equals("ER_NO_REFERENCED_ROW_2")){

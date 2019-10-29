@@ -83,10 +83,10 @@ public class ListGroupsFragment extends Fragment {
                 ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Select group");
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.select_a_group);
             }
         } else {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Groups");
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.groups);
         }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());

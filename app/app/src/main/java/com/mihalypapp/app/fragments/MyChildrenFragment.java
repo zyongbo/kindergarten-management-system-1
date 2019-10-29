@@ -48,7 +48,7 @@ public class MyChildrenFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("My children");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.my_children);
 
         View view = inflater.inflate(R.layout.fragment_my_children, container, false);
         listView = view.findViewById(R.id.list_view_children);
@@ -88,7 +88,7 @@ public class MyChildrenFragment extends Fragment {
                                     listView.setAdapter(adapter);
                                 }
                             } else {
-                                Toast.makeText(getContext(), "You have no children yet.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), getString(R.string.you_have_no_children), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

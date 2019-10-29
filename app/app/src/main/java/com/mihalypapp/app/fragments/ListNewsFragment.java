@@ -60,7 +60,7 @@ public class ListNewsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_news, container, false);
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("News");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.news);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new NewsCardAdapter(newsCardList);

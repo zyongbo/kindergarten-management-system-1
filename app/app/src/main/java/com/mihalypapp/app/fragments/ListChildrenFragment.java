@@ -69,7 +69,7 @@ public class ListChildrenFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Children");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.children));
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         adapter = new ChildCardAdapter(childList);
