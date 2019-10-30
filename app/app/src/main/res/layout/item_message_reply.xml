@@ -15,16 +15,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_view_message"
+                android:id="@+id/text_view_reply_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reply_to2"
+                android:layout_weight="0"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+            <TextView
+                android:id="@+id/text_view_reply_to_message"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
                 android:layout_weight="0"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:textAppearance="?android:attr/textAppearance"/>
+
+
+            <TextView
+                android:id="@+id/text_view_message"
+                android:paddingTop="0dp"
+                android:paddingLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
+                android:layout_weight="0"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

@@ -1342,7 +1342,9 @@ app.post('/messages', (req, res) => {
         SELECT
             1 AS Own,
             Message as message,
-            DATE_FORMAT(Date, "%Y-%m-%d %H:%i:%s") as datetime
+            DATE_FORMAT(Date, "%Y-%m-%d %H:%i:%s") as datetime,
+            ReplyToMessage as replyToMessage,
+            hasReply as hasReply
         FROM
             messages
         WHERE
@@ -1352,7 +1354,9 @@ app.post('/messages', (req, res) => {
             SELECT
                 0 AS Own,
                 Message,
-                DATE_FORMAT(Date, "%Y-%m-%d %H:%i:%s") as datetime
+                DATE_FORMAT(Date, "%Y-%m-%d %H:%i:%s") as datetime,
+                ReplyToMessage as replyToMessage,
+                hasReply as hasReply
             FROM
                 messages
             WHERE
@@ -1383,6 +1387,7 @@ app.post('/addMessage', (req, res) => {
     console.log('/addMessage--------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
+    console.log(req.body)
 
     con.query(`
         INSERT INTO messages
@@ -1391,9 +1396,11 @@ app.post('/addMessage', (req, res) => {
                 ?,
                 ?,
                 ?,
+                ?,
+                ?,
                 ?
             )
-        `, [req.session.userId, req.body.partnerId, req.body.datetime, req.body.message], (err, result) => {
+        `, [req.session.userId, req.body.partnerId, req.body.datetime, req.body.message, req.body.replyToMessage, req.body.hasReply], (err, result) => {
         console.log('Result: ' + JSON.stringify(result))
         if (err == null) {
             res.send({

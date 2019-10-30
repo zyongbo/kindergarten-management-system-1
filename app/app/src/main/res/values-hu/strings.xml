@@ -150,4 +150,5 @@
     <string name="view_group">Csoport megnézése</string>
     <string name="send_message_to_parent">Üzenet küldése a szülőnek</string>
     <string name="add_to_group">Csoporthoz adás</string>
+    <string name="reply_to2">Válasz erre:</string>
 </resources>

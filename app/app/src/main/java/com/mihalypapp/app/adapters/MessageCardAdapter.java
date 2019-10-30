@@ -17,9 +17,12 @@ import java.util.List;
 
 public class MessageCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int VIEW_TYPE_MESSAGE_CARD = 1;
+    private final int VIEW_TYPE_MESSAGE_CARD_REPLY = 2;
     private final int VIEW_TPYE_PROGRESS_BAR = 0;
 
     private List<Message> messages;
+
+    private GroupCardAdapter.OnItemClickListener listener;
 
     public MessageCardAdapter(List<Message> messages) {this.messages = messages; }
 
@@ -33,6 +36,9 @@ public class MessageCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (viewType == VIEW_TYPE_MESSAGE_CARD) {
             View view = inflater.inflate(R.layout.item_message, parent, false);
             viewHolder = new MessageCardViewHolder(view);
+        } else if (viewType == VIEW_TYPE_MESSAGE_CARD_REPLY) {
+            View view = inflater.inflate(R.layout.item_message_reply, parent, false);
+            viewHolder = new MessageCardReplyViewHolder(view);
         } else {
             View view = inflater.inflate(R.layout.item_loading, parent, false);
             viewHolder = new ProgressBarViewHolder(view);
@@ -48,6 +54,12 @@ public class MessageCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((MessageCardViewHolder) holder).textViewUserName.setText(message.getUserName());
             ((MessageCardViewHolder) holder).textViewMessage.setText(message.getMessage());
             ((MessageCardViewHolder) holder).textViewDatetime.setText(message.getDatetime());
+        } else if (holder instanceof MessageCardAdapter.MessageCardReplyViewHolder) {
+            Message message = messages.get(position);
+            ((MessageCardReplyViewHolder) holder).textViewUserName.setText(message.getUserName());
+            ((MessageCardReplyViewHolder) holder).textViewMessage.setText(message.getMessage());
+            ((MessageCardReplyViewHolder) holder).textViewDatetime.setText(message.getDatetime());
+            ((MessageCardReplyViewHolder) holder).textViewRepyToMessage.setText(message.getReplyToMessage());
         } else {
             ((ProgressBarViewHolder) holder).progressBar.setIndeterminate(true);
         }
@@ -55,7 +67,15 @@ public class MessageCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        return messages.get(position) != null ? VIEW_TYPE_MESSAGE_CARD : VIEW_TPYE_PROGRESS_BAR;
+        if (messages.get(position) != null) {
+            if (messages.get(position).getHasReply() == 1) {
+                return VIEW_TYPE_MESSAGE_CARD_REPLY;
+            } else {
+                return VIEW_TYPE_MESSAGE_CARD;
+            }
+        } else {
+            return VIEW_TPYE_PROGRESS_BAR;
+        }
     }
 
     @Override
@@ -73,6 +93,47 @@ public class MessageCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             textViewUserName = itemView.findViewById(R.id.text_view_user_name);
             textViewMessage = itemView.findViewById(R.id.text_view_message);
             textViewDatetime = itemView.findViewById(R.id.text_view_datetime);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView, position);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    private class MessageCardReplyViewHolder extends RecyclerView.ViewHolder {
+        private TextView textViewUserName;
+        private TextView textViewMessage;
+        private TextView textViewDatetime;
+        private TextView textViewRepyToMessage;
+
+        private MessageCardReplyViewHolder(final View itemView) {
+            super(itemView);
+            textViewUserName = itemView.findViewById(R.id.text_view_user_name);
+            textViewMessage = itemView.findViewById(R.id.text_view_message);
+            textViewDatetime = itemView.findViewById(R.id.text_view_datetime);
+            textViewRepyToMessage = itemView.findViewById(R.id.text_view_reply_to_message);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView, position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -83,5 +144,13 @@ public class MessageCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             super(itemView);
             progressBar = itemView.findViewById(R.id.progress_bar);
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    public void setOnItemClickListener(GroupCardAdapter.OnItemClickListener listener) {
+        this.listener = listener;
     }
 }

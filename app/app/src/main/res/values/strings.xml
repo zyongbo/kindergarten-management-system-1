@@ -161,4 +161,5 @@
     <string name="add_to_group">Add to group</string>
     <string name="remove_from_the_group">Remove from the group</string>
     <string name="view_group">View group</string>
+    <string name="reply_to2">Reply to:</string>
 </resources>

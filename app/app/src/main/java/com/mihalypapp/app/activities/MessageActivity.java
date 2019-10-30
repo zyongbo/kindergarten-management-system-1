@@ -29,7 +29,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.mihalypapp.app.R;
+import com.mihalypapp.app.adapters.GroupCardAdapter;
 import com.mihalypapp.app.adapters.MessageCardAdapter;
+import com.mihalypapp.app.fragments.MessageReplyDialog;
 import com.mihalypapp.app.models.EndlessRecyclerViewScrollListener;
 import com.mihalypapp.app.models.Message;
 
@@ -41,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class MessageActivity extends AppCompatActivity {
+public class MessageActivity extends AppCompatActivity implements MessageReplyDialog.MessageReplyDialogListener{
 
     private static final String TAG = "MessageActivity";
 
@@ -93,6 +95,17 @@ public class MessageActivity extends AppCompatActivity {
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
+        adapter.setOnItemClickListener(new GroupCardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                String replyForThis = messageList.get(position).getMessage();
+                MessageReplyDialog messageReplyDialog = new MessageReplyDialog();
+                Bundle bundle = new Bundle();
+                bundle.putString("replyToMessage", replyForThis);
+                messageReplyDialog.setArguments(bundle);
+                messageReplyDialog.show(getSupportFragmentManager(), "message reply dialog");
+            }
+        });
 
         swipeContainer = findViewById(R.id.swipe_container);
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
@@ -112,7 +125,7 @@ public class MessageActivity extends AppCompatActivity {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addMessage();
+                addMessage(editTextMessage.getText().toString(), "", 0);
             }
         });
 
@@ -177,11 +190,18 @@ public class MessageActivity extends AppCompatActivity {
                                     if(message.getInt("Own") == 0) {
                                         userName = getIntent().getStringExtra(PARTNER_NAME);
                                     }
-                                    messageList.add(new Message(
+                                    Message m = new Message(
                                             userName,
                                             message.getString("message"),
                                             message.getString("datetime")
-                                    ));
+                                    );
+                                    if (message.getInt("hasReply") == 1) {
+                                        m.setHasReply(1);
+                                        m.setReplyToMessage(message.getString("replyToMessage"));
+                                    } else {
+                                        m.setHasReply(0);
+                                    }
+                                    messageList.add(m);
                                     offset++;
                                 }
 
@@ -215,21 +235,23 @@ public class MessageActivity extends AppCompatActivity {
         requestQueue.add(getMessageRequest);
     }
 
-    private void addMessage() {
+    private void addMessage(String message, String replyToMessage, int hasReply) {
         messageAdded = true;
         Date dt = new Date();
         java.text.SimpleDateFormat sdf =
                 new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = sdf.format(dt);
-        final Message newMessage = new Message("Me", editTextMessage.getText().toString(), currentTime);
+        final Message newMessage = new Message(getString(R.string.me), message, currentTime, replyToMessage, hasReply);
 
         final JSONObject params = new JSONObject();
         try {
             params.put("offset", offset);
             params.put("quantity", 15);
             params.put("partnerId", getIntent().getIntExtra(PARTNER_ID, -1));
-            params.put("message", editTextMessage.getText().toString());
+            params.put("message", message);
             params.put("datetime", currentTime);
+            params.put("replyToMessage", replyToMessage);
+            params.put("hasReply", hasReply);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -309,5 +331,10 @@ public class MessageActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
         String language = preferences.getString("lang", "");
         setLocale(language);
+    }
+
+    @Override
+    public void applyMessage(String message, String replyToMessage) {
+        addMessage(message, replyToMessage, 1);
     }
 }
