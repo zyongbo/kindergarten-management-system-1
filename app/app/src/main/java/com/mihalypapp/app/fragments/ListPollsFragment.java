@@ -55,6 +55,7 @@ public class ListPollsFragment extends Fragment {
     private PollCardAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
+    private FloatingActionButton floatingActionButton;
 
 
     @Nullable
@@ -107,7 +108,8 @@ public class ListPollsFragment extends Fragment {
             }
         });
 
-        FloatingActionButton floatingActionButton = view.findViewById(R.id.floating_action_button);
+        floatingActionButton = view.findViewById(R.id.floating_action_button);
+        floatingActionButton.setVisibility(View.INVISIBLE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,6 +141,10 @@ public class ListPollsFragment extends Fragment {
                         try {
                             if (response.getString("status").equals("success")) {
                                 Log.i(TAG, response.toString());
+                                if(response.getString("userRole").equals("TEACHER")) {
+                                    floatingActionButton.setVisibility(View.VISIBLE);
+                                }
+
                                 JSONArray polls = response.getJSONArray("polls");
 
                                 removeProgressBar();

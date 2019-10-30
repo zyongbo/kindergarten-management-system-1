@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add a new group"
+                android:text="@string/add_a_new_group"
                 android:textAlignment="textEnd"
                 android:textSize="30sp"
                 android:layout_marginBottom="24dp"
@@ -32,7 +32,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Type"
+            android:hint="@string/type"
             app:errorEnabled="true">
 
             <AutoCompleteTextView
@@ -48,7 +48,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Teacher"
+                android:hint="@string/teacher"
                 app:errorEnabled="true">
 
                 <AutoCompleteTextView
@@ -62,7 +62,7 @@
                 android:id="@+id/button_add_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add" />
+                android:text="@string/add" />
 
 
         </LinearLayout>

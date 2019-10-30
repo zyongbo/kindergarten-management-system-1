@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -15,6 +18,8 @@ import com.mihalypapp.app.fragments.ListPollsFragment;
 import com.mihalypapp.app.fragments.MyChildrenFragment;
 import com.mihalypapp.app.fragments.MyUserFragment;
 
+import java.util.Locale;
+
 public class ParentActivity extends DrawerActivity {
 
     private static final String TAG = "ParentActivity";
@@ -22,6 +27,7 @@ public class ParentActivity extends DrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLocale();
     }
 
     @Override
@@ -68,5 +74,24 @@ public class ParentActivity extends DrawerActivity {
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
+
+        SharedPreferences.Editor editor = getSharedPreferences("Settings", MODE_PRIVATE).edit();
+        editor.putString("lang", lang);
+        editor.apply();
+    }
+
+    public void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
+        String language = preferences.getString("lang", "");
+        setLocale(language);
     }
 }

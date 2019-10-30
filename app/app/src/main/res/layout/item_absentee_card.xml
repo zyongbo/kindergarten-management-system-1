@@ -14,7 +14,7 @@
             android:id="@+id/text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Absences:"
+            android:text="@string/absences2"
             android:layout_alignBottom="@+id/check_box"
             android:layout_alignLeft="@+id/text_view_child_name"
             android:layout_alignStart="@+id/text_view_child_name"

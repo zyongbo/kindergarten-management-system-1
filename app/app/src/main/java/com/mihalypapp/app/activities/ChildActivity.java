@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -32,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 public class ChildActivity extends AppCompatActivity {
@@ -75,6 +78,7 @@ public class ChildActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLocale();
         setContentView(R.layout.activity_child);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -89,7 +93,9 @@ public class ChildActivity extends AppCompatActivity {
         textViewGroupType = findViewById(R.id.text_view_group_type);
         textViewAbsences = findViewById(R.id.text_view_absences);
         listViewAbsences = findViewById(R.id.list_view_absences);
+        listViewAbsences.setNestedScrollingEnabled(true);
         listViewLiabilities = findViewById(R.id.list_view_liabilities);
+        listViewLiabilities.setNestedScrollingEnabled(true);
         textViewAbsencesDisplay = findViewById(R.id.text_view_absences_display);
         textViewLiabilitiesDisplay = findViewById(R.id.text_view_liabilities_display);
         textViewLiabilityInThisMonth = findViewById(R.id.text_view_liability_in_this_month);
@@ -136,9 +142,9 @@ public class ChildActivity extends AppCompatActivity {
                                 selectedChild.setParentId(child.getInt("parentId"));
                                 selectedChild.setMealSubscription(child.getInt("mealSubscription"));
                                 if(selectedChild.getMealSubscription() == 1) {
-                                    textViewMealSubscription.setText(getString(R.string.active));
+                                    textViewMealSubscription.setText("ACTIVE");
                                 } else {
-                                    textViewMealSubscription.setText(getString(R.string.disabled));
+                                    textViewMealSubscription.setText("DISABLED");
                                 }
                                 textViewChildName.setText(child.getString("childName"));
                                 textViewParentName.setText(child.getString("parentName"));
@@ -464,5 +470,24 @@ public class ChildActivity extends AppCompatActivity {
                 fetchChild();
             }
         }
+    }
+
+    public void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
+
+        SharedPreferences.Editor editor = getSharedPreferences("Settings", MODE_PRIVATE).edit();
+        editor.putString("lang", lang);
+        editor.apply();
+    }
+
+    public void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
+        String language = preferences.getString("lang", "");
+        setLocale(language);
     }
 }

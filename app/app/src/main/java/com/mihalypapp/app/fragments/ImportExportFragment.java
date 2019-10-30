@@ -22,6 +22,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
@@ -105,6 +107,7 @@ public class ImportExportFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_import_export, container, false);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.import_export_csv);
+        setHasOptionsMenu(true);
 
         textInputTable = view.findViewById(R.id.text_input_table);
         textInputLayoutGroups = view.findViewById(R.id.text_input_groups);
@@ -575,4 +578,10 @@ public class ImportExportFragment extends Fragment {
         }
 
     };
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+    }
 }

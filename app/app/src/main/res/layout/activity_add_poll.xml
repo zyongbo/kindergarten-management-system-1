@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add poll"
+                android:text="@string/add_a_poll"
                 android:textAlignment="textEnd"
                 android:textSize="30sp"
                 android:layout_marginBottom="24dp"
@@ -38,7 +38,7 @@
                     android:id="@+id/edit_text_question"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Question"
+                    android:hint="@string/question"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -57,7 +57,7 @@
                 android:id="@+id/button_add_new_option"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add new option" />
+                android:text="@string/add_new_option" />
 
         </LinearLayout>
 

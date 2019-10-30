@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add liability"
+                android:text="@string/add_liability"
                 android:textAlignment="textEnd"
                 android:textSize="30sp"
                 android:layout_marginBottom="24dp"
@@ -38,7 +38,7 @@
                     android:id="@+id/edit_charge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Charge"
+                    android:hint="@string/charge"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -48,7 +48,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Type"
+                android:hint="@string/type"
                 app:errorEnabled="true">
 
                 <AutoCompleteTextView
@@ -63,7 +63,7 @@
                 android:id="@+id/button_add_liability"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add" />
+                android:text="@string/add" />
 
         </LinearLayout>
 

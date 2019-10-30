@@ -1,8 +1,9 @@
 package com.mihalypapp.app.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,11 +15,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.mihalypapp.app.R;
-import com.mihalypapp.app.activities.AddChildActivity;
-import com.mihalypapp.app.activities.AddUserActivity;
 
 public class ListUsersScreenSlideFragment extends Fragment {
 
@@ -26,6 +24,8 @@ public class ListUsersScreenSlideFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_users_screen_slide, container, false);
+
+        setHasOptionsMenu(true);
 
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         ViewPager pager = view.findViewById(R.id.pager);
@@ -38,9 +38,15 @@ public class ListUsersScreenSlideFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+    }
+
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
-        private String[] tabTitles = new String[]{"PARENTS", "TEACHERS", "PRINCIPALS"};
+        private String[] tabTitles = new String[]{getString(R.string.PARENTS), getString(R.string.TEACHERS), getString(R.string.PRINCIPALS)};
 
         ScreenSlidePagerAdapter(@NonNull FragmentManager fm) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -71,6 +77,5 @@ public class ListUsersScreenSlideFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             return tabTitles[position];
         }
-
     }
 }

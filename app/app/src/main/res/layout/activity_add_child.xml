@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add a new child"
+                android:text="@string/add_a_new_child"
                 android:textAlignment="textEnd"
                 android:textSize="30sp"
                 android:layout_marginBottom="24dp"
@@ -37,7 +37,7 @@
                     android:id="@+id/edit_text_child_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Full name"
+                    android:hint="@string/full_name2"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -65,7 +65,7 @@
                     android:id="@+id/button_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pick a date"/>
+                    android:text="@string/pick_a_date"/>
 
             </LinearLayout>
 
@@ -74,7 +74,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Parent"
+                android:hint="@string/parent"
                 app:errorEnabled="true">
 
                 <AutoCompleteTextView
@@ -89,7 +89,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Group"
+                android:hint="@string/group"
                 app:errorEnabled="true">
 
                 <AutoCompleteTextView
@@ -103,7 +103,7 @@
                 android:id="@+id/button_add_child"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add" />
+                android:text="@string/add" />
 
 
         </LinearLayout>

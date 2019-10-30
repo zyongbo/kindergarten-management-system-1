@@ -28,7 +28,7 @@
         android:layout_above="@+id/button_deselect_all"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="Select all" />
+        android:text="@string/select_all" />
 
     <Button
         android:id="@+id/button_deselect_all"
@@ -38,6 +38,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:text="Deselect all" />
+        android:text="@string/deselect_all" />
 
 </RelativeLayout>

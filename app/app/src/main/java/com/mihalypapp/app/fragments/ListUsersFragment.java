@@ -69,10 +69,9 @@ public abstract class ListUsersFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_list_users, container, false);
 
-        setHasOptionsMenu(true);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.users);
-
+        setHasOptionsMenu(true);
         FloatingActionButton floatingActionButton = view.findViewById(R.id.floating_action_button);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override

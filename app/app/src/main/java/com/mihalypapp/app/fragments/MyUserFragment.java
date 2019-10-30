@@ -3,6 +3,8 @@ package com.mihalypapp.app.fragments;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ public class MyUserFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_user, container, false);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.my_user);
+        setHasOptionsMenu(true);
 
         textViewFullName = view.findViewById(R.id.text_view_full_name);
         textViewEmail = view.findViewById(R.id.text_view_email);
@@ -84,5 +87,11 @@ public class MyUserFragment extends Fragment {
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(loginRequest);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
     }
 }

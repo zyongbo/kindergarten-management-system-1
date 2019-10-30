@@ -5,8 +5,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 public class PollActivity extends AppCompatActivity {
@@ -55,11 +59,12 @@ public class PollActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLocale();
         setContentView(R.layout.activity_poll);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Poll");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.poll));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textViewQuestion = findViewById(R.id.text_view_question);
@@ -81,7 +86,7 @@ public class PollActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 saveAnswer(i);
-                Toast.makeText(PollActivity.this, optionList.get(i).getOption(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(PollActivity.this, optionList.get(i).getOption(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -252,5 +257,24 @@ public class PollActivity extends AppCompatActivity {
         bundle.putInt("pollId", getIntent().getIntExtra("pollId", -1));
         pollResultsDialog.setArguments(bundle);
         pollResultsDialog.show(getSupportFragmentManager(), "poll results dialog");
+    }
+
+    public void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
+
+        SharedPreferences.Editor editor = getSharedPreferences("Settings", MODE_PRIVATE).edit();
+        editor.putString("lang", lang);
+        editor.apply();
+    }
+
+    public void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
+        String language = preferences.getString("lang", "");
+        setLocale(language);
     }
 }

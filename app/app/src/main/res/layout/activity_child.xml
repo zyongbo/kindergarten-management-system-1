@@ -11,7 +11,7 @@
         layout="@layout/toolbar"/>
 
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="Child name"
+                    android:text="@string/child_name"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Parent name"
+                    android:text="@string/parent_name"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="Date of birth"
+                    android:text="@string/date_of_birth"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -92,11 +92,11 @@
                     android:id="@+id/textView7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Teacher name"
+                    android:text="@string/teacher_name"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.4"
+                    app:layout_constraintHorizontal_bias="0.322"
                     app:layout_constraintStart_toEndOf="@+id/textView6"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -132,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="Group Type"
+                    android:text="@string/group_type"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -151,7 +151,7 @@
                     android:id="@+id/textView13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Meal subscription"
+                    android:text="@string/meal_subscription"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -180,7 +180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
-                    android:text="Liability in this month:"
+                    android:text="@string/liability_in_this_month2"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -202,7 +202,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginBottom="16dp"
-                    android:text="Absences in this year:"
+                    android:text="@string/absences_in_this_year2"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -242,7 +242,7 @@
                     android:id="@+id/text_view_absences_display"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Absences"
+                    tools:text="@string/absentees"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
@@ -262,7 +262,7 @@
                     android:id="@+id/text_view_liabilities_display"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Liabilities"
+                    tools:text="@string/liabilities"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
@@ -276,6 +276,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add a new document"
+                android:text="@string/add_a_new_document"
                 android:textAlignment="textEnd"
                 android:textSize="30sp"
                 android:layout_marginBottom="24dp"
@@ -33,7 +33,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Role"
+                android:hint="@string/role2"
                 app:errorEnabled="true">
 
                 <AutoCompleteTextView
@@ -54,7 +54,7 @@
                     android:id="@+id/edit_text_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Description"
+                    android:hint="@string/description"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -70,7 +70,7 @@
                     android:id="@+id/file_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="File name:"
+                    android:text="@string/file_name2"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     android:textSize="18sp" />
 
@@ -90,13 +90,13 @@
                 android:id="@+id/button_select_file"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select a file" />
+                android:text="@string/select_a_file" />
 
             <Button
                 android:id="@+id/button_upload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Upload"
+                android:text="@string/upload"
                 android:enabled="false"/>
 
         </LinearLayout>

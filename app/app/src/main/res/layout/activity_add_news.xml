@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add a news"
+                android:text="@string/add_a_news"
                 android:textAlignment="textEnd"
                 android:textSize="30sp"
                 android:layout_marginBottom="24dp"
@@ -37,7 +37,7 @@
                     android:id="@+id/edit_text_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Title"
+                    android:hint="@string/title"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -52,7 +52,7 @@
                     android:id="@+id/edit_text_content"
                     android:layout_width="match_parent"
                     android:layout_height="168dp"
-                    android:hint="Content"
+                    android:hint="@string/content"
                     android:inputType="textMultiLine" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -61,7 +61,7 @@
                 android:id="@+id/button_add_news"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add" />
+                android:text="@string/add" />
 
 
         </LinearLayout>

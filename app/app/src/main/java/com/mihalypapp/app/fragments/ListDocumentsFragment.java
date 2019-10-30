@@ -84,7 +84,7 @@ public class ListDocumentsFragment extends Fragment implements DeleteDocumentDia
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_documents, container, false);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.news);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.documents);
 
         setHasOptionsMenu(true);
 

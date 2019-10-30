@@ -1167,6 +1167,15 @@ app.post('/saveMyGroupAbsentees', async (req, res) => {
 
                 if(req.body.absentees[i].mealSubscription == 1) {
                     await query(`
+                    DELETE
+                    FROM
+                        liabilities
+                    WHERE
+                        childId = ?
+                    AND
+                        date = CURDATE() + INTERVAL 1 DAY
+                    `, [req.body.absentees[i].childId])
+                    await query(`
                     INSERT INTO
                         liabilities (type, charge, childID, date)
                     VALUES

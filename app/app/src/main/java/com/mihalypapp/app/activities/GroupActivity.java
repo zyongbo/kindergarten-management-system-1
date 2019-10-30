@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -37,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 public class GroupActivity extends AppCompatActivity implements FinishGroupDialog.FinishGroupListener, UpgradeGroupDialog.UpgradeGroupListener {
@@ -70,6 +73,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLocale();
         setContentView(R.layout.activity_group);
 
         intent = getIntent();
@@ -90,6 +94,7 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
         adapter = new ChildCardArrayAdapter(GroupActivity.this, childList, 1);
 
         listView = findViewById(R.id.list_view_children);
+        listView.setNestedScrollingEnabled(true);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -390,5 +395,24 @@ public class GroupActivity extends AppCompatActivity implements FinishGroupDialo
                 //fetchGroup();
             }
         }
+    }
+
+    public void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        getBaseContext().getResources().updateConfiguration(configuration, getBaseContext().getResources().getDisplayMetrics());
+
+        SharedPreferences.Editor editor = getSharedPreferences("Settings", MODE_PRIVATE).edit();
+        editor.putString("lang", lang);
+        editor.apply();
+    }
+
+    public void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
+        String language = preferences.getString("lang", "");
+        setLocale(language);
     }
 }

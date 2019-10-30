@@ -9,6 +9,15 @@
     <include android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +43,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Teacher"
+                        android:text="@string/teacher"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="14sp" />
 
@@ -86,7 +95,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Type"
+                        android:text="@string/type"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="14sp" />
 
@@ -114,7 +123,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Year"
+                        android:text="@string/year"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="14sp" />
 
@@ -139,7 +148,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Size"
+                        android:text="@string/size"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="14sp" />
 
@@ -174,7 +183,7 @@
             android:id="@+id/text_view_children_display"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Children"
+            tools:text="@string/children"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
             android:textAlignment="center"
@@ -185,7 +194,11 @@
     <ListView
         android:id="@+id/list_view_children"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:padding="16dp"/>
+
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>
