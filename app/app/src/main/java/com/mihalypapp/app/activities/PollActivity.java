@@ -259,7 +259,7 @@ public class PollActivity extends AppCompatActivity {
         pollResultsDialog.show(getSupportFragmentManager(), "poll results dialog");
     }
 
-    public void setLocale(String lang) {
+    private void setLocale(String lang) {
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
 
@@ -272,7 +272,7 @@ public class PollActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    public void loadLocale() {
+    private void loadLocale() {
         SharedPreferences preferences = getSharedPreferences("Settings", Activity.MODE_PRIVATE);
         String language = preferences.getString("lang", "");
         setLocale(language);

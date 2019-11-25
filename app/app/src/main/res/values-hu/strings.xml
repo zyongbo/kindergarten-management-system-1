@@ -82,16 +82,16 @@
     <string name="select_a_group">Kérlek válassz egy csoportot!</string>
     <string name="select_a_group_type">Válassz egy csoporttípust!</string>
     <string name="select_a_parent">Kérlek válassz egy szülőt!</string>
-    <string name="select_a_teacher">Kérlek válassz egy tanárt!</string>
+    <string name="select_a_teacher">Kérlek válassz egy óvónőt!</string>
     <string name="send">küld</string>
     <string name="send_message">Send Message</string>
     <string name="shuld_be_csv">A fájl kiterjesztésének .CSV-nek kell lennie!</string>
     <string name="sub_updated_suc">Feliratkozás frissítve!</string>
     <string name="suc_logged_in">Sikeres bejelentkezés!</string>
     <string name="suc_logged_out">Sikeres kijelentkezés!</string>
-    <string name="teacher">Tanár</string>
-    <string name="teacher_already_has_group_this_year">Ennek a tanárnak már van csoportja ebben az évben.</string>
-    <string name="teachers">Tanárok</string>
+    <string name="teacher">Óvónő</string>
+    <string name="teacher_already_has_group_this_year">Ennek az óvónőnek már van csoportja ebben az évben.</string>
+    <string name="teachers">Óvónők</string>
     <string name="upgrade">Fejlesztés</string>
     <string name="uploading">Feltöltés</string>
     <string name="use_only_num">Kérlek csak számokat használj.</string>
@@ -108,7 +108,7 @@
     <string name="email2">Email</string>
     <string name="log_in">Bejelentkez</string>
     <string name="PARENTS">SZÜLŐK</string>
-    <string name="TEACHERS">TANÁROK</string>
+    <string name="TEACHERS">ÓVÓNŐK</string>
     <string name="PRINCIPALS">IGAZGATÓK</string>
     <string name="pick_a_date">Dátum választása</string>
     <string name="add">Hozzáad</string>
@@ -127,7 +127,7 @@
     <string name="child_name">Gyerek neve</string>
     <string name="parent_name">Szülő neve</string>
     <string name="date_of_birth">Születési dátum</string>
-    <string name="teacher_name">Tanár neve</string>
+    <string name="teacher_name">Óvónő neve</string>
     <string name="group_type">Csoporttípus</string>
     <string name="meal_subscription">Étkezésre feliratkozás</string>
     <string name="absences_in_this_year2">Hiányzások az évben:</string>
@@ -143,7 +143,7 @@
     <string name="delete">Törlés</string>
     <string name="download">Letöltés</string>
     <string name="poll">Szavazás</string>
-    <string name="send_message_to_teacher">Üzenet küldése a tanárnak</string>
+    <string name="send_message_to_teacher">Üzenet küldése az óvónőnek</string>
     <string name="search">Keresés</string>
     <string name="refresh">Frissítés</string>
     <string name="remove_from_the_group">Eltávolítás a csoportból</string>

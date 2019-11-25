@@ -5,7 +5,7 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const fs = require('fs')
 const fileUpload = require('express-fileupload')
-const csv = require('fast-csv');
+const csv = require('fast-csv')
 
 var con = mysql.createConnection({
     host: "localhost",
@@ -47,12 +47,12 @@ app.get('/', (req, res) => {
     })
 })
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     console.log('/login------------------------------------------------------------------------')
     console.log('Session ID: ' + req.sessionID)
     console.log('Session: ' + JSON.stringify(req.session))
-
-    con.query(`
+    try {
+        let result = await query(`
         SELECT
             userId,
             email,
@@ -63,9 +63,8 @@ app.post('/login', (req, res) => {
         WHERE
             email = ?
         AND
-            password = ?`, [req.body.email, req.body.password], (err, result) => {
+            password = ?`, [req.body.email, req.body.password]);
 
-        if (err) throw err
         console.log('Result: ' + JSON.stringify(result))
         if (result.length > 0) {
             req.session.role = result[0].role
@@ -81,7 +80,12 @@ app.post('/login', (req, res) => {
                 'status': 'failed'
             })
         }
-    })
+    } catch (err) {
+        res.send({
+            'status': 'failed',
+            'error': err
+        })
+    }
 })
 
 app.get('/logout', (req, res) => {
@@ -1362,9 +1366,9 @@ app.post('/messages', (req, res) => {
             WHERE
                 ReceiverID = ?
             AND SenderID = ?
-            ORDER BY
-		        datetime DESC
-            LIMIT ?, ?
+        ORDER BY
+            datetime DESC
+        LIMIT ?, ?
         `, [req.session.userId, req.body.partnerId, req.session.userId, req.body.partnerId, req.body.offset, req.body.quantity], (err, result) => {
         if (err) throw err
         console.log('Result: ' + JSON.stringify(result))

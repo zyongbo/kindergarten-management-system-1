@@ -58,7 +58,7 @@ public abstract class ListUsersFragment extends Fragment {
     private int offset = 0;
     private String filter = "";
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private UserCardAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
